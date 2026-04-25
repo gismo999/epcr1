@@ -1120,15 +1120,15 @@
                 e += "- SOB: Yes. Normal? " + val('sob_norm');
                 if(val('sob_norm')==='Yes') e += " (Base: " + val('sob_type') + ")\n"; else e += " (Onset: " + val('sob_start_time') + ")\n";
                 e += "  Occurs: " + val('sob_when') + "\n";
-            } else if(val('sob_val') === 'No') { e += "- SOB: No\n"; }
+            } else if(val('sob_val') === 'No') { e += "- No shortness of breath\n"; }
             
             if(val('dib_val') === 'Yes') { e += "- DIB: Yes (" + val('dib_onset') + ", " + val('dib_when') + ")\n"; }
-            else if(val('dib_val') === 'No') { e += "- DIB: No\n"; }
+            else if(val('dib_val') === 'No') { e += "- No difficulty breathing\n"; }
             
             if(val('cough_val') === 'Yes') {
                 e += "- Cough: Yes. Phlegm: " + val('phlegm_val');
                 if(val('phlegm_val')==='Yes') e += " (Colour: " + val('phlegm_color') + " | Blood: " + val('phlegm_blood') + ")\n"; else e += "\n";
-            } else if(val('cough_val') === 'No') { e += "- Cough: No\n"; }
+            } else if(val('cough_val') === 'No') { e += "- No recent cough\n"; }
             
             if(val('rr_norm') !== null) e += "- Resp Rate Normal? " + (val('rr_norm')||"Yes") + "\n";
             if(val('air_entry') !== null) e += "- Lung Sounds: " + val('air_entry') + "\n";
@@ -1142,7 +1142,7 @@
                 e += "- Chest Pain: Yes\n";
                 e += "  SOCRATES: S:" + val('soc_c_s') + " | O:" + val('soc_c_o') + " | C:" + val('soc_c_c') + " | R:" + val('soc_c_r') + " | A:" + val('soc_c_a') + " | T:" + val('soc_c_t') + " | E:" + val('soc_c_e') + " | S:" + val('soc_c_sev') + "\n";
                 if(val('asa_given')==='Yes') e += "  Aspirin Given: Yes at " + val('asa_time') + "\n";
-            } else if(val('cp_val')==='No') { e += "- Chest Pain: No\n"; }
+            } else if(val('cp_val')==='No') { e += "- No chest pain or heaviness\n"; }
             
             var v_palps = val('palps');
             if(v_palps === true) e += "- Palpitations noted\n"; else if(v_palps === false) e += "- No palpitations\n";
@@ -1163,7 +1163,7 @@
                     ['v1','v2','v3','v4','v5','v6','i','ii','iii','avr','avl','avf'].forEach(function(l) { if(document.getElementById('lead_'+l).checked) leads.push(l.toUpperCase()); });
                     if(leads.length > 0) e += "  Leads: " + leads.join(", ") + "\n";
                 }
-            } else if(val('ecg_perf')==='No') { e += "- ECG: Not performed\n"; }
+            } else if(val('ecg_perf')==='No') { e += "- 12-Lead ECG not performed\n"; }
             e += "\n";
         }
 
@@ -1171,20 +1171,20 @@
         if(val('fast_val') !== null || val('nausea_val') !== null) {
             e += "[Neurological / GI]\n";
             if(val('fast_val')==='Yes') { e += "- FAST Check: Face:" + val('f_w') + " | Arm:" + val('l_w') + " | Speech:" + val('s_w') + " (Onset: " + val('fast_time') + ")\n"; }
-            else if(val('fast_val')==='No') { e += "- FAST Check: Negative / Not indicated\n"; }
+            else if(val('fast_val')==='No') { e += "- FAST Stroke Check not indicated\n"; }
             
             if(val('nausea_val') === 'Vomiting' || val('nausea_val') === 'Nauseous') {
                 e += "- GI/Neuro: " + val('nausea_val') + ". Start: " + val('vomit_start') + " | Times: " + val('vomit_times') + " | Blood: " + val('vomit_blood') + "\n";
-            } else if(val('nausea_val') === 'No') { e += "- Nausea/Vomiting: No\n"; }
+            } else if(val('nausea_val') === 'No') { e += "- No nausea or vomiting\n"; }
             
             var v_head = val('headache');
             if(v_head === true) e += "- Headache noted\n"; else if(v_head === false) e += "- No headache\n";
             
             var v_seiz = val('seizure');
-            if(v_seiz === true) e += "- Seizure noted\n"; else if(v_seiz === false) e += "- No seizures\n";
+            if(v_seiz === true) e += "- Seizure noted\n"; else if(v_seiz === false) e += "- No seizure activity\n";
             
             var v_conf = val('confusion');
-            if(v_conf === true) e += "- Confusion noted\n"; else if(v_conf === false) e += "- No confusion\n";
+            if(v_conf === true) e += "- Confusion noted\n"; else if(v_conf === false) e += "- No confusion or altered mental status\n";
             e += "\n";
         }
 
@@ -1193,20 +1193,20 @@
             e += "[Tummy & Urinary]\n";
             if(val('abdo_p')==='Yes') {
                 e += "- Abdo Pain: S:" + val('soc_a_s') + " | O:" + val('soc_a_o') + " | C:" + val('soc_a_c') + " | S:" + val('soc_a_sev') + "\n";
-            } else if(val('abdo_p')==='No') { e += "- Abdo Pain: No\n"; }
+            } else if(val('abdo_p')==='No') { e += "- No abdominal pain\n"; }
             
             if(val('bs_val') !== null) {
                 if(val('bs_val')) e += "- Bowel Sounds: " + val('bs_val') + " " + (val('bs_where')||"") + "\n";
             } else e += "- Bowels auscultation not indicated at this time.\n";
             
             if(val('ur_pain')==='Yes') e += "- Dysuria. Started: " + val('ur_pain_start') + "\n";
-            else if(val('ur_pain')==='No') e += "- Dysuria: No\n";
+            else if(val('ur_pain')==='No') e += "- No pain when urinating\n";
             
             if(val('ur_blood')==='Yes') e += "- Haematuria x" + val('ur_blood_times') + "\n";
-            else if(val('ur_blood')==='No') e += "- Haematuria: No\n";
+            else if(val('ur_blood')==='No') e += "- No blood in urine\n";
             
             if(val('ur_ret')==='Yes') e += "- Urinary Retention for: " + val('ur_ret_time') + "\n";
-            else if(val('ur_ret')==='No') e += "- Urinary Retention: No\n";
+            else if(val('ur_ret')==='No') e += "- No urinary retention\n";
             e += "\n";
         }
 
@@ -1214,16 +1214,16 @@
         if(val('back_p') !== null || val('walk_p') !== null) {
             e += "[MSK / Bones]\n";
             if(document.getElementById('complaint').value === 'fall' || document.getElementById('complaint').value === 'trauma') {
-                if(val('limb_p') === true) e += "- Limb Pain: Yes\n"; else if(val('limb_p') === false) e += "- Limb Pain: No\n";
-                if(val('cspine_p') === true) e += "- C-Spine tenderness: Yes\n"; else if(val('cspine_p') === false) e += "- C-Spine tenderness: No\n";
-                if(val('rib_p') === true) e += "- Rib pain: Yes\n"; else if(val('rib_p') === false) e += "- Rib pain: No\n";
-                if(val('deformity_p') === true) e += "- Obvious deformity: Yes\n"; else if(val('deformity_p') === false) e += "- Obvious deformity: No\n";
+                if(val('limb_p') === true) e += "- Limb Pain noted\n"; else if(val('limb_p') === false) e += "- No limb pain\n";
+                if(val('cspine_p') === true) e += "- C-Spine tenderness noted\n"; else if(val('cspine_p') === false) e += "- No C-Spine tenderness\n";
+                if(val('rib_p') === true) e += "- Rib pain noted\n"; else if(val('rib_p') === false) e += "- No rib pain\n";
+                if(val('deformity_p') === true) e += "- Obvious deformity noted\n"; else if(val('deformity_p') === false) e += "- No obvious deformity\n";
             }
             if(val('back_p')==='Yes') e += "- Back Pain: Yes (" + val('back_where') + ") for " + val('back_long') + " (Sev: " + val('soc_m_sev') + ")\n";
-            else if(val('back_p')==='No') e += "- Back Pain: No\n";
+            else if(val('back_p')==='No') e += "- No back pain\n";
             
             if(val('walk_p')==='Yes') e += "- Trouble walking for: " + val('walk_long') + "\n";
-            else if(val('walk_p')==='No') e += "- Trouble walking: No\n";
+            else if(val('walk_p')==='No') e += "- No trouble walking\n";
             e += "\n";
         }
 
@@ -1233,11 +1233,11 @@
             if(val('mat_gravida')!==null) e += "- Gravida: " + val('mat_gravida') + " | Para: " + val('mat_para') + "\n";
             if(val('mat_gestation')!==null) e += "- Gestation: " + val('mat_gestation') + "\n";
             
-            if(val('mat_contractions') === true) e += "- Contractions: Yes (" + val('mat_con_freq') + ")\n"; else if(val('mat_contractions') === false) e += "- Contractions: No\n";
-            if(val('mat_waters') === true) e += "- Waters: Broken (" + val('mat_wat_col') + ")\n"; else if(val('mat_waters') === false) e += "- Waters: Intact\n";
-            if(val('mat_bleed') === true) e += "- Bleeding/Show: Yes\n"; else if(val('mat_bleed') === false) e += "- Bleeding/Show: No\n";
+            if(val('mat_contractions') === true) e += "- Contractions: Yes (" + val('mat_con_freq') + ")\n"; else if(val('mat_contractions') === false) e += "- No contractions\n";
+            if(val('mat_waters') === true) e += "- Waters: Broken (" + val('mat_wat_col') + ")\n"; else if(val('mat_waters') === false) e += "- Waters intact\n";
+            if(val('mat_bleed') === true) e += "- Bleeding/Show: Yes\n"; else if(val('mat_bleed') === false) e += "- No bleeding or show\n";
             if(val('mat_move') === true) e += "- Fetal movements: Normal\n"; else if(val('mat_move') === false) e += "- Fetal movements: Abnormal/Reduced\n";
-            if(val('mat_red_flags') === true) e += "- Red Flags: Yes (" + val('mat_rf_det') + ")\n"; else if(val('mat_red_flags') === false) e += "- Red Flags: None\n";
+            if(val('mat_red_flags') === true) e += "- Red Flags: Yes (" + val('mat_rf_det') + ")\n"; else if(val('mat_red_flags') === false) e += "- No obstetric red flags\n";
             e += "\n";
         }
 
@@ -1251,22 +1251,22 @@
             if(val('rtc_veh_cond')!==null) e += "- Vehicle Damage: " + val('rtc_veh_cond') + "\n";
             if(val('rtc_speed')!==null) e += "- Speed: " + val('rtc_speed') + " | Pos: " + val('rtc_pos') + "\n";
             
-            if(val('rtc_seatbelt') === true) e += "- Seatbelt: Worn\n"; else if(val('rtc_seatbelt') === false) e += "- Seatbelt: Not worn\n";
-            if(val('rtc_bullseye') === true) e += "- Bullseye to windscreen: Yes\n"; else if(val('rtc_bullseye') === false) e += "- Bullseye to windscreen: No\n";
-            if(val('rtc_extricated') === true) e += "- Extricated: Yes\n"; else if(val('rtc_extricated') === false) e += "- Extricated: No\n";
+            if(val('rtc_seatbelt') === true) e += "- Seatbelt: Worn\n"; else if(val('rtc_seatbelt') === false) e += "- Seatbelt: Not worn / Unrestrained\n";
+            if(val('rtc_bullseye') === true) e += "- Bullseye to windscreen: Yes\n"; else if(val('rtc_bullseye') === false) e += "- No bullseye to windscreen\n";
+            if(val('rtc_extricated') === true) e += "- Extricated: Yes\n"; else if(val('rtc_extricated') === false) e += "- Not extricated from vehicle\n";
             e += "\n";
         }
 
         // FALLS
         if(document.getElementById('complaint').value === 'fall') {
             e += "[Falls]\n";
-            if(val('fall_65') === true) e += "- Patient 65+: Yes\n"; else if(val('fall_65') === false) e += "- Patient 65+: No\n";
-            if(val('fall_lie') === true) e += "- Long lie (>1hr): Yes\n"; else if(val('fall_lie') === false) e += "- Long lie (>1hr): No\n";
-            if(val('fall_cog') === true) e += "- New confusion: Yes\n"; else if(val('fall_cog') === false) e += "- New confusion: No\n";
-            if(val('fall_inj') === true) e += "- Minor injuries: Yes\n"; else if(val('fall_inj') === false) e += "- Minor injuries: No\n";
-            if(val('fall_hypo') === true) e += "- Postural hypotension: Yes\n"; else if(val('fall_hypo') === false) e += "- Postural hypotension: No\n";
-            if(val('fall_hist') === true) e += "- 2+ falls in 7 days: Yes\n"; else if(val('fall_hist') === false) e += "- 2+ falls in 7 days: No\n";
-            if(val('fall_anticoag') === true) e += "- On anticoagulants: Yes\n"; else if(val('fall_anticoag') === false) e += "- On anticoagulants: No\n";
+            if(val('fall_65') === true) e += "- Patient 65+: Yes\n"; else if(val('fall_65') === false) e += "- Patient under 65\n";
+            if(val('fall_lie') === true) e += "- Long lie (>1hr): Yes\n"; else if(val('fall_lie') === false) e += "- No long lie (>1hr)\n";
+            if(val('fall_cog') === true) e += "- New confusion: Yes\n"; else if(val('fall_cog') === false) e += "- No new confusion\n";
+            if(val('fall_inj') === true) e += "- Minor injuries: Yes\n"; else if(val('fall_inj') === false) e += "- No minor injuries\n";
+            if(val('fall_hypo') === true) e += "- Postural hypotension: Yes\n"; else if(val('fall_hypo') === false) e += "- No postural hypotension\n";
+            if(val('fall_hist') === true) e += "- 2+ falls in 7 days: Yes\n"; else if(val('fall_hist') === false) e += "- No history of 2+ falls in 7 days\n";
+            if(val('fall_anticoag') === true) e += "- On anticoagulants: Yes\n"; else if(val('fall_anticoag') === false) e += "- Not on anticoagulants\n";
             e += "\n";
         }
 
@@ -1302,7 +1302,7 @@
 
         // PLAN & SAFEGUARDING
         if(val('safeguarding_flag')==='Yes') { e += "🚩 SAFEGUARDING CONCERNS:\n" + val('sg_details') + "\n\n"; }
-        else if (val('safeguarding_flag')==='No') { e += "- Safeguarding concerns: None\n\n"; }
+        else if (val('safeguarding_flag')==='No') { e += "- No safeguarding concerns\n\n"; }
         
         if(val('plan_val') !== null) {
             e += "[Plan]\n";
@@ -1315,7 +1315,7 @@
 
         // ADVICE / MCA
         if(val('wca_given')==='Yes') { e += "\n[Advice Given]\n" + val('wca_text') + "\n"; }
-        else if (val('wca_given')==='No') { e += "\n- Worsening Care Advice: Not given\n"; }
+        else if (val('wca_given')==='No') { e += "\n- Worsening Care Advice not given\n"; }
         
         if(val('refused_care')==='Yes') {
             e += "\n[Refusal of Care / MCA]\n";

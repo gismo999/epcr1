@@ -206,8 +206,8 @@
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Shortness of Breath?
         <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('sob_val', 'No', this); toggleMenu('sob_n', false)">No</button>
-          <button type="button" class="segment-btn" onclick="setSeg('sob_val', 'Yes', this); toggleMenu('sob_n', true)">Yes</button>
+          <button type="button" class="segment-btn active" onclick="setSeg('sob_val', 'No', this); toggleMenu('sob_n', false); checkPulseAlert();">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('sob_val', 'Yes', this); toggleMenu('sob_n', true); checkPulseAlert();">Yes</button>
         </div>
         <input type="hidden" id="sob_val" value="No">
         <div id="sob_n" class="nested">
@@ -245,8 +245,8 @@
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Difficulty in Breathing?
         <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('dib_val', 'No', this); toggleMenu('dib_n', false)">No</button>
-          <button type="button" class="segment-btn" onclick="setSeg('dib_val', 'Yes', this); toggleMenu('dib_n', true)">Yes</button>
+          <button type="button" class="segment-btn active" onclick="setSeg('dib_val', 'No', this); toggleMenu('dib_n', false); checkPulseAlert();">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('dib_val', 'Yes', this); toggleMenu('dib_n', true); checkPulseAlert();">Yes</button>
         </div>
         <input type="hidden" id="dib_val" value="No">
         <div id="dib_n" class="nested">
@@ -813,24 +813,36 @@
          </div>
       </div>
 
-      <div class="question" style="background:#fff1f2; border:1px solid #fecdd3; padding:10px; border-radius:8px;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Patient Refusing Conveyance / Care?
+      <div class="question" style="background:#fff1f2; border:1px solid #fecdd3; padding:10px; border-radius:8px;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Patient Consents to Clinical Plan?
          <div class="segmented-control">
-             <button type="button" class="segment-btn active" onclick="setSeg('refused_care', 'No', this); toggleMenu('mca_tool', false)">No</button>
-             <button type="button" class="segment-btn" style="color:#ef4444;" onclick="setSeg('refused_care', 'Yes', this); toggleMenu('mca_tool', true)">Yes</button>
+             <button type="button" class="segment-btn active" onclick="setSeg('consent_plan', 'Yes', this); toggleMenu('mca_tool', false)">Yes</button>
+             <button type="button" class="segment-btn" style="color:#ef4444;" onclick="setSeg('consent_plan', 'No', this); toggleMenu('mca_tool', true)">No (Refusing)</button>
          </div>
-         <input type="hidden" id="refused_care" value="No">
+         <input type="hidden" id="consent_plan" value="Yes">
          <div id="mca_tool" class="nested">
-            <h4 style="color:#d32f2f; margin-top:0;">Mental Capacity Act (MCA) Tool</h4>
-            <div style="font-weight:bold; margin-top:10px;">1. Understands information?</div>
-            <select id="mca_understand"><option value="">--</option><option value="Yes">Yes</option><option value="No">No</option></select>
-            <div style="font-weight:bold; margin-top:10px;">2. Retains information?</div>
-            <select id="mca_retain"><option value="">--</option><option value="Yes">Yes</option><option value="No">No</option></select>
-            <div style="font-weight:bold; margin-top:10px;">3. Weighs up information?</div>
-            <select id="mca_weigh"><option value="">--</option><option value="Yes">Yes</option><option value="No">No</option></select>
-            <div style="font-weight:bold; margin-top:10px;">4. Communicates decision?</div>
-            <select id="mca_communicate"><option value="">--</option><option value="Yes">Yes</option><option value="No">No</option></select>
+            <h4 style="color:#d32f2f; margin-top:0;">Mental Capacity Act Assessment</h4>
             
-            <textarea id="refusal_reason" rows="2" style="margin-top:10px;" placeholder="Reason for refusal & advice given..."></textarea>
+            <div style="font-weight:bold; margin-top:10px; font-size:12px;">1. Has the patient been given sufficient information about the decision in a way appropriate to them?</div>
+            <div class="segmented-control"><button class="segment-btn" onclick="setSeg('mca_1','Yes',this)">Yes</button><button class="segment-btn" onclick="setSeg('mca_1','No',this)">No</button></div>
+            <input type="hidden" id="mca_1" value="">
+
+            <div style="font-weight:bold; margin-top:10px; font-size:12px;">2. Is the patient able to understand the information they have been given?</div>
+            <div class="segmented-control"><button class="segment-btn" onclick="setSeg('mca_2','Yes',this)">Yes</button><button class="segment-btn" onclick="setSeg('mca_2','No',this)">No</button></div>
+            <input type="hidden" id="mca_2" value="">
+
+            <div style="font-weight:bold; margin-top:10px; font-size:12px;">3. Have you been able to have a rational conversation with the patient about the pros and cons of what is proposed?</div>
+            <div class="segmented-control"><button class="segment-btn" onclick="setSeg('mca_3','Yes',this)">Yes</button><button class="segment-btn" onclick="setSeg('mca_3','No',this)">No</button></div>
+            <input type="hidden" id="mca_3" value="">
+
+            <div style="font-weight:bold; margin-top:10px; font-size:12px;">4. Do you think the patient can retain information for long enough to make the decision?</div>
+            <div class="segmented-control"><button class="segment-btn" onclick="setSeg('mca_4','Yes',this)">Yes</button><button class="segment-btn" onclick="setSeg('mca_4','No',this)">No</button></div>
+            <input type="hidden" id="mca_4" value="">
+
+            <div style="font-weight:bold; margin-top:10px; font-size:12px;">5. Is the patient able to explain their decision using their own words (in a way appropriate for them)?</div>
+            <div class="segmented-control"><button class="segment-btn" onclick="setSeg('mca_5','Yes',this)">Yes</button><button class="segment-btn" onclick="setSeg('mca_5','No',this)">No</button></div>
+            <input type="hidden" id="mca_5" value="">
+            
+            <textarea id="refusal_reason" rows="3" style="margin-top:15px;" placeholder="Reason for refusal & details of advice given..."></textarea>
          </div>
       </div>
 
@@ -1412,12 +1424,28 @@
             if(val('wca_given')==='Yes') adv.push("- Worsening Care Advice Given:\n" + val('wca_text'));
             else adv.push("- Worsening Care Advice not given");
         }
-        if(!isOmitted('refused_care')) {
-            if(val('refused_care')==='Yes') {
-                adv.push("- Patient Refusing Care/Conveyance\n  MCA Assessment:\n  - Understands: " + val('mca_understand') + "\n  - Retains: " + val('mca_retain') + "\n  - Weighs: " + val('mca_weigh') + "\n  - Communicates: " + val('mca_communicate') + "\n  Reason & Advice: " + val('refusal_reason'));
+        
+        if(!isOmitted('consent_plan')) {
+            if(val('consent_plan')==='Yes') {
+                adv.push("- Patient consents to the clinical plan.");
+            } else if(val('consent_plan')==='No') {
+                var mcaStr = "- Patient REFUSING Clinical Plan\n  MCA Assessment:\n";
+                mcaStr += "  - Given sufficient info appropriately? " + (val('mca_1')||"Not answered") + "\n";
+                mcaStr += "  - Able to understand info? " + (val('mca_2')||"Not answered") + "\n";
+                mcaStr += "  - Rational conversation on pros/cons? " + (val('mca_3')||"Not answered") + "\n";
+                mcaStr += "  - Can retain info long enough? " + (val('mca_4')||"Not answered") + "\n";
+                mcaStr += "  - Can explain decision in own words? " + (val('mca_5')||"Not answered") + "\n";
+                
+                if(val('mca_1')==='Yes' && val('mca_2')==='Yes' && val('mca_3')==='Yes' && val('mca_4')==='Yes' && val('mca_5')==='Yes') {
+                    mcaStr += "\n  OUTCOME: The patient has full capacity at this time to make this decision.\n";
+                } else {
+                    mcaStr += "\n  OUTCOME: Patient may lack full capacity for this specific decision. Act in best interests / seek senior advice.\n";
+                }
+                mcaStr += "  Details & Reason: " + (val('refusal_reason')||"None provided.");
+                adv.push(mcaStr);
             }
         }
-        buildSec("Advice & Refusal (MCA)", adv);
+        buildSec("Advice & Refusal (Consent / MCA)", adv);
 
         // Copy to clipboard
         var ta = document.createElement("textarea"); ta.value = e; ta.style.position = "fixed"; document.body.appendChild(ta); ta.select(); 

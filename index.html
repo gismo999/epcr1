@@ -758,6 +758,12 @@
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Conveyance Plan
+         
+         <div style="margin-top:10px;">
+             <button type="button" class="calc-btn" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); margin-bottom:10px;" onclick="runDecisionSupport()">🧠 Run Clinical Decision Support Tool</button>
+             <div id="decision_support_out" style="display:none; margin-bottom:15px; padding:12px; border-radius:8px;"></div>
+         </div>
+
          <div class="segmented-control">
              <button type="button" class="segment-btn" onclick="setSeg('plan_val', 'Convey', this); toggleMenu('convey_div', true); toggleMenu('non_convey_div', false)">Convey to Hosp</button>
              <button type="button" class="segment-btn" onclick="setSeg('plan_val', 'Discharge', this); toggleMenu('convey_div', false); toggleMenu('non_convey_div', true)">Discharge / Refer</button>
@@ -852,9 +858,9 @@
     });
 
     // --- FLUID UI LOGIC ---
-    function setSeg(hiddenId, val, btn) {
+    function setSeg(hiddenId, valNum, btn) {
         var hidden = document.getElementById(hiddenId);
-        if(hidden) hidden.value = val;
+        if(hidden) hidden.value = valNum;
         var btns = btn.parentNode.querySelectorAll('button');
         btns.forEach(function(b) { b.classList.remove('active'); });
         btn.classList.add('active');
@@ -1103,6 +1109,62 @@
       }
       setTimeout(checkPulseAlert, 50);
     }
+    
+    // --- DECISION SUPPORT / PATHFINDER ENGINE ---
+    function runDecisionSupport() {
+        var redFlags = [];
+        var amberFlags = [];
+
+        if(val('init_airway') === 'Compromised' || val('init_airway') === 'Obstructed') redFlags.push("Airway Compromise");
+        if(val('cp_val') === 'Yes') redFlags.push("Chest Pain Primary Presentation");
+        if(parseInt(document.getElementById('final_news2').value) >= 5) redFlags.push("NEWS2 >= 5");
+        if(document.getElementById('sus_sepsis').checked) redFlags.push("Red Flag Sepsis");
+        if(val('acvpu') !== 'A') redFlags.push("Reduced Level of Consciousness");
+        
+        var pScore = parseInt(val('soc_c_sev')) || parseInt(val('soc_a_sev')) || parseInt(val('soc_m_sev')) || 0;
+        if(pScore >= 7) redFlags.push("Severe Pain (>= 7/10)");
+        if(val('fast_val') === 'Yes' && (val('f_w')!=='Normal' || val('l_w')!=='Normal' || val('s_w')!=='Normal')) redFlags.push("New Neurological Deficit (FAST Positive)");
+        
+        if(document.getElementById('headache').checked) amberFlags.push("Headache Primary Presentation");
+        if(val('vomit_blood') === 'Yes') amberFlags.push("History of acutely vomiting blood");
+        if(val('ur_ret') === 'Yes') amberFlags.push("Urinary Retention");
+        if(val('walk_p') === 'Yes') amberFlags.push("Inability to weight bear / Trouble walking");
+        
+        var t = parseFloat(document.getElementById('temp_val').value);
+        if(t <= 35 || t >= 40) amberFlags.push("Temp <= 35°C or >= 40°C");
+        else if(t >= 38.5) amberFlags.push("Temp >= 38.5°C");
+
+        if(document.getElementById('complaint').value === 'fall' && document.getElementById('fall_65').checked) {
+             if(document.getElementById('fall_lie').checked) amberFlags.push("Falls: Long lie > 1 hour");
+             if(document.getElementById('fall_cog').checked) amberFlags.push("Falls: Change in cognition");
+             if(document.getElementById('fall_inj').checked) amberFlags.push("Falls: Minor injuries");
+             if(document.getElementById('fall_hypo').checked) amberFlags.push("Falls: Postural Hypotension");
+             if(document.getElementById('fall_hist').checked) amberFlags.push("Falls: 2+ falls in 7 days");
+        }
+
+        if(document.getElementById('complaint').value === 'maternity') {
+             var gest = val('mat_gestation') || "";
+             var is20 = gest.includes("20") || gest.match(/^[2-4][0-9]/);
+             if(document.getElementById('mat_red_flags').checked) {
+                 if(is20) redFlags.push("Obstetric Red Flag (>= 20 weeks) -> Pre-alert nearest Obstetric Unit");
+                 else redFlags.push("Obstetric Red Flag (< 20 weeks) -> Convey to ED / Early Pregnancy ACP");
+             }
+        }
+
+        var out = document.getElementById('decision_support_out');
+        out.style.display = 'block';
+        
+        if(redFlags.length > 0) {
+            out.style.background = '#fef2f2'; out.style.border = '2px solid #ef4444'; out.style.color = '#7f1d1d';
+            out.innerHTML = "<h4 style='color:#ef4444; margin-top:0;'>🚨 CONVEY (Meets Red Criteria)</h4><ul style='margin:5px 0; padding-left:20px;'><li>" + redFlags.join("</li><li>") + "</li></ul><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Stabilise and immediately transfer to ED/Specialist Unit (e.g. MTC, HASU, HAC).</p>";
+        } else if (amberFlags.length > 0) {
+            out.style.background = '#fffbeb'; out.style.border = '2px solid #f59e0b'; out.style.color = '#92400e';
+            out.innerHTML = "<h4 style='color:#d97706; margin-top:0;'>🔸 REFER / DISCUSS (Meets Amber Criteria)</h4><ul style='margin:5px 0; padding-left:20px;'><li>" + amberFlags.join("</li><li>") + "</li></ul><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Refer into/discuss with UCR, Acute Frailty, 111*5 or ACP. If unable to refer safely, convey to ED/SDEC/UTC.</p>";
+        } else {
+            out.style.background = '#f0fdf4'; out.style.border = '2px solid #10b981'; out.style.color = '#14532d';
+            out.innerHTML = "<h4 style='color:#10b981; margin-top:0;'>✅ DISCHARGE POTENTIAL</h4><p style='font-size:12px; margin:5px 0;'>No explicit RED or AMBER Pathfinder/Decision Tool flags triggered based on current inputs.</p><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Consider discharge if patient can be safely managed in the community. Ensure no other specific Pathfinder exclusions (e.g. AAA, EoL) apply. Provide WCA.</p>";
+        }
+    }
 
     function resetForm() {
         if(confirm("Are you sure you want to clear all data?")) {
@@ -1128,8 +1190,9 @@
             if(btn) {
                 var oldText = btn.innerText;
                 var oldBg = btn.style.background;
-                btn.innerText = "COMPLETE";
+                btn.innerText = "COMPLETE ✅";
                 btn.style.background = "#3b82f6";
+                btn.style.color = "white";
                 setTimeout(function(){ btn.innerText = oldText; btn.style.background = oldBg; }, 3000);
             }
         } catch(err) { }
@@ -1143,25 +1206,22 @@
         e += "Complaint: " + document.getElementById('complaint').options[document.getElementById('complaint').selectedIndex].text + "\n";
         e += "--------------------------------------------------\n\n";
 
-        // INIT
-        var pri = [];
-        if(!isOmitted('arrival_notes')) pri.push("Arrival: " + (val('arrival_notes') || "None recorded."));
-        if(!isOmitted('pt_history')) pri.push("History: " + (val('pt_history') || "None recorded."));
-        if(!isOmitted('init_airway')) pri.push("Airway: " + val('init_airway'));
-        if(!isOmitted('manual_gcs')) pri.push("GCS: " + val('manual_gcs') + " (E" + val('g_e') + " V" + val('g_v') + " M" + val('g_m') + ")");
-        if(!isOmitted('alert')) pri.push("Alert (A on ACVPU): " + (val('alert') ? "Yes" : "No"));
-        if(!isOmitted('sus_sepsis')) pri.push(val('sus_sepsis') ? "- Suspected Sepsis / Infection" : "- No suspected sepsis");
-        if(!isOmitted('sus_allerg')) pri.push(val('sus_allerg') ? "- Suspected Anaphylaxis" : "- No suspected anaphylaxis");
-        
-        if (pri.length > 0) {
-            var validPri = pri.filter(function(l) { return l && l !== ""; });
-            if (validPri.length > 0) e += "[Primary Survey]\n" + validPri.join("\n\n") + "\n\n";
-        }
-
         function buildSec(title, lines) {
             var valid = lines.filter(function(l) { return l && l !== ""; });
-            if (valid.length > 0) e += "[" + title + "]\n" + valid.join("\n") + "\n\n";
+            if (valid.length > 0) e += "[" + title + "]\n" + valid.join("\n\n") + "\n\n";
         }
+
+        // INIT
+        var pri = [];
+        if(!isOmitted('arrival_notes')) pri.push("Arrival:\n" + (val('arrival_notes') || "None recorded."));
+        if(!isOmitted('pt_history')) pri.push("History:\n" + (val('pt_history') || "None recorded."));
+        if(!isOmitted('init_airway')) pri.push("Airway:\n" + val('init_airway'));
+        if(!isOmitted('manual_gcs')) pri.push("GCS:\n" + val('manual_gcs') + " (E" + val('g_e') + " V" + val('g_v') + " M" + val('g_m') + ")");
+        if(!isOmitted('alert')) pri.push("Alert (A on ACVPU):\n" + (val('alert') ? "Yes" : "No"));
+        if(!isOmitted('sus_sepsis')) pri.push(document.getElementById('sus_sepsis').checked ? "- Suspected Sepsis / Infection" : "- No suspected sepsis");
+        if(!isOmitted('sus_allerg')) pri.push(document.getElementById('sus_allerg').checked ? "- Suspected Anaphylaxis" : "- No suspected anaphylaxis");
+        
+        buildSec("Primary Survey", pri);
 
         // RESP
         var resp = [];
@@ -1190,10 +1250,10 @@
                 card.push(cpStr);
             } else card.push("- No chest pain or heaviness");
         }
-        if(!isOmitted('palps')) card.push(val('palps') ? "- Palpitations noted" : "- No palpitations");
-        if(!isOmitted('sync')) card.push(val('sync') ? "- Syncope noted" : "- No syncope");
-        if(!isOmitted('dizzy')) card.push(val('dizzy') ? "- Dizziness noted" : "- No dizziness");
-        if(!isOmitted('oedema')) card.push(val('oedema') ? "- Peripheral Oedema noted" : "- No peripheral oedema");
+        if(!isOmitted('palps')) card.push(document.getElementById('palps').checked ? "- Palpitations noted" : "- No palpitations");
+        if(!isOmitted('sync')) card.push(document.getElementById('sync').checked ? "- Syncope noted" : "- No syncope");
+        if(!isOmitted('dizzy')) card.push(document.getElementById('dizzy').checked ? "- Dizziness noted" : "- No dizziness");
+        if(!isOmitted('oedema')) card.push(document.getElementById('oedema').checked ? "- Peripheral Oedema noted" : "- No peripheral oedema");
         if(!isOmitted('ecg_perf')) {
             if(val('ecg_perf')==='Yes') {
                 var ecg = "- ECG: Yes (" + val('ecg_desc') + ")\n  ST Elev: " + (document.getElementById('st_elev').checked?"Yes":"No");
@@ -1217,9 +1277,9 @@
             if(val('nausea_val') !== 'No') neuro.push("- GI/Neuro: " + val('nausea_val') + "\n  Start: " + val('vomit_start') + "\n  Times: " + val('vomit_times') + "\n  Blood: " + val('vomit_blood'));
             else neuro.push("- No nausea or vomiting");
         }
-        if(!isOmitted('headache')) neuro.push(val('headache') ? "- Headache noted" : "- No headache");
-        if(!isOmitted('seizure')) neuro.push(val('seizure') ? "- Seizure noted" : "- No seizure activity");
-        if(!isOmitted('confusion')) neuro.push(val('confusion') ? "- Confusion noted" : "- No confusion or altered mental status");
+        if(!isOmitted('headache')) neuro.push(document.getElementById('headache').checked ? "- Headache noted" : "- No headache");
+        if(!isOmitted('seizure')) neuro.push(document.getElementById('seizure').checked ? "- Seizure noted" : "- No seizure activity");
+        if(!isOmitted('confusion')) neuro.push(document.getElementById('confusion').checked ? "- Confusion noted" : "- No confusion or altered mental status");
         buildSec("Neurological / GI", neuro);
 
         // GIGU
@@ -1249,10 +1309,10 @@
         // MSK
         var msk = [];
         if(document.getElementById('complaint').value === 'fall' || document.getElementById('complaint').value === 'trauma') {
-            if(!isOmitted('limb_p')) msk.push(val('limb_p') ? "- Limb Pain noted" : "- No limb pain");
-            if(!isOmitted('cspine_p')) msk.push(val('cspine_p') ? "- C-Spine tenderness noted" : "- No C-Spine tenderness");
-            if(!isOmitted('rib_p')) msk.push(val('rib_p') ? "- Rib pain noted" : "- No rib pain");
-            if(!isOmitted('deformity_p')) msk.push(val('deformity_p') ? "- Obvious deformity noted" : "- No obvious deformity");
+            if(!isOmitted('limb_p')) msk.push(document.getElementById('limb_p').checked ? "- Limb Pain noted" : "- No limb pain");
+            if(!isOmitted('cspine_p')) msk.push(document.getElementById('cspine_p').checked ? "- C-Spine tenderness noted" : "- No C-Spine tenderness");
+            if(!isOmitted('rib_p')) msk.push(document.getElementById('rib_p').checked ? "- Rib pain noted" : "- No rib pain");
+            if(!isOmitted('deformity_p')) msk.push(document.getElementById('deformity_p').checked ? "- Obvious deformity noted" : "- No obvious deformity");
         }
         if(!isOmitted('back_p')) {
             if(val('back_p')==='Yes') msk.push("- Back Pain: Yes (" + val('back_where') + ")\n  SOCRATES:\n    S: " + (val('soc_m_s')||"-") + "\n    O: " + (val('soc_m_o')||"-") + "\n    C: " + (val('soc_m_c')||"-") + "\n    R: " + (val('soc_m_r')||"-") + "\n    A: " + (val('soc_m_a')||"-") + "\n    T: " + (val('soc_m_t')||"-") + "\n    E: " + (val('soc_m_e')||"-") + "\n    S: " + (val('soc_m_sev')||"-"));
@@ -1269,38 +1329,38 @@
             var mat = [];
             if(!isOmitted('mat_gravida')) mat.push("- Gravida: " + val('mat_gravida') + " | Para: " + val('mat_para'));
             if(!isOmitted('mat_gestation')) mat.push("- Gestation: " + val('mat_gestation'));
-            if(!isOmitted('mat_contractions')) mat.push(val('mat_contractions') ? "- Contractions: Yes (" + val('mat_con_freq') + ")" : "- No contractions");
-            if(!isOmitted('mat_waters')) mat.push(val('mat_waters') ? "- Waters: Broken (" + val('mat_wat_col') + ")" : "- Waters intact");
-            if(!isOmitted('mat_bleed')) mat.push(val('mat_bleed') ? "- Bleeding/Show: Yes" : "- No bleeding or show");
-            if(!isOmitted('mat_move')) mat.push(val('mat_move') ? "- Fetal movements: Normal" : "- Fetal movements: Abnormal/Reduced");
-            if(!isOmitted('mat_red_flags')) mat.push(val('mat_red_flags') ? "- Red Flags: Yes (" + val('mat_rf_det') + ")" : "- No obstetric red flags");
+            if(!isOmitted('mat_contractions')) mat.push(document.getElementById('mat_contractions').checked ? "- Contractions: Yes (" + val('mat_con_freq') + ")" : "- No contractions");
+            if(!isOmitted('mat_waters')) mat.push(document.getElementById('mat_waters').checked ? "- Waters: Broken (" + val('mat_wat_col') + ")" : "- Waters intact");
+            if(!isOmitted('mat_bleed')) mat.push(document.getElementById('mat_bleed').checked ? "- Bleeding/Show: Yes" : "- No bleeding or show");
+            if(!isOmitted('mat_move')) mat.push(document.getElementById('mat_move').checked ? "- Fetal movements: Normal" : "- Fetal movements: Abnormal/Reduced");
+            if(!isOmitted('mat_red_flags')) mat.push(document.getElementById('mat_red_flags').checked ? "- Red Flags: Yes (" + val('mat_rf_det') + ")" : "- No obstetric red flags");
             buildSec("Maternity", mat);
         }
 
         // TRAUMA
         if(document.getElementById('complaint').value === 'trauma') {
             var tra = [];
-            if(!isOmitted('trauma_mtc')) tra.push(val('trauma_mtc') ? "- MTC Step 3 Trigger Met" : "- MTC Step 3 Trigger NOT Met");
-            if(!isOmitted('trauma_red')) tra.push(val('trauma_red') ? "- RED Discriminator Met" : "- RED Discriminator NOT Met");
-            if(!isOmitted('trauma_amber')) tra.push(val('trauma_amber') ? "- AMBER Discriminator Met" : "- AMBER Discriminator NOT Met");
+            if(!isOmitted('trauma_mtc')) tra.push(document.getElementById('trauma_mtc').checked ? "- MTC Step 3 Trigger Met" : "- MTC Step 3 Trigger NOT Met");
+            if(!isOmitted('trauma_red')) tra.push(document.getElementById('trauma_red').checked ? "- RED Discriminator Met" : "- RED Discriminator NOT Met");
+            if(!isOmitted('trauma_amber')) tra.push(document.getElementById('trauma_amber').checked ? "- AMBER Discriminator Met" : "- AMBER Discriminator NOT Met");
             if(!isOmitted('rtc_veh_cond')) tra.push("- Vehicle Damage: " + val('rtc_veh_cond'));
             if(!isOmitted('rtc_speed')) tra.push("- Speed: " + val('rtc_speed') + " | Pos: " + val('rtc_pos'));
-            if(!isOmitted('rtc_seatbelt')) tra.push(val('rtc_seatbelt') ? "- Seatbelt: Worn" : "- Seatbelt: Not worn / Unrestrained");
-            if(!isOmitted('rtc_bullseye')) tra.push(val('rtc_bullseye') ? "- Bullseye to windscreen: Yes" : "- No bullseye to windscreen");
-            if(!isOmitted('rtc_extricated')) tra.push(val('rtc_extricated') ? "- Extricated: Yes" : "- Not extricated from vehicle");
+            if(!isOmitted('rtc_seatbelt')) tra.push(document.getElementById('rtc_seatbelt').checked ? "- Seatbelt: Worn" : "- Seatbelt: Not worn / Unrestrained");
+            if(!isOmitted('rtc_bullseye')) tra.push(document.getElementById('rtc_bullseye').checked ? "- Bullseye to windscreen: Yes" : "- No bullseye to windscreen");
+            if(!isOmitted('rtc_extricated')) tra.push(document.getElementById('rtc_extricated').checked ? "- Extricated: Yes" : "- Not extricated from vehicle");
             buildSec("Trauma", tra);
         }
 
         // FALLS
         if(document.getElementById('complaint').value === 'fall') {
             var fal = [];
-            if(!isOmitted('fall_65')) fal.push(val('fall_65') ? "- Patient 65+: Yes" : "- Patient under 65");
-            if(!isOmitted('fall_lie')) fal.push(val('fall_lie') ? "- Long lie (>1hr): Yes" : "- No long lie (>1hr)");
-            if(!isOmitted('fall_cog')) fal.push(val('fall_cog') ? "- New confusion: Yes" : "- No new confusion");
-            if(!isOmitted('fall_inj')) fal.push(val('fall_inj') ? "- Minor injuries: Yes" : "- No minor injuries");
-            if(!isOmitted('fall_hypo')) fal.push(val('fall_hypo') ? "- Postural hypotension: Yes" : "- No postural hypotension");
-            if(!isOmitted('fall_hist')) fal.push(val('fall_hist') ? "- 2+ falls in 7 days: Yes" : "- No history of 2+ falls in 7 days");
-            if(!isOmitted('fall_anticoag')) fal.push(val('fall_anticoag') ? "- On anticoagulants: Yes" : "- Not on anticoagulants");
+            if(!isOmitted('fall_65')) fal.push(document.getElementById('fall_65').checked ? "- Patient 65+: Yes" : "- Patient under 65");
+            if(!isOmitted('fall_lie')) fal.push(document.getElementById('fall_lie').checked ? "- Long lie (>1hr): Yes" : "- No long lie (>1hr)");
+            if(!isOmitted('fall_cog')) fal.push(document.getElementById('fall_cog').checked ? "- New confusion: Yes" : "- No new confusion");
+            if(!isOmitted('fall_inj')) fal.push(document.getElementById('fall_inj').checked ? "- Minor injuries: Yes" : "- No minor injuries");
+            if(!isOmitted('fall_hypo')) fal.push(document.getElementById('fall_hypo').checked ? "- Postural hypotension: Yes" : "- No postural hypotension");
+            if(!isOmitted('fall_hist')) fal.push(document.getElementById('fall_hist').checked ? "- 2+ falls in 7 days: Yes" : "- No history of 2+ falls in 7 days");
+            if(!isOmitted('fall_anticoag')) fal.push(document.getElementById('fall_anticoag').checked ? "- On anticoagulants: Yes" : "- Not on anticoagulants");
             buildSec("Falls", fal);
         }
 
@@ -1367,7 +1427,7 @@
             if(btn) {
                 var oldText = btn.innerText;
                 var oldBg = btn.style.background;
-                btn.innerText = "COMPLETE";
+                btn.innerText = "COMPLETE ✅";
                 btn.style.background = "#3b82f6";
                 setTimeout(function(){ btn.innerText = oldText; btn.style.background = oldBg; }, 3000);
             }

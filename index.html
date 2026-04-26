@@ -216,6 +216,17 @@
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_sepsis"> Suspected Sepsis / Infection?</div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_allerg"> Suspected Anaphylaxis?</div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_init_val', 'No', this); toggleMenu('det_init_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_init_val', 'Yes', this); toggleMenu('det_init_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_init_val" value="No">
+        <div id="det_init_n" class="nested">
+          <textarea id="det_init_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
+      </div>
     </div>
 
     <button class="accordion" id="resp_acc">🫁 Breathing</button>
@@ -262,8 +273,8 @@
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Difficulty in Breathing?
         <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('dib_val', 'No', this); toggleMenu('dib_n', false); calculateDDx();">No</button>
-          <button type="button" class="segment-btn" onclick="setSeg('dib_val', 'Yes', this); toggleMenu('dib_n', true); calculateDDx();">Yes</button>
+          <button type="button" class="segment-btn active" onclick="setSeg('dib_val', 'No', this); toggleMenu('dib_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('dib_val', 'Yes', this); toggleMenu('dib_n', true)">Yes</button>
         </div>
         <input type="hidden" id="dib_val" value="No">
         <div id="dib_n" class="nested">
@@ -324,6 +335,17 @@
             <button type="button" class="segment-btn" onclick="setSeg('air_entry', 'Silent Chest', this)">Silent Chest</button>
         </div>
         <input type="hidden" id="air_entry" value="Air entry equal bilaterally">
+      </div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_resp_val', 'No', this); toggleMenu('det_resp_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_resp_val', 'Yes', this); toggleMenu('det_resp_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_resp_val" value="No">
+        <div id="det_resp_n" class="nested">
+          <textarea id="det_resp_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
       </div>
     </div>
 
@@ -409,6 +431,17 @@
              </div>
          </div>
       </div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_card_val', 'No', this); toggleMenu('det_card_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_card_val', 'Yes', this); toggleMenu('det_card_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_card_val" value="No">
+        <div id="det_card_n" class="nested">
+          <textarea id="det_card_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
+      </div>
     </div>
 
     <button class="accordion" id="neuro_acc">🧠 Brain & Nerves</button>
@@ -466,6 +499,16 @@
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="seizure"> Seizure or fit?</div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="confusion"> Confused / acting odd?</div>
 
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_neuro_val', 'No', this); toggleMenu('det_neuro_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_neuro_val', 'Yes', this); toggleMenu('det_neuro_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_neuro_val" value="No">
+        <div id="det_neuro_n" class="nested">
+          <textarea id="det_neuro_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
+      </div>
     </div>
 
     <button class="accordion" id="news_acc" style="display:block;">📊 Vitals & NEWS2</button>
@@ -520,6 +563,17 @@
         <input type="hidden" id="final_news2" value="0">
         
         <textarea id="vitals_log" readonly style="font-family:monospace; font-size:11px; height:80px; margin-top:10px; width:100%;" placeholder="Snapshots save here..."></textarea>
+      </div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_news_val', 'No', this); toggleMenu('det_news_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_news_val', 'Yes', this); toggleMenu('det_news_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_news_val" value="No">
+        <div id="det_news_n" class="nested">
+          <textarea id="det_news_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
       </div>
     </div>
 
@@ -597,6 +651,16 @@
         <div id="ur_ret_n" style="display:none; margin-top:5px;"><input type="text" id="ur_ret_time" placeholder="How long for?"></div>
       </div>
 
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_gigu_val', 'No', this); toggleMenu('det_gigu_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_gigu_val', 'Yes', this); toggleMenu('det_gigu_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_gigu_val" value="No">
+        <div id="det_gigu_n" class="nested">
+          <textarea id="det_gigu_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
+      </div>
     </div>
 
     <button class="accordion" id="msk_acc">🦴 Bones & Muscles</button>
@@ -666,6 +730,16 @@
         </div>
       </div>
 
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_msk_val', 'No', this); toggleMenu('det_msk_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_msk_val', 'Yes', this); toggleMenu('det_msk_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_msk_val" value="No">
+        <div id="det_msk_n" class="nested">
+          <textarea id="det_msk_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
+      </div>
     </div>
 
     <button class="accordion" id="maternity_acc" style="display:none;">🤰 Maternity / Obstetrics</button>
@@ -677,6 +751,17 @@
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_bleed"> Bleeding / Show present?</div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_move"> Fetal movements normal?</div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_red_flags"> Obstetric Red Flags (Pre-Eclampsia/Ectopic/Prolapse)? <input type="text" id="mat_rf_det" placeholder="Details" style="margin-top:5px;"></div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_mat_val', 'No', this); toggleMenu('det_mat_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_mat_val', 'Yes', this); toggleMenu('det_mat_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_mat_val" value="No">
+        <div id="det_mat_n" class="nested">
+          <textarea id="det_mat_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
+      </div>
     </div>
 
     <button class="accordion" id="trauma_acc" style="display:none;">💥 Trauma / RTC Details</button>
@@ -689,6 +774,17 @@
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rtc_seatbelt"> Wearing Seatbelt?</div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rtc_bullseye"> Bullseye to Windscreen?</div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rtc_extricated"> Extricated from vehicle?</div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_trauma_val', 'No', this); toggleMenu('det_trauma_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_trauma_val', 'Yes', this); toggleMenu('det_trauma_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_trauma_val" value="No">
+        <div id="det_trauma_n" class="nested">
+          <textarea id="det_trauma_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
+      </div>
     </div>
 
     <button class="accordion" id="fall_acc" style="display:none;">📉 Falls Assessment</button>
@@ -700,6 +796,17 @@
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_hypo"> Unexplained postural hypotension?</div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_hist"> 2+ falls in last 7 days?</div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_anticoag"> On Anticoagulant / Antiplatelet?</div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_fall_val', 'No', this); toggleMenu('det_fall_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_fall_val', 'Yes', this); toggleMenu('det_fall_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_fall_val" value="No">
+        <div id="det_fall_n" class="nested">
+          <textarea id="det_fall_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
+      </div>
     </div>
 
     <button class="accordion" id="mh_acc" style="display:none;">💭 Mental Health</button>
@@ -712,6 +819,17 @@
           <input type="text" id="mh_alc_det" placeholder="Alcohol details..." style="margin-top:5px;">
           <input type="text" id="mh_drugs_det" placeholder="Drugs/Meds Overdose details..." style="margin-top:5px;">
           <input type="text" id="toxbase_advice" placeholder="Toxbase Advice..." style="margin-top:5px;">
+      </div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_mh_val', 'No', this); toggleMenu('det_mh_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_mh_val', 'Yes', this); toggleMenu('det_mh_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_mh_val" value="No">
+        <div id="det_mh_n" class="nested">
+          <textarea id="det_mh_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
       </div>
     </div>
 
@@ -758,6 +876,16 @@
          <select id="soc_level"><option value="">-- Select --</option><option value="Independent">Independent</option><option value="Family/Friend">Family/Friend</option><option value="Carers x1 a day">Carers x1 a day</option><option value="Carers x2 a day">Carers x2 a day</option><option value="Carers x3 a day">Carers x3 a day</option><option value="Carers x4 a day">Carers x4 a day</option><option value="24 hr care">24 hr care</option></select>
       </div>
 
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_medsoc_val', 'No', this); toggleMenu('det_medsoc_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_medsoc_val', 'Yes', this); toggleMenu('det_medsoc_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_medsoc_val" value="No">
+        <div id="det_medsoc_n" class="nested">
+          <textarea id="det_medsoc_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
+      </div>
     </div>
 
     <button class="accordion" id="plan_acc">🗺️ Plan & Handover</button>
@@ -814,6 +942,17 @@
              <input type="text" id="discharge_notes" placeholder="Referred to? (e.g. GP, UCR, Self-Care)">
          </div>
       </div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_plan_val', 'No', this); toggleMenu('det_plan_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_plan_val', 'Yes', this); toggleMenu('det_plan_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_plan_val" value="No">
+        <div id="det_plan_n" class="nested">
+          <textarea id="det_plan_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
+      </div>
     </div>
 
     <button class="accordion" id="advice_acc">📄 Advice & Refusal</button>
@@ -863,6 +1002,16 @@
          </div>
       </div>
 
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_adv_val', 'No', this); toggleMenu('det_adv_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_adv_val', 'Yes', this); toggleMenu('det_adv_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_adv_val" value="No">
+        <div id="det_adv_n" class="nested">
+          <textarea id="det_adv_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
+      </div>
     </div>
 
     <button class="submit-btn" id="generate_btn" onclick="generateOutput()">GENERATE ePCR COPY</button>
@@ -1261,10 +1410,7 @@
 
     function resetForm() {
         if(confirm("Are you sure you want to clear all data?")) {
-            var els = document.querySelectorAll('input[type="text"], input[type="number"], textarea');
-            els.forEach(function(e) { e.value = ''; });
-            var cbs = document.querySelectorAll('input[type="checkbox"]');
-            cbs.forEach(function(e) { e.checked = false; });
+            localStorage.removeItem('ePCR_draft');
             location.reload(); 
         }
     }
@@ -1316,7 +1462,7 @@
         }
         if(!isOmitted('sus_sepsis')) pri.push(document.getElementById('sus_sepsis').checked ? "- Suspected Sepsis / Infection" : "- No suspected sepsis");
         if(!isOmitted('sus_allerg')) pri.push(document.getElementById('sus_allerg').checked ? "- Suspected Anaphylaxis" : "- No suspected anaphylaxis");
-        
+        if(val('det_init_val') === 'Yes') pri.push("Further Details:\n" + (val('det_init_txt') || "None recorded."));
         buildSec("Primary Survey", pri);
 
         // RESP
@@ -1335,6 +1481,7 @@
         }
         if(!isOmitted('rr_norm')) resp.push("- Resp Rate Normal? " + (val('rr_norm')||"Yes"));
         if(!isOmitted('air_entry')) resp.push("- Lung Sounds: " + val('air_entry'));
+        if(val('det_resp_val') === 'Yes') resp.push("Further Details:\n" + (val('det_resp_txt') || "None recorded."));
         buildSec("Respiratory", resp);
 
         // CARDIO
@@ -1361,6 +1508,7 @@
                 card.push(ecg);
             } else card.push("- 12-Lead ECG not performed");
         }
+        if(val('det_card_val') === 'Yes') card.push("Further Details:\n" + (val('det_card_txt') || "None recorded."));
         buildSec("Cardiovascular", card);
 
         // NEURO
@@ -1376,6 +1524,7 @@
         if(!isOmitted('headache')) neuro.push(document.getElementById('headache').checked ? "- Headache noted" : "- No headache");
         if(!isOmitted('seizure')) neuro.push(document.getElementById('seizure').checked ? "- Seizure noted" : "- No seizure activity");
         if(!isOmitted('confusion')) neuro.push(document.getElementById('confusion').checked ? "- Confusion noted" : "- No confusion or altered mental status");
+        if(val('det_neuro_val') === 'Yes') neuro.push("Further Details:\n" + (val('det_neuro_txt') || "None recorded."));
         buildSec("Neurological / GI", neuro);
 
         // GIGU
@@ -1400,6 +1549,7 @@
             if(val('ur_ret')==='Yes') gigu.push("- Urinary Retention for: " + val('ur_ret_time'));
             else gigu.push("- No urinary retention");
         }
+        if(val('det_gigu_val') === 'Yes') gigu.push("Further Details:\n" + (val('det_gigu_txt') || "None recorded."));
         buildSec("Tummy & Urinary", gigu);
 
         // MSK
@@ -1418,6 +1568,7 @@
             if(val('walk_p')==='Yes') msk.push("- Trouble walking for: " + val('walk_long'));
             else msk.push("- No trouble walking");
         }
+        if(val('det_msk_val') === 'Yes') msk.push("Further Details:\n" + (val('det_msk_txt') || "None recorded."));
         buildSec("MSK / Bones", msk);
 
         // MATERNITY
@@ -1430,6 +1581,7 @@
             if(!isOmitted('mat_bleed')) mat.push(document.getElementById('mat_bleed').checked ? "- Bleeding/Show: Yes" : "- No bleeding or show");
             if(!isOmitted('mat_move')) mat.push(document.getElementById('mat_move').checked ? "- Fetal movements: Normal" : "- Fetal movements: Abnormal/Reduced");
             if(!isOmitted('mat_red_flags')) mat.push(document.getElementById('mat_red_flags').checked ? "- Red Flags: Yes (" + val('mat_rf_det') + ")" : "- No obstetric red flags");
+            if(val('det_mat_val') === 'Yes') mat.push("Further Details:\n" + (val('det_mat_txt') || "None recorded."));
             buildSec("Maternity", mat);
         }
 
@@ -1444,6 +1596,7 @@
             if(!isOmitted('rtc_seatbelt')) tra.push(document.getElementById('rtc_seatbelt').checked ? "- Seatbelt: Worn" : "- Seatbelt: Not worn / Unrestrained");
             if(!isOmitted('rtc_bullseye')) tra.push(document.getElementById('rtc_bullseye').checked ? "- Bullseye to windscreen: Yes" : "- No bullseye to windscreen");
             if(!isOmitted('rtc_extricated')) tra.push(document.getElementById('rtc_extricated').checked ? "- Extricated: Yes" : "- Not extricated from vehicle");
+            if(val('det_trauma_val') === 'Yes') tra.push("Further Details:\n" + (val('det_trauma_txt') || "None recorded."));
             buildSec("Trauma", tra);
         }
 
@@ -1457,6 +1610,7 @@
             if(!isOmitted('fall_hypo')) fal.push(document.getElementById('fall_hypo').checked ? "- Postural hypotension: Yes" : "- No postural hypotension");
             if(!isOmitted('fall_hist')) fal.push(document.getElementById('fall_hist').checked ? "- 2+ falls in 7 days: Yes" : "- No history of 2+ falls in 7 days");
             if(!isOmitted('fall_anticoag')) fal.push(document.getElementById('fall_anticoag').checked ? "- On anticoagulants: Yes" : "- Not on anticoagulants");
+            if(val('det_fall_val') === 'Yes') fal.push("Further Details:\n" + (val('det_fall_txt') || "None recorded."));
             buildSec("Falls", fal);
         }
 
@@ -1470,6 +1624,7 @@
             if(!isOmitted('mh_alc_det') || !isOmitted('mh_drugs_det')) {
                 mh.push("- Intox/OD: Alc(" + (val('mh_alc_det')||"None") + ") Drugs(" + (val('mh_drugs_det')||"None") + ")\n  Toxbase: " + val('toxbase_advice'));
             }
+            if(val('det_mh_val') === 'Yes') mh.push("Further Details:\n" + (val('det_mh_txt') || "None recorded."));
             buildSec("Mental Health / Tox", mh);
         }
 
@@ -1479,12 +1634,14 @@
         if(!isOmitted('soc_home')) soc.push("- Home: " + val('soc_home'));
         if(!isOmitted('soc_support')) soc.push("- Support: " + val('soc_support'));
         if(!isOmitted('soc_level')) soc.push("- Level of Care: " + val('soc_level'));
+        if(val('det_medsoc_val') === 'Yes') soc.push("Further Details:\n" + (val('det_medsoc_txt') || "None recorded."));
         buildSec("Social History", soc);
 
         // VITALS & MEDS
         var vm = [];
         if(!isOmitted('vitals_log')) { var vlog = document.getElementById('vitals_log').value; vm.push(vlog ? vlog : "No vitals snapshotted."); }
         if(!isOmitted('meds_log')) { var mlog = document.getElementById('meds_log').value; vm.push(mlog ? mlog : "No meds recorded."); }
+        if(val('det_news_val') === 'Yes') vm.push("Further Details:\n" + (val('det_news_txt') || "None recorded."));
         buildSec("Vitals Trend & Meds", vm);
 
         // PLAN & SAFEGUARDING
@@ -1500,6 +1657,7 @@
             }
             else if (val('plan_val')==='Discharge') plan.push("Discharge/Refer: " + val('discharge_notes'));
         }
+        if(val('det_plan_val') === 'Yes') plan.push("Further Details:\n" + (val('det_plan_txt') || "None recorded."));
         buildSec("Plan", plan);
 
         // ADVICE / MCA
@@ -1529,6 +1687,7 @@
                 adv.push(mcaStr);
             }
         }
+        if(val('det_adv_val') === 'Yes') adv.push("Further Details:\n" + (val('det_adv_txt') || "None recorded."));
         buildSec("Advice & Refusal (Consent / MCA)", adv);
 
         // Copy to clipboard
@@ -1541,6 +1700,7 @@
                 var oldBg = btn.style.background;
                 btn.innerText = "COMPLETE ✅";
                 btn.style.background = "#3b82f6";
+                btn.style.color = "white";
                 setTimeout(function(){ btn.innerText = oldText; btn.style.background = oldBg; }, 3000);
             }
         } catch(err) { }

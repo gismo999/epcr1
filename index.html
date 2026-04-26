@@ -11,14 +11,19 @@
 
     :root {
       --bg-color: #f8fafc; --text-color: #0f172a; --panel-bg: #ffffff; --input-bg: #f1f5f9;
-      --border-color: #e2e8f0; --nested-bg: #f8fafc; --acc-grad-1: #0ea5e9; --acc-grad-2: #0369a1;
+      --border-color: #e2e8f0; --nested-bg: #f8fafc; 
+      /* Ambulance Colors: Dark Green to Dark Blue */
+      --acc-grad-1: #065f46; 
+      --acc-grad-2: #1e3a8a; 
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04); --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
       --radius-sm: 12px; --radius-md: 20px; --radius-pill: 9999px;
     }
     
     body.dark-mode {
       --bg-color: #020617; --text-color: #f8fafc; --panel-bg: #0f172a; --input-bg: #1e293b;
-      --border-color: #334155; --nested-bg: #0b1120; --acc-grad-1: #38bdf8; --acc-grad-2: #0284c7;
+      --border-color: #334155; --nested-bg: #0b1120; 
+      --acc-grad-1: #059669; 
+      --acc-grad-2: #2563eb;
     }
 
     body { font-family: 'Inter', sans-serif; padding: 16px; padding-bottom: 120px; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.4s, color 0.4s; }
@@ -170,14 +175,14 @@
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> GCS Calculator: 
         <h4 style="margin:5px 0;">Eyes</h4>
         <div class="segmented-control grid-4">
-          <button type="button" class="segment-btn active" onclick="setGCS('g_e', 4, this)">4-Spont</button>
+          <button type="button" id="btn_g_e_4" class="segment-btn active" onclick="setGCS('g_e', 4, this)">4-Spont</button>
           <button type="button" class="segment-btn" onclick="setGCS('g_e', 3, this)">3-Sound</button>
           <button type="button" class="segment-btn" onclick="setGCS('g_e', 2, this)">2-Pain</button>
           <button type="button" class="segment-btn" onclick="setGCS('g_e', 1, this)">1-None</button>
         </div>
         <h4 style="margin:5px 0;">Voice</h4>
         <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setGCS('g_v', 5, this)">5-Orient</button>
+          <button type="button" id="btn_g_v_5" class="segment-btn active" onclick="setGCS('g_v', 5, this)">5-Orient</button>
           <button type="button" class="segment-btn" onclick="setGCS('g_v', 4, this)">4-Conf</button>
           <button type="button" class="segment-btn" onclick="setGCS('g_v', 3, this)">3-Inapp</button>
           <button type="button" class="segment-btn" onclick="setGCS('g_v', 2, this)">2-Sound</button>
@@ -185,7 +190,7 @@
         </div>
         <h4 style="margin:5px 0;">Motor</h4>
         <div class="segmented-control grid-3">
-          <button type="button" class="segment-btn active" onclick="setGCS('g_m', 6, this)">6-Obeys</button>
+          <button type="button" id="btn_g_m_6" class="segment-btn active" onclick="setGCS('g_m', 6, this)">6-Obeys</button>
           <button type="button" class="segment-btn" onclick="setGCS('g_m', 5, this)">5-Loc</button>
           <button type="button" class="segment-btn" onclick="setGCS('g_m', 4, this)">4-Withd</button>
           <button type="button" class="segment-btn" onclick="setGCS('g_m', 3, this)">3-Flex</button>
@@ -198,7 +203,7 @@
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Alert (A on ACVPU)?
         <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('alert_val', 'Yes', this); toggleMenu('vpu_n', false); calculateDDx();">Yes</button>
+          <button type="button" class="segment-btn active" onclick="setSeg('alert_val', 'Yes', this); toggleMenu('vpu_n', false); autoGCS(); calculateDDx();">Yes</button>
           <button type="button" class="segment-btn" onclick="setSeg('alert_val', 'No', this); toggleMenu('vpu_n', true); calculateDDx();">No</button>
         </div>
         <input type="hidden" id="alert_val" value="Yes">
@@ -273,8 +278,8 @@
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Difficulty in Breathing?
         <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('dib_val', 'No', this); toggleMenu('dib_n', false)">No</button>
-          <button type="button" class="segment-btn" onclick="setSeg('dib_val', 'Yes', this); toggleMenu('dib_n', true)">Yes</button>
+          <button type="button" class="segment-btn active" onclick="setSeg('dib_val', 'No', this); toggleMenu('dib_n', false); calculateDDx();">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('dib_val', 'Yes', this); toggleMenu('dib_n', true); calculateDDx();">Yes</button>
         </div>
         <input type="hidden" id="dib_val" value="No">
         <div id="dib_n" class="nested">
@@ -381,17 +386,17 @@
           <input type="text" id="soc_c_e" placeholder="Exacerbating (What makes it worse?)">
           <div style="margin-top:10px; font-size:11px; font-weight:bold;">Severity (0-10):</div>
           <div class="segmented-control" style="gap:2px;">
-             <button type="button" class="pain-btn" onclick="setSeg('soc_c_sev', '0', this)">0</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_c_sev', '1', this)">1</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_c_sev', '2', this)">2</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_c_sev', '3', this)">3</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_c_sev', '4', this)">4</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_c_sev', '5', this)">5</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_c_sev', '6', this)">6</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_c_sev', '7', this)">7</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_c_sev', '8', this)">8</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_c_sev', '9', this)">9</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_c_sev', '10', this)">10</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '0', this)">0</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '1', this)">1</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '2', this)">2</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '3', this)">3</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '4', this)">4</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '5', this)">5</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '6', this)">6</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '7', this)">7</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '8', this)">8</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '9', this)">9</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '10', this)">10</button>
           </div>
           <input type="hidden" id="soc_c_sev" value="">
           
@@ -545,7 +550,7 @@
         </div>
         
         <div class="segmented-control" style="margin-bottom:10px;">
-            <button type="button" class="segment-btn active" onclick="setSeg('acvpu', 'A', this); calcNEWS2()">Alert</button>
+            <button type="button" class="segment-btn active" onclick="setSeg('acvpu', 'A', this); autoGCS(); calcNEWS2();">Alert</button>
             <button type="button" class="segment-btn" onclick="setSeg('acvpu', 'C', this); calcNEWS2()">New Conf</button>
             <button type="button" class="segment-btn" onclick="setSeg('acvpu', 'V', this); calcNEWS2()">Voice</button>
             <button type="button" class="segment-btn" onclick="setSeg('acvpu', 'P', this); calcNEWS2()">Pain</button>
@@ -608,17 +613,17 @@
           <input type="text" id="soc_a_e" placeholder="Exacerbating (What makes it worse?)">
           <div style="margin-top:10px; font-size:11px; font-weight:bold;">Severity (0-10):</div>
           <div class="segmented-control" style="gap:2px;">
-             <button type="button" class="pain-btn" onclick="setSeg('soc_a_sev', '0', this)">0</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_a_sev', '1', this)">1</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_a_sev', '2', this)">2</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_a_sev', '3', this)">3</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_a_sev', '4', this)">4</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_a_sev', '5', this)">5</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_a_sev', '6', this)">6</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_a_sev', '7', this)">7</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_a_sev', '8', this)">8</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_a_sev', '9', this)">9</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_a_sev', '10', this)">10</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '0', this)">0</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '1', this)">1</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '2', this)">2</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '3', this)">3</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '4', this)">4</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '5', this)">5</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '6', this)">6</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '7', this)">7</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '8', this)">8</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '9', this)">9</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '10', this)">10</button>
           </div>
           <input type="hidden" id="soc_a_sev" value="">
         </div>
@@ -702,17 +707,17 @@
           <input type="text" id="soc_m_e" placeholder="Exacerbating (What makes it worse?)">
           <div style="margin-top:10px; font-size:11px; font-weight:bold;">Severity (0-10):</div>
           <div class="segmented-control" style="gap:2px;">
-             <button type="button" class="pain-btn" onclick="setSeg('soc_m_sev', '0', this)">0</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_m_sev', '1', this)">1</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_m_sev', '2', this)">2</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_m_sev', '3', this)">3</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_m_sev', '4', this)">4</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_m_sev', '5', this)">5</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_m_sev', '6', this)">6</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_m_sev', '7', this)">7</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_m_sev', '8', this)">8</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_m_sev', '9', this)">9</button>
-             <button type="button" class="pain-btn" onclick="setSeg('soc_m_sev', '10', this)">10</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '0', this)">0</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '1', this)">1</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '2', this)">2</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '3', this)">3</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '4', this)">4</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '5', this)">5</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '6', this)">6</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '7', this)">7</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '8', this)">8</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '9', this)">9</button>
+             <button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '10', this)">10</button>
           </div>
           <input type="hidden" id="soc_m_sev" value="">
         </div>
@@ -720,8 +725,8 @@
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Trouble Walking?
         <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('walk_p', 'No', this); toggleMenu('walk_n', false)">No</button>
-          <button type="button" class="segment-btn" onclick="setSeg('walk_p', 'Yes', this); toggleMenu('walk_n', true)">Yes</button>
+          <button type="button" class="segment-btn active" onclick="setSeg('walk_p', 'No', this); toggleMenu('walk_n', false); calculateDDx();">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('walk_p', 'Yes', this); toggleMenu('walk_n', true); calculateDDx();">Yes</button>
         </div>
         <input type="hidden" id="walk_p" value="No">
         <div id="walk_n" class="nested">
@@ -1029,6 +1034,16 @@
   </div>
 
   <script>
+    // --- HAPTIC FEEDBACK ---
+    function haptic(type) {
+        try {
+            if(window.navigator && window.navigator.vibrate) {
+                if(type === 'light') window.navigator.vibrate(10);
+                else if(type === 'heavy') window.navigator.vibrate([200, 100, 200]);
+            }
+        } catch(e) {}
+    }
+
     // --- INIT & EVENT LISTENERS ---
     document.addEventListener('input', calculateDDx);
     document.addEventListener('click', function(e) {
@@ -1037,19 +1052,46 @@
 
     // --- FLUID UI LOGIC ---
     function setSeg(hiddenId, valNum, btn) {
+        haptic('light');
         var hidden = document.getElementById(hiddenId);
         if(hidden) hidden.value = valNum;
-        var btns = btn.parentNode.querySelectorAll('button');
+        var btns = btn.parentNode.querySelectorAll('.segment-btn');
         btns.forEach(function(b) { b.classList.remove('active'); });
         btn.classList.add('active');
     }
 
+    function setPain(hiddenId, valNum, btn) {
+        haptic('light');
+        var hidden = document.getElementById(hiddenId);
+        if(hidden) hidden.value = valNum;
+        var btns = btn.parentNode.querySelectorAll('.pain-btn');
+        btns.forEach(function(b) { 
+            b.classList.remove('active'); 
+            b.style.background = 'transparent';
+            b.style.color = 'var(--text-color)';
+        });
+        btn.classList.add('active');
+        
+        var v = parseInt(valNum);
+        var bg = '#10b981'; // Green for 0
+        if(v >= 1 && v <= 3) bg = '#84cc16'; // Lime/Yellow-Green
+        else if(v >= 4 && v <= 6) bg = '#f59e0b'; // Amber
+        else if(v >= 7 && v <= 8) bg = '#ea580c'; // Orange
+        else if(v >= 9 && v <= 10) bg = '#ef4444'; // Red
+        
+        btn.style.background = bg;
+        btn.style.color = 'white';
+        calculateDDx();
+    }
+
     function toggleMenu(id, show) {
+        haptic('light');
         var el = document.getElementById(id);
         if(el) el.style.display = show ? 'block' : 'none';
     }
 
     function toggleOmit(btn) {
+        haptic('light');
         var q = btn.closest('.question');
         if(q) q.classList.toggle('omitted');
     }
@@ -1079,6 +1121,7 @@
         document.body.classList.toggle('dark-mode');
     }
 
+    var isAlerting = false;
     function checkPulseAlert() {
         var cp = document.getElementById('cp_val');
         var news = document.getElementById('final_news2');
@@ -1091,10 +1134,14 @@
         var notAlert = (val('alert_val') === 'No');
         var isDib = (val('dib_val') === 'Yes');
         
-        if(isCp || isNews || isSepsis || isAllerg || isSobAtRest || notAlert || isDib) {
+        var shouldAlert = (isCp || isNews || isSepsis || isAllerg || isSobAtRest || notAlert || isDib);
+        
+        if(shouldAlert) {
             document.body.classList.add('alert-pulse');
+            if(!isAlerting) { haptic('heavy'); isAlerting = true; }
         } else {
             document.body.classList.remove('alert-pulse');
+            isAlerting = false;
         }
     }
 
@@ -1102,6 +1149,7 @@
     var acc = document.getElementsByClassName("accordion");
     for (var i = 0; i < acc.length; i++) {
       acc[i].onclick = function() {
+        haptic('light');
         this.classList.toggle("active");
         var panel = this.nextElementSibling;
         panel.style.display = (panel.style.display === "block") ? "none" : "block";
@@ -1110,6 +1158,15 @@
 
     // --- LOGIC FUNCTIONS ---
     
+    function autoGCS() {
+        var eBtn = document.getElementById('btn_g_e_4');
+        var vBtn = document.getElementById('btn_g_v_5');
+        var mBtn = document.getElementById('btn_g_m_6');
+        if(eBtn) setGCS('g_e', 4, eBtn);
+        if(vBtn) setGCS('g_v', 5, vBtn);
+        if(mBtn) setGCS('g_m', 6, mBtn);
+    }
+
     function handleAgeInput() {
         var age = parseInt(document.getElementById('pt_age').value);
         var c = document.getElementById('wetfag_container');
@@ -1192,8 +1249,8 @@
         var disp = document.getElementById('final_news2_disp');
         if(disp) {
             disp.innerText = score;
-            if(score >= 5) { disp.parentNode.style.background = 'var(--acc-grad-1)'; disp.parentNode.style.color = 'white'; }
-            else if(score >= 3) { disp.parentNode.style.background = '#fef3c7'; disp.parentNode.style.color = '#b45309'; }
+            if(score >= 5) { disp.parentNode.style.background = '#fef2f2'; disp.parentNode.style.color = '#ef4444'; }
+            else if(score >= 3) { disp.parentNode.style.background = '#fffbeb'; disp.parentNode.style.color = '#d97706'; }
             else { disp.parentNode.style.background = 'var(--input-bg)'; disp.parentNode.style.color = 'var(--text-color)'; }
         }
         checkPulseAlert();

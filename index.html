@@ -262,8 +262,8 @@
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Difficulty in Breathing?
         <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('dib_val', 'No', this); toggleMenu('dib_n', false)">No</button>
-          <button type="button" class="segment-btn" onclick="setSeg('dib_val', 'Yes', this); toggleMenu('dib_n', true)">Yes</button>
+          <button type="button" class="segment-btn active" onclick="setSeg('dib_val', 'No', this); toggleMenu('dib_n', false); calculateDDx();">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('dib_val', 'Yes', this); toggleMenu('dib_n', true); calculateDDx();">Yes</button>
         </div>
         <input type="hidden" id="dib_val" value="No">
         <div id="dib_n" class="nested">
@@ -1043,8 +1043,8 @@
         var disp = document.getElementById('final_news2_disp');
         if(disp) {
             disp.innerText = score;
-            if(score >= 5) { disp.parentNode.style.background = '#fef2f2'; disp.parentNode.style.color = '#ef4444'; }
-            else if(score >= 3) { disp.parentNode.style.background = '#fffbeb'; disp.parentNode.style.color = '#d97706'; }
+            if(score >= 5) { disp.parentNode.style.background = 'var(--acc-grad-1)'; disp.parentNode.style.color = 'white'; }
+            else if(score >= 3) { disp.parentNode.style.background = '#fef3c7'; disp.parentNode.style.color = '#b45309'; }
             else { disp.parentNode.style.background = 'var(--input-bg)'; disp.parentNode.style.color = 'var(--text-color)'; }
         }
         checkPulseAlert();
@@ -1214,20 +1214,28 @@
       // Update Detailed Plan Section Output silently
       var out = document.getElementById('decision_support_out');
       if(out) {
+          var html = "", bg = "", border = "", color = "";
           if(redFlags.length > 0) {
-              out.style.display = 'block';
-              out.style.background = '#fef2f2'; out.style.border = '2px solid #ef4444'; out.style.color = '#7f1d1d';
-              out.innerHTML = "<h4 style='color:#ef4444; margin-top:0;'>🚨 CONVEY (Meets Red Criteria)</h4><ul style='margin:5px 0; padding-left:20px;'><li>" + redFlags.join("</li><li>") + "</li></ul><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Stabilise and immediately transfer to ED/Specialist Unit.</p>";
+              html = "<h4 style='color:#ef4444; margin-top:0;'>🚨 CONVEY (Meets Red Criteria)</h4><ul style='margin:5px 0; padding-left:20px;'><li>" + redFlags.join("</li><li>") + "</li></ul><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Stabilise and immediately transfer to ED/Specialist Unit.</p>";
+              bg = '#fef2f2'; border = '2px solid #ef4444'; color = '#7f1d1d';
           } else if (amberFlags.length > 0) {
-              out.style.display = 'block';
-              out.style.background = '#fffbeb'; out.style.border = '2px solid #f59e0b'; out.style.color = '#92400e';
-              out.innerHTML = "<h4 style='color:#d97706; margin-top:0;'>🔸 REFER / DISCUSS (Meets Amber Criteria)</h4><ul style='margin:5px 0; padding-left:20px;'><li>" + amberFlags.join("</li><li>") + "</li></ul><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Refer into/discuss with UCR, Acute Frailty, 111*5 or ACP.</p>";
-          } else if (val('arrival_notes')) {
-              out.style.display = 'block';
-              out.style.background = '#f0fdf4'; out.style.border = '2px solid #10b981'; out.style.color = '#14532d';
-              out.innerHTML = "<h4 style='color:#10b981; margin-top:0;'>✅ DISCHARGE POTENTIAL</h4><p style='font-size:12px; margin:5px 0;'>No explicit RED or AMBER Pathfinder/Decision Tool flags triggered based on current inputs.</p><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Consider discharge if safe. Provide WCA.</p>";
+              html = "<h4 style='color:#d97706; margin-top:0;'>🔸 REFER / DISCUSS (Meets Amber Criteria)</h4><ul style='margin:5px 0; padding-left:20px;'><li>" + amberFlags.join("</li><li>") + "</li></ul><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Refer into/discuss with UCR, Acute Frailty, 111*5 or ACP.</p>";
+              bg = '#fffbeb'; border = '2px solid #f59e0b'; color = '#92400e';
           } else {
-              out.style.display = 'none';
+              html = "<h4 style='color:#10b981; margin-top:0;'>✅ DISCHARGE POTENTIAL</h4><p style='font-size:12px; margin:5px 0;'>No explicit RED or AMBER Pathfinder/Decision Tool flags triggered based on current inputs.</p><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Consider discharge if safe. Provide WCA.</p>";
+              bg = '#f0fdf4'; border = '2px solid #10b981'; color = '#14532d';
+          }
+          
+          out.dataset.html = html;
+          out.dataset.bg = bg;
+          out.dataset.border = border;
+          out.dataset.color = color;
+
+          if (out.style.display === 'block') {
+              out.innerHTML = html;
+              out.style.background = bg;
+              out.style.border = border;
+              out.style.color = color;
           }
       }
 
@@ -1235,15 +1243,28 @@
     }
 
     function runDecisionSupport() {
+        calculateDDx(); // Force latest data
         var out = document.getElementById('decision_support_out');
-        if(out && out.style.display === 'block') {
+        if(out) {
+            out.innerHTML = out.dataset.html || "<h4 style='color:#10b981; margin-top:0;'>✅ DISCHARGE POTENTIAL</h4><p style='font-size:12px; margin:5px 0;'>No explicit RED or AMBER flags triggered based on current inputs.</p>";
+            out.style.background = out.dataset.bg || '#f0fdf4';
+            out.style.border = out.dataset.border || '2px solid #10b981';
+            out.style.color = out.dataset.color || '#14532d';
+            out.style.display = 'block';
             out.scrollIntoView({behavior: "smooth", block: "center"});
+            
+            out.style.transform = 'scale(1.02)';
+            out.style.transition = 'transform 0.2s';
+            setTimeout(function() { out.style.transform = 'scale(1)'; }, 200);
         }
     }
 
     function resetForm() {
         if(confirm("Are you sure you want to clear all data?")) {
-            localStorage.removeItem('ePCR_draft');
+            var els = document.querySelectorAll('input[type="text"], input[type="number"], textarea');
+            els.forEach(function(e) { e.value = ''; });
+            var cbs = document.querySelectorAll('input[type="checkbox"]');
+            cbs.forEach(function(e) { e.checked = false; });
             location.reload(); 
         }
     }

@@ -196,6 +196,7 @@
         <input type="hidden" id="g_e" value="4"><input type="hidden" id="g_v" value="5"><input type="hidden" id="g_m" value="6"><input type="hidden" id="manual_gcs" value="15">
       </div>
       
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="alert" checked> Alert (A on ACVPU)?</div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_sepsis"> Suspected Sepsis / Infection?</div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_allerg"> Suspected Anaphylaxis?</div>
     </div>
@@ -314,8 +315,8 @@
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Chest Pain or Heaviness?
         <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('cp_val', 'No', this); toggleMenu('cp_n', false)">No</button>
-          <button type="button" class="segment-btn" onclick="setSeg('cp_val', 'Yes', this); toggleMenu('cp_n', true)">Yes</button>
+          <button type="button" class="segment-btn active" onclick="setSeg('cp_val', 'No', this); toggleMenu('cp_n', false); checkPulseAlert();">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('cp_val', 'Yes', this); toggleMenu('cp_n', true); checkPulseAlert();">Yes</button>
         </div>
         <input type="hidden" id="cp_val" value="No">
         <div id="cp_n" class="nested">
@@ -479,7 +480,7 @@
             </div>
             <div class="vital-input-card">
                 <label>GLUCOSE</label>
-                <input type="number" id="bm_val" step="0.1" placeholder="---" class="news-input">
+                <input type="number" id="bm_val" step="0.1" placeholder="---" class="news-input" oninput="calcNEWS2()">
             </div>
         </div>
         
@@ -972,6 +973,7 @@
         var rr = parseInt(document.getElementById('rr_val_news').value) || 0;
         var spo2 = parseInt(document.getElementById('spo2_val_news').value) || 0;
         var temp = parseFloat(document.getElementById('temp_val').value) || 0;
+        var bm = parseFloat(document.getElementById('bm_val').value) || 0;
         var acvpu = document.getElementById('acvpu').value;
         var on_o2 = document.getElementById('on_o2').checked;
         var copd = document.getElementById('copd_scale').checked;
@@ -981,6 +983,13 @@
         inputs.forEach(function(i) { if(i) { i.classList.remove('vital-normal', 'vital-abnormal'); }});
         function color(el, v, min, max) { if(el && v) { if(v>=min && v<=max) el.classList.add('vital-normal'); else el.classList.add('vital-abnormal'); } }
         color(inputs[0], sys, 111, 219); color(inputs[2], hr, 51, 90); color(inputs[3], rr, 12, 20); color(inputs[5], temp, 36.1, 38.0);
+        color(inputs[6], bm, 4.0, 11.0);
+        
+        if(spo2>0) {
+            var sEl = document.getElementById('spo2_val_news');
+            if(!copd) { if(spo2>=94) sEl.classList.add('vital-normal'); else sEl.classList.add('vital-abnormal'); }
+            else { if(spo2>=88 && spo2<=92) sEl.classList.add('vital-normal'); else sEl.classList.add('vital-abnormal'); }
+        }
         
         var score = 0;
         if(rr>0) { if(rr<=8) score+=3; else if(rr>=9&&rr<=11) score+=1; else if(rr>=21&&rr<=24) score+=2; else if(rr>=25) score+=3; }
@@ -1118,8 +1127,10 @@
             var btn = document.getElementById('not_found_btn');
             if(btn) {
                 var oldText = btn.innerText;
-                btn.innerText = "SAVED COMPLETE ✅";
-                setTimeout(function(){ btn.innerText = oldText; }, 3000);
+                var oldBg = btn.style.background;
+                btn.innerText = "COMPLETE";
+                btn.style.background = "#3b82f6";
+                setTimeout(function(){ btn.innerText = oldText; btn.style.background = oldBg; }, 3000);
             }
         } catch(err) { }
         document.body.removeChild(ta);
@@ -1132,20 +1143,25 @@
         e += "Complaint: " + document.getElementById('complaint').options[document.getElementById('complaint').selectedIndex].text + "\n";
         e += "--------------------------------------------------\n\n";
 
-        function buildSec(title, lines) {
-            var valid = lines.filter(function(l) { return l && l !== ""; });
-            if (valid.length > 0) e += "[" + title + "]\n" + valid.join("\n") + "\n\n";
-        }
-
         // INIT
         var pri = [];
         if(!isOmitted('arrival_notes')) pri.push("Arrival: " + (val('arrival_notes') || "None recorded."));
         if(!isOmitted('pt_history')) pri.push("History: " + (val('pt_history') || "None recorded."));
         if(!isOmitted('init_airway')) pri.push("Airway: " + val('init_airway'));
         if(!isOmitted('manual_gcs')) pri.push("GCS: " + val('manual_gcs') + " (E" + val('g_e') + " V" + val('g_v') + " M" + val('g_m') + ")");
+        if(!isOmitted('alert')) pri.push("Alert (A on ACVPU): " + (val('alert') ? "Yes" : "No"));
         if(!isOmitted('sus_sepsis')) pri.push(val('sus_sepsis') ? "- Suspected Sepsis / Infection" : "- No suspected sepsis");
         if(!isOmitted('sus_allerg')) pri.push(val('sus_allerg') ? "- Suspected Anaphylaxis" : "- No suspected anaphylaxis");
-        buildSec("Primary Survey", pri);
+        
+        if (pri.length > 0) {
+            var validPri = pri.filter(function(l) { return l && l !== ""; });
+            if (validPri.length > 0) e += "[Primary Survey]\n" + validPri.join("\n\n") + "\n\n";
+        }
+
+        function buildSec(title, lines) {
+            var valid = lines.filter(function(l) { return l && l !== ""; });
+            if (valid.length > 0) e += "[" + title + "]\n" + valid.join("\n") + "\n\n";
+        }
 
         // RESP
         var resp = [];
@@ -1350,8 +1366,10 @@
             var btn = document.getElementById('generate_btn');
             if(btn) {
                 var oldText = btn.innerText;
-                btn.innerText = "SAVED COMPLETE ✅";
-                setTimeout(function(){ btn.innerText = oldText; }, 3000);
+                var oldBg = btn.style.background;
+                btn.innerText = "COMPLETE";
+                btn.style.background = "#3b82f6";
+                setTimeout(function(){ btn.innerText = oldText; btn.style.background = oldBg; }, 3000);
             }
         } catch(err) { }
         document.body.removeChild(ta);

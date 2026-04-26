@@ -75,16 +75,14 @@
     #privacy_shield .lock-icon { font-size: 72px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2)); margin-bottom: 16px; }
     #privacy_shield .unlock-text { font-size: 18px; font-weight: 800; color: var(--text-color); text-transform: uppercase; background: var(--panel-bg); padding: 12px 24px; border-radius: var(--radius-pill); box-shadow: var(--shadow-md);}
 
-    /* DDX HUD (LIVE LISTENER) */
+    /* DDX HUD */
     .ddx-hud { position: fixed; bottom: 15px; left: 16px; right: 16px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: white; padding: 12px 16px; border-radius: var(--radius-sm); box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); z-index: 9998; display: flex; align-items: center; gap: 10px; transform: translateY(150%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s; }
     .ddx-hud.visible { transform: translateY(0); }
-    .ddx-hud.alert-red { background: linear-gradient(135deg, #e11d48, #be123c); box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4); }
-    .ddx-hud.alert-amber { background: linear-gradient(135deg, #d97706, #b45309); box-shadow: 0 4px 15px rgba(217, 119, 6, 0.4); }
-    .ddx-hud.alert-green { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
-    .ddx-icon { font-size: 24px; flex-shrink: 0; }
+    .ddx-hud.alert-mode { background: linear-gradient(135deg, #e11d48, #be123c); box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4); }
+    .ddx-icon { font-size: 20px; flex-shrink: 0; }
     .ddx-content { flex-grow: 1; overflow: hidden; }
-    .ddx-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
-    .ddx-text { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
+    .ddx-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 2px; }
+    .ddx-text { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     /* DEEP RED PULSE ALERT ANIMATION */
     @keyframes redPulse { 0% { background-color: var(--bg-color); } 50% { background-color: #fca5a5; } 100% { background-color: var(--bg-color); } }
@@ -198,7 +196,24 @@
         <input type="hidden" id="g_e" value="4"><input type="hidden" id="g_v" value="5"><input type="hidden" id="g_m" value="6"><input type="hidden" id="manual_gcs" value="15">
       </div>
       
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="alert" checked> Alert (A on ACVPU)?</div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Alert (A on ACVPU)?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('alert_val', 'Yes', this); toggleMenu('vpu_n', false); calculateDDx();">Yes</button>
+          <button type="button" class="segment-btn" onclick="setSeg('alert_val', 'No', this); toggleMenu('vpu_n', true); calculateDDx();">No</button>
+        </div>
+        <input type="hidden" id="alert_val" value="Yes">
+        <div id="vpu_n" class="nested">
+          Select Level:
+          <div class="segmented-control grid-4">
+            <button type="button" class="segment-btn" onclick="setSeg('vpu_level', 'New Confusion', this); calculateDDx();">New Conf</button>
+            <button type="button" class="segment-btn" onclick="setSeg('vpu_level', 'Voice', this); calculateDDx();">Voice</button>
+            <button type="button" class="segment-btn" onclick="setSeg('vpu_level', 'Pain', this); calculateDDx();">Pain</button>
+            <button type="button" class="segment-btn" onclick="setSeg('vpu_level', 'Unresponsive', this); calculateDDx();">Unresp</button>
+          </div>
+          <input type="hidden" id="vpu_level" value="">
+        </div>
+      </div>
+
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_sepsis"> Suspected Sepsis / Infection?</div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_allerg"> Suspected Anaphylaxis?</div>
     </div>
@@ -208,8 +223,8 @@
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Shortness of Breath?
         <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('sob_val', 'No', this); toggleMenu('sob_n', false)">No</button>
-          <button type="button" class="segment-btn" onclick="setSeg('sob_val', 'Yes', this); toggleMenu('sob_n', true)">Yes</button>
+          <button type="button" class="segment-btn active" onclick="setSeg('sob_val', 'No', this); toggleMenu('sob_n', false); calculateDDx();">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('sob_val', 'Yes', this); toggleMenu('sob_n', true); calculateDDx();">Yes</button>
         </div>
         <input type="hidden" id="sob_val" value="No">
         <div id="sob_n" class="nested">
@@ -237,9 +252,9 @@
           
           <div style="margin-top:10px;">When does SOB occur?</div>
           <div class="segmented-control">
-            <button type="button" class="segment-btn" onclick="setSeg('sob_when', 'Walking', this)">Walking</button>
-            <button type="button" class="segment-btn" onclick="setSeg('sob_when', 'At Rest', this)">At Rest</button>
-            <button type="button" class="segment-btn" onclick="setSeg('sob_when', 'Both', this)">Both</button>
+            <button type="button" class="segment-btn" onclick="setSeg('sob_when', 'Walking', this); calculateDDx();">Walking</button>
+            <button type="button" class="segment-btn" onclick="setSeg('sob_when', 'At Rest', this); calculateDDx();">At Rest</button>
+            <button type="button" class="segment-btn" onclick="setSeg('sob_when', 'Both', this); calculateDDx();">Both</button>
           </div>
           <input type="hidden" id="sob_when" value="">
         </div>
@@ -317,8 +332,8 @@
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Chest Pain or Heaviness?
         <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('cp_val', 'No', this); toggleMenu('cp_n', false);">No</button>
-          <button type="button" class="segment-btn" onclick="setSeg('cp_val', 'Yes', this); toggleMenu('cp_n', true);">Yes</button>
+          <button type="button" class="segment-btn active" onclick="setSeg('cp_val', 'No', this); toggleMenu('cp_n', false); calculateDDx();">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('cp_val', 'Yes', this); toggleMenu('cp_n', true); calculateDDx();">Yes</button>
         </div>
         <input type="hidden" id="cp_val" value="No">
         <div id="cp_n" class="nested">
@@ -482,7 +497,7 @@
             </div>
             <div class="vital-input-card">
                 <label>GLUCOSE</label>
-                <input type="number" id="bm_val" step="0.1" placeholder="---" class="news-input">
+                <input type="number" id="bm_val" step="0.1" placeholder="---" class="news-input" oninput="calcNEWS2()">
             </div>
         </div>
         
@@ -602,7 +617,7 @@
         </div>
         <input type="hidden" id="back_p" value="No">
         <div id="back_n" class="nested">
-          <h4 style="margin:top:0;">Fluid SOCRATES</h4>
+          <h4 style="margin-top:0;">Fluid SOCRATES</h4>
           <input type="text" id="back_where" placeholder="Where in the back?">
           <input type="text" id="soc_m_o" placeholder="Onset Time (When did it start?)">
           <div style="margin-top:10px; font-size:11px; font-weight:bold;">Character:</div>
@@ -923,10 +938,11 @@
         
         var isSepsis = (document.getElementById('sus_sepsis') && document.getElementById('sus_sepsis').checked && !isOmitted('sus_sepsis'));
         var isAllerg = (document.getElementById('sus_allerg') && document.getElementById('sus_allerg').checked && !isOmitted('sus_allerg'));
-        var isSob = (val('sob_val') === 'Yes');
+        var isSobAtRest = (val('sob_val') === 'Yes' && (val('sob_when') === 'At Rest' || val('sob_when') === 'Both'));
+        var notAlert = (val('alert_val') === 'No');
         var isDib = (val('dib_val') === 'Yes');
         
-        if(isCp || isNews || isSepsis || isAllerg || isSob || isDib) {
+        if(isCp || isNews || isSepsis || isAllerg || isSobAtRest || notAlert || isDib) {
             document.body.classList.add('alert-pulse');
         } else {
             document.body.classList.remove('alert-pulse');
@@ -1027,8 +1043,8 @@
         var disp = document.getElementById('final_news2_disp');
         if(disp) {
             disp.innerText = score;
-            if(score >= 5) { disp.parentNode.style.background = 'var(--acc-grad-1)'; disp.parentNode.style.color = 'white'; }
-            else if(score >= 3) { disp.parentNode.style.background = '#fef3c7'; disp.parentNode.style.color = '#b45309'; }
+            if(score >= 5) { disp.parentNode.style.background = '#fef2f2'; disp.parentNode.style.color = '#ef4444'; }
+            else if(score >= 3) { disp.parentNode.style.background = '#fffbeb'; disp.parentNode.style.color = '#d97706'; }
             else { disp.parentNode.style.background = 'var(--input-bg)'; disp.parentNode.style.color = 'var(--text-color)'; }
         }
         checkPulseAlert();
@@ -1100,18 +1116,22 @@
       var dizzy = document.getElementById('dizzy').checked && !isOmitted('dizzy'); 
       var sync = document.getElementById('sync').checked && !isOmitted('sync');
       var bm = parseFloat(document.getElementById('bm_val').value) || 0;
+      var notAlert = val('alert_val') === 'No';
+      var sobAtRest = val('sob_when') === 'At Rest' || val('sob_when') === 'Both';
 
       if (allerg && sob) { ddx.push("ANAPHYLAXIS"); }
       if (sepsis) { ddx.push("Sepsis / Severe Infection"); }
       if (fast && (f_w || l_w || s_w)) { ddx.push("Stroke / TIA"); ddx.push("Hypoglycaemia"); ddx.push("Bell's Palsy"); }
       if (cp) { ddx.push("ACS / MI"); ddx.push("PE"); ddx.push("GORD / MSK"); }
       if (sob && !allerg) { ddx.push("Asthma/COPD Exacerbation"); ddx.push("Chest Infection"); ddx.push("Pulmonary Oedema"); }
+      if (sob && sobAtRest) { ddx.push("PE"); ddx.push("Pulmonary Oedema"); }
       if (abdo) { ddx.push("Appendicitis"); ddx.push("Biliary Colic"); ddx.push("Gastroenteritis"); ddx.push("AAA"); }
       if (back) { ddx.push("Sciatica / Spasm"); ddx.push("Renal Colic"); ddx.push("AAA (if older)"); }
       if (neuro_seiz) { ddx.push("Epilepsy"); ddx.push("Head Injury"); }
       if (dizzy || sync) { ddx.push("Arrhythmia"); ddx.push("Postural Hypotension"); ddx.push("Vasovagal"); }
       if (bm > 0 && bm < 4.0) { ddx.push("HYPOGLYCAEMIA"); }
       if (bm > 15.0) { ddx.push("Hyperglycaemia"); }
+      if (notAlert) { ddx.push("Altered Mental Status / Hypoxia"); }
 
       var uniqueDdx = [];
       for(var j=0; j<ddx.length; j++) { if(uniqueDdx.indexOf(ddx[j]) === -1) uniqueDdx.push(ddx[j]); }
@@ -1124,7 +1144,8 @@
       if(val('cp_val') === 'Yes') redFlags.push("Chest Pain");
       if((parseInt(document.getElementById('final_news2').value) || 0) >= 5) redFlags.push("NEWS2 >= 5");
       if(sepsis) redFlags.push("Sepsis");
-      if(val('acvpu') !== null && val('acvpu') !== 'A') redFlags.push("Reduced GCS");
+      if(notAlert) redFlags.push("Reduced Level of Consciousness (" + (val('vpu_level')||"Not Alert") + ")");
+      if(sob && sobAtRest) redFlags.push("Shortness of Breath at Rest");
       
       var pScore = parseInt(val('soc_c_sev')) || parseInt(val('soc_a_sev')) || parseInt(val('soc_m_sev')) || 0;
       if(pScore >= 7) redFlags.push("Severe Pain");
@@ -1214,7 +1235,6 @@
     }
 
     function runDecisionSupport() {
-        // Now just a dummy function to scroll into view since it calculates live
         var out = document.getElementById('decision_support_out');
         if(out && out.style.display === 'block') {
             out.scrollIntoView({behavior: "smooth", block: "center"});
@@ -1223,10 +1243,7 @@
 
     function resetForm() {
         if(confirm("Are you sure you want to clear all data?")) {
-            var els = document.querySelectorAll('input[type="text"], input[type="number"], textarea');
-            els.forEach(function(e) { e.value = ''; });
-            var cbs = document.querySelectorAll('input[type="checkbox"]');
-            cbs.forEach(function(e) { e.checked = false; });
+            localStorage.removeItem('ePCR_draft');
             location.reload(); 
         }
     }
@@ -1272,7 +1289,10 @@
         if(!isOmitted('pt_history')) pri.push("History:\n" + (val('pt_history') || "None recorded."));
         if(!isOmitted('init_airway')) pri.push("Airway:\n" + val('init_airway'));
         if(!isOmitted('manual_gcs')) pri.push("GCS:\n" + val('manual_gcs') + " (E" + val('g_e') + " V" + val('g_v') + " M" + val('g_m') + ")");
-        if(!isOmitted('alert')) pri.push("Alert (A on ACVPU):\n" + (val('alert') ? "Yes" : "No"));
+        if(!isOmitted('alert_val')) {
+            if(val('alert_val')==='Yes') pri.push("Alert (A on ACVPU):\nYes");
+            else pri.push("Alert (A on ACVPU):\nNo (" + (val('vpu_level')||"Unspecified") + ")");
+        }
         if(!isOmitted('sus_sepsis')) pri.push(document.getElementById('sus_sepsis').checked ? "- Suspected Sepsis / Infection" : "- No suspected sepsis");
         if(!isOmitted('sus_allerg')) pri.push(document.getElementById('sus_allerg').checked ? "- Suspected Anaphylaxis" : "- No suspected anaphylaxis");
         

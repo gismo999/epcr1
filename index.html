@@ -111,7 +111,15 @@
   </div>
 
   <div class="top-bar">
-    <div><h3>Matt's ePCR <span style="font-size:16px; opacity:0.8;">Pro</span></h3></div>
+    <div style="display:flex; align-items:center;">
+        <svg width="45" height="30" viewBox="0 0 60 30" fill="none" stroke="var(--acc-grad-1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:-4px;">
+            <path d="M 0 20 L 10 20 C 12 17, 16 17, 18 20 L 22 20 L 26 28 L 32 4 L 38 32 L 42 20 L 60 20" />
+        </svg>
+        <h3 style="margin: 0; padding: 0; line-height: 1;">Matt's ePCR <span style="font-size:16px; opacity:0.8;">Pro</span></h3>
+        <svg width="45" height="30" viewBox="0 0 60 30" fill="none" stroke="var(--acc-grad-1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left:-4px;">
+            <path d="M 0 20 L 15 20 L 19 28 L 25 4 L 31 32 L 35 20 L 40 20 C 42 15, 48 15, 50 20 L 60 20" />
+        </svg>
+    </div>
     <div style="display:flex; gap:8px;">
         <button style="background:var(--input-bg); border:1px solid var(--border-color); border-radius:50%; width:44px; height:44px; cursor:pointer; font-size:18px;" onclick="togglePrivacy()">🛡️</button>
         <button style="background:var(--input-bg); border:1px solid var(--border-color); border-radius:50%; width:44px; height:44px; cursor:pointer; font-size:18px;" onclick="toggleDarkMode()">🌙</button>
@@ -998,7 +1006,7 @@
     <!-- 8. MEDS & SOCIAL -->
     <button class="accordion" id="meds_social_acc">💊 Meds & Social</button>
     <div class="panel" id="meds_social_pan">
-      
+
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Medications Given?
          <div class="segmented-control grid-2" style="margin-bottom:10px;">
              <button type="button" class="segment-btn" onclick="quickMed('Aspirin 300mg')">Aspirin 300mg</button>

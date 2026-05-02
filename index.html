@@ -11,19 +11,14 @@
 
     :root {
       --bg-color: #f8fafc; --text-color: #0f172a; --panel-bg: #ffffff; --input-bg: #f1f5f9;
-      --border-color: #e2e8f0; --nested-bg: #f8fafc; 
-      /* Ambulance Colors: Dark Green to Dark Blue */
-      --acc-grad-1: #065f46; 
-      --acc-grad-2: #1e3a8a; 
+      --border-color: #e2e8f0; --nested-bg: #f8fafc; --acc-grad-1: #0ea5e9; --acc-grad-2: #0369a1;
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04); --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
       --radius-sm: 12px; --radius-md: 20px; --radius-pill: 9999px;
     }
     
     body.dark-mode {
       --bg-color: #020617; --text-color: #f8fafc; --panel-bg: #0f172a; --input-bg: #1e293b;
-      --border-color: #334155; --nested-bg: #0b1120; 
-      --acc-grad-1: #059669; 
-      --acc-grad-2: #2563eb;
+      --border-color: #334155; --nested-bg: #0b1120; --acc-grad-1: #38bdf8; --acc-grad-2: #0284c7;
     }
 
     body { font-family: 'Inter', sans-serif; padding: 16px; padding-bottom: 120px; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.4s, color 0.4s; }
@@ -55,6 +50,12 @@
     .segment-btn { flex: 1; padding: 12px 8px; border: none; background: transparent; color: var(--text-color); font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 8px; transition: 0.3s; text-align: center; }
     .segment-btn.active { background: var(--acc-grad-1); color: white; box-shadow: var(--shadow-sm); }
     body.dark-mode .segment-btn.active { background: var(--acc-grad-2); }
+    
+    /* DYNAMIC RED BUTTONS */
+    .segment-btn.btn-red { color: #ef4444; }
+    .segment-btn.btn-red.active { background: #ef4444 !important; color: white !important; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3) !important; }
+    body.dark-mode .segment-btn.btn-red { color: #fca5a5; }
+    body.dark-mode .segment-btn.btn-red.active { background: #ef4444 !important; color: white !important; }
 
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
@@ -114,6 +115,7 @@
 
   <div id="main_form_container">
     
+    <!-- PATIENT INFO -->
     <div style="display:flex; gap:10px; margin-bottom:10px; align-items:flex-end;">
       <div style="flex:1;"><label style="font-size:11px; font-weight:bold;">Age:</label><input type="number" id="pt_age" placeholder="Yrs" oninput="handleAgeInput()"></div>
       <div style="flex:2;">
@@ -127,6 +129,7 @@
       </div>
     </div>
 
+    <!-- WETFLAG / PAEDS JRCALC -->
     <div id="wetfag_container" style="display:none; border: 2px solid #0ea5e9; border-radius: 10px; padding: 12px; margin-bottom:15px; background:#f0f9ff; margin-top:10px;">
       <h4 id="wf_title" style="color:#0284c7; margin-top:0;">📊 Patient Normal Vitals</h4>
       <div id="wetfag_grid" style="font-size:13px; display:none; grid-template-columns:1fr 1fr; gap:6px; margin-bottom: 10px;">
@@ -158,6 +161,7 @@
       <option value="maternity">Maternity / Obstetric</option>
     </select>
 
+    <!-- 1. INITIAL IMPRESSION -->
     <button class="accordion active" id="init_acc">⭕ Initial Impression</button>
     <div class="panel" id="init_pan" style="display:block;">
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Arrived on scene: <textarea id="arrival_notes" rows="2"></textarea></div>
@@ -219,8 +223,13 @@
         </div>
       </div>
 
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_sepsis"> Suspected Sepsis / Infection?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_allerg"> Suspected Anaphylaxis?</div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_sepsis" onchange="toggleMenu('sus_sepsis_n', this.checked)"> Suspected Sepsis / Infection?
+        <div id="sus_sepsis_n" class="nested"><input type="text" id="sus_sepsis_det" placeholder="Further details..."></div>
+      </div>
+      
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_allerg" onchange="toggleMenu('sus_allerg_n', this.checked)"> Suspected Anaphylaxis?
+        <div id="sus_allerg_n" class="nested"><input type="text" id="sus_allerg_det" placeholder="Further details..."></div>
+      </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
         <div class="segmented-control">
@@ -234,6 +243,7 @@
       </div>
     </div>
 
+    <!-- 2. BREATHING -->
     <button class="accordion" id="resp_acc">🫁 Breathing</button>
     <div class="panel" id="resp_pan">
       
@@ -324,7 +334,7 @@
             <div style="margin-top:10px;">Blood in phlegm?</div>
             <div class="segmented-control">
                <button type="button" class="segment-btn active" onclick="setSeg('phlegm_blood', 'No', this)">No</button>
-               <button type="button" class="segment-btn" style="background:#ef4444; color:white;" onclick="setSeg('phlegm_blood', 'Yes', this)">Yes</button>
+               <button type="button" class="segment-btn btn-red" onclick="setSeg('phlegm_blood', 'Yes', this)">Yes</button>
             </div>
             <input type="hidden" id="phlegm_blood" value="No">
           </div>
@@ -354,6 +364,7 @@
       </div>
     </div>
 
+    <!-- 3. HEART / CIRCULATION -->
     <button class="accordion" id="card_acc">🫀 Heart / Circulation</button>
     <div class="panel" id="card_pan">
       
@@ -412,10 +423,21 @@
         </div>
       </div>
       
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="palps"> Racing or fluttering heart?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sync"> Syncope / almost fainted?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="dizzy"> Dizziness?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="oedema"> Swollen legs/ankles?</div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="palps" onchange="toggleMenu('palps_n', this.checked)"> Racing or fluttering heart?
+        <div id="palps_n" class="nested"><input type="text" id="palps_det" placeholder="Further details..."></div>
+      </div>
+      
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sync" onchange="toggleMenu('sync_n', this.checked)"> Syncope / almost fainted?
+        <div id="sync_n" class="nested"><input type="text" id="sync_det" placeholder="Further details..."></div>
+      </div>
+      
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="dizzy" onchange="toggleMenu('dizzy_n', this.checked)"> Dizziness?
+        <div id="dizzy_n" class="nested"><input type="text" id="dizzy_det" placeholder="Further details..."></div>
+      </div>
+      
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="oedema" onchange="toggleMenu('oedema_n', this.checked)"> Swollen legs/ankles?
+        <div id="oedema_n" class="nested"><input type="text" id="oedema_det" placeholder="Further details..."></div>
+      </div>
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Was a 12-Lead ECG performed?
          <div class="segmented-control">
@@ -449,6 +471,7 @@
       </div>
     </div>
 
+    <!-- 4. NEURO -->
     <button class="accordion" id="neuro_acc">🧠 Brain & Nerves</button>
     <div class="panel" id="neuro_pan">
       
@@ -494,15 +517,23 @@
             Blood in vomit?
             <div class="segmented-control">
                 <button type="button" class="segment-btn active" onclick="setSeg('vomit_blood', 'No', this)">No</button>
-                <button type="button" class="segment-btn" style="background:#ef4444; color:white;" onclick="setSeg('vomit_blood', 'Yes', this)">Yes</button>
+                <button type="button" class="segment-btn btn-red" onclick="setSeg('vomit_blood', 'Yes', this)">Yes</button>
             </div>
             <input type="hidden" id="vomit_blood" value="No">
         </div>
       </div>
 
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="headache"> Any headache?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="seizure"> Seizure or fit?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="confusion"> Confused / acting odd?</div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="headache" onchange="toggleMenu('headache_n', this.checked)"> Any headache?
+        <div id="headache_n" class="nested"><input type="text" id="headache_det" placeholder="Further details..."></div>
+      </div>
+      
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="seizure" onchange="toggleMenu('seizure_n', this.checked)"> Seizure or fit?
+        <div id="seizure_n" class="nested"><input type="text" id="seizure_det" placeholder="Further details..."></div>
+      </div>
+      
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="confusion" onchange="toggleMenu('confusion_n', this.checked)"> Confused / acting odd?
+        <div id="confusion_n" class="nested"><input type="text" id="confusion_det" placeholder="Further details..."></div>
+      </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
         <div class="segmented-control">
@@ -516,6 +547,7 @@
       </div>
     </div>
 
+    <!-- 5. VITALS & NEWS2 -->
     <button class="accordion" id="news_acc" style="display:block;">📊 Vitals & NEWS2</button>
     <div class="panel" id="news_pan">
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Live NEWS2 Vitals
@@ -582,6 +614,7 @@
       </div>
     </div>
 
+    <!-- 6. TUMMY (GI/GU) -->
     <button class="accordion" id="gigu_acc">🍕 Tummy & Toilet</button>
     <div class="panel" id="gigu_pan">
       
@@ -668,15 +701,24 @@
       </div>
     </div>
 
+    <!-- 7. BONES (MSK) -->
     <button class="accordion" id="msk_acc">🦴 Bones & Muscles</button>
     <div class="panel" id="msk_pan">
       
       <div id="trauma_bones_section" style="display:none; border:1px solid #fca5a5; background:#fef2f2; padding:10px; border-radius:8px; margin-bottom:15px;">
           <h4 style="color:#ef4444; margin-top:0;">Fall / Trauma Specifics</h4>
-          <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="limb_p"> Limb pain</div>
-          <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="cspine_p"> C-Spine tenderness</div>
-          <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rib_p"> Rib pain</div>
-          <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="deformity_p"> Obvious deformity</div>
+          <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="limb_p" onchange="toggleMenu('limb_p_n', this.checked)"> Limb pain
+             <div id="limb_p_n" class="nested" style="margin-bottom:10px;"><input type="text" id="limb_p_det" placeholder="Further details..."></div>
+          </div>
+          <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="cspine_p" onchange="toggleMenu('cspine_p_n', this.checked)"> C-Spine tenderness
+             <div id="cspine_p_n" class="nested" style="margin-bottom:10px;"><input type="text" id="cspine_p_det" placeholder="Further details..."></div>
+          </div>
+          <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rib_p" onchange="toggleMenu('rib_p_n', this.checked)"> Rib pain
+             <div id="rib_p_n" class="nested" style="margin-bottom:10px;"><input type="text" id="rib_p_det" placeholder="Further details..."></div>
+          </div>
+          <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="deformity_p" onchange="toggleMenu('deformity_p_n', this.checked)"> Obvious deformity
+             <div id="deformity_p_n" class="nested" style="margin-bottom:10px;"><input type="text" id="deformity_p_det" placeholder="Further details..."></div>
+          </div>
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Back Pain?
@@ -725,8 +767,8 @@
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Trouble Walking?
         <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('walk_p', 'No', this); toggleMenu('walk_n', false); calculateDDx();">No</button>
-          <button type="button" class="segment-btn" onclick="setSeg('walk_p', 'Yes', this); toggleMenu('walk_n', true); calculateDDx();">Yes</button>
+          <button type="button" class="segment-btn active" onclick="setSeg('walk_p', 'No', this); toggleMenu('walk_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('walk_p', 'Yes', this); toggleMenu('walk_n', true)">Yes</button>
         </div>
         <input type="hidden" id="walk_p" value="No">
         <div id="walk_n" class="nested">
@@ -747,15 +789,24 @@
       </div>
     </div>
 
+    <!-- MATERNITY, TRAUMA, FALLS, MENTAL HEALTH -->
+    
     <button class="accordion" id="maternity_acc" style="display:none;">🤰 Maternity / Obstetrics</button>
     <div class="panel" id="maternity_pan">
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Gravida/Para: <div style="display:flex; gap:10px;"><input type="number" id="mat_gravida" placeholder="Gravida (G)"><input type="number" id="mat_para" placeholder="Para (P)"></div></div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Gestation (Weeks+Days): <input type="text" id="mat_gestation" placeholder="e.g. 38+2"></div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_contractions"> Contractions present? <input type="text" id="mat_con_freq" placeholder="Frequency / Duration" style="margin-top:5px;"></div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_waters"> Waters broken? <input type="text" id="mat_wat_col" placeholder="Colour" style="margin-top:5px;"></div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_bleed"> Bleeding / Show present?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_move"> Fetal movements normal?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_red_flags"> Obstetric Red Flags (Pre-Eclampsia/Ectopic/Prolapse)? <input type="text" id="mat_rf_det" placeholder="Details" style="margin-top:5px;"></div>
+      
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_bleed" onchange="toggleMenu('mat_bleed_n', this.checked)"> Bleeding / Show present?
+         <div id="mat_bleed_n" class="nested"><input type="text" id="mat_bleed_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_move" onchange="toggleMenu('mat_move_n', this.checked)"> Fetal movements normal?
+         <div id="mat_move_n" class="nested"><input type="text" id="mat_move_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_red_flags" onchange="toggleMenu('mat_rf_n', this.checked)"> Obstetric Red Flags (Pre-Eclampsia/Ectopic/Prolapse)?
+         <div id="mat_rf_n" class="nested"><input type="text" id="mat_rf_det" placeholder="Details"></div>
+      </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
         <div class="segmented-control">
@@ -771,14 +822,26 @@
 
     <button class="accordion" id="trauma_acc" style="display:none;">💥 Trauma / RTC Details</button>
     <div class="panel" id="trauma_pan">
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_mtc"> MTC Step 3 Trigger?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_red"> RED Discriminator?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_amber"> AMBER Discriminator?</div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_mtc" onchange="toggleMenu('trauma_mtc_n', this.checked)"> MTC Step 3 Trigger?
+         <div id="trauma_mtc_n" class="nested"><input type="text" id="trauma_mtc_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_red" onchange="toggleMenu('trauma_red_n', this.checked)"> RED Discriminator?
+         <div id="trauma_red_n" class="nested"><input type="text" id="trauma_red_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_amber" onchange="toggleMenu('trauma_amber_n', this.checked)"> AMBER Discriminator?
+         <div id="trauma_amber_n" class="nested"><input type="text" id="trauma_amber_det" placeholder="Further details..."></div>
+      </div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Vehicle Damage: <textarea id="rtc_veh_cond" rows="2"></textarea></div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Speed / Position: <div style="display:flex; gap:10px;"><input type="text" id="rtc_speed" placeholder="Speed"><input type="text" id="rtc_pos" placeholder="Position"></div></div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rtc_seatbelt"> Wearing Seatbelt?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rtc_bullseye"> Bullseye to Windscreen?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rtc_extricated"> Extricated from vehicle?</div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rtc_seatbelt" onchange="toggleMenu('rtc_seatbelt_n', this.checked)"> Wearing Seatbelt?
+         <div id="rtc_seatbelt_n" class="nested"><input type="text" id="rtc_seatbelt_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rtc_bullseye" onchange="toggleMenu('rtc_bullseye_n', this.checked)"> Bullseye to Windscreen?
+         <div id="rtc_bullseye_n" class="nested"><input type="text" id="rtc_bullseye_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rtc_extricated" onchange="toggleMenu('rtc_ext_n', this.checked)"> Extricated from vehicle?
+         <div id="rtc_ext_n" class="nested"><input type="text" id="rtc_ext_how" placeholder="By who/how?"></div>
+      </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
         <div class="segmented-control">
@@ -794,13 +857,27 @@
 
     <button class="accordion" id="fall_acc" style="display:none;">📉 Falls Assessment</button>
     <div class="panel" id="fall_pan">
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_65"> Patient 65+ Years Old?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_lie"> Long lie (> 1 hour)?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_cog"> Change in cognition / new confusion?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_inj"> Minor injuries (friction, cuts)?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_hypo"> Unexplained postural hypotension?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_hist"> 2+ falls in last 7 days?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_anticoag"> On Anticoagulant / Antiplatelet?</div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_65" onchange="toggleMenu('fall_65_n', this.checked)"> Patient 65+ Years Old?
+         <div id="fall_65_n" class="nested"><input type="text" id="fall_65_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_lie" onchange="toggleMenu('fall_lie_n', this.checked)"> Long lie (> 1 hour)?
+         <div id="fall_lie_n" class="nested"><input type="text" id="fall_lie_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_cog" onchange="toggleMenu('fall_cog_n', this.checked)"> Change in cognition / new confusion?
+         <div id="fall_cog_n" class="nested"><input type="text" id="fall_cog_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_inj" onchange="toggleMenu('fall_inj_n', this.checked)"> Minor injuries (friction, cuts)?
+         <div id="fall_inj_n" class="nested"><input type="text" id="fall_inj_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_hypo" onchange="toggleMenu('fall_hypo_n', this.checked)"> Unexplained postural hypotension?
+         <div id="fall_hypo_n" class="nested"><input type="text" id="fall_hypo_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_hist" onchange="toggleMenu('fall_hist_n', this.checked)"> 2+ falls in last 7 days?
+         <div id="fall_hist_n" class="nested"><input type="text" id="fall_hist_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_anticoag" onchange="toggleMenu('fall_anticoag_n', this.checked)"> On Anticoagulant / Antiplatelet?
+         <div id="fall_anticoag_n" class="nested"><input type="text" id="fall_anticoag_det" placeholder="Further details..."></div>
+      </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
         <div class="segmented-control">
@@ -816,14 +893,24 @@
 
     <button class="accordion" id="mh_acc" style="display:none;">💭 Mental Health</button>
     <div class="panel" id="mh_pan">
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Known to MH services? <input type="text" id="mh_team" placeholder="Team/Borough" style="margin-top:5px;"></div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Thoughts of self-harm/suicide? <input type="text" id="mh_self_det" placeholder="Details" style="margin-top:5px;"></div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Risk of harm to others? <input type="text" id="mh_others_det" placeholder="Details" style="margin-top:5px;"></div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Hallucinations/delusions? <input type="text" id="mh_halluc_det" placeholder="Details" style="margin-top:5px;"></div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Intoxication / Overdose? 
-          <input type="text" id="mh_alc_det" placeholder="Alcohol details..." style="margin-top:5px;">
-          <input type="text" id="mh_drugs_det" placeholder="Drugs/Meds Overdose details..." style="margin-top:5px;">
-          <input type="text" id="toxbase_advice" placeholder="Toxbase Advice..." style="margin-top:5px;">
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mh_known" onchange="toggleMenu('mh_known_n', this.checked)"> Known to MH services?
+         <div id="mh_known_n" class="nested"><input type="text" id="mh_team" placeholder="Team/Borough"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mh_self" onchange="toggleMenu('mh_self_n', this.checked)"> Thoughts of self-harm/suicide?
+         <div id="mh_self_n" class="nested"><input type="text" id="mh_self_det" placeholder="Details"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mh_others" onchange="toggleMenu('mh_others_n', this.checked)"> Risk of harm to others?
+         <div id="mh_others_n" class="nested"><input type="text" id="mh_others_det" placeholder="Details"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mh_halluc" onchange="toggleMenu('mh_halluc_n', this.checked)"> Hallucinations/delusions?
+         <div id="mh_halluc_n" class="nested"><input type="text" id="mh_halluc_det" placeholder="Details"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mh_intox" onchange="toggleMenu('mh_intox_n', this.checked)"> Intoxication / Overdose?
+         <div id="mh_intox_n" class="nested">
+             <input type="text" id="mh_alc_det" placeholder="Alcohol details..." style="margin-bottom:5px;">
+             <input type="text" id="mh_drugs_det" placeholder="Drugs/Meds Overdose details..." style="margin-bottom:5px;">
+             <input type="text" id="toxbase_advice" placeholder="Toxbase Advice...">
+         </div>
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
@@ -838,6 +925,7 @@
       </div>
     </div>
 
+    <!-- 8. MEDS & SOCIAL -->
     <button class="accordion" id="meds_social_acc">💊 Meds & Social</button>
     <div class="panel" id="meds_social_pan">
       
@@ -893,13 +981,14 @@
       </div>
     </div>
 
+    <!-- 9. PLAN -->
     <button class="accordion" id="plan_acc">🗺️ Plan & Handover</button>
     <div class="panel" id="plan_pan">
       
       <div class="question" style="background:#fff1f2; border:1px solid #fecdd3; padding:10px; border-radius:8px;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> 🚩 Safeguarding / Vulnerability Concerns?
          <div class="segmented-control">
              <button type="button" class="segment-btn active" onclick="setSeg('safeguarding_flag', 'No', this); toggleMenu('sg_n', false)">No</button>
-             <button type="button" class="segment-btn" style="color:#ef4444;" onclick="setSeg('safeguarding_flag', 'Yes', this); toggleMenu('sg_n', true)">Yes</button>
+             <button type="button" class="segment-btn btn-red" onclick="setSeg('safeguarding_flag', 'Yes', this); toggleMenu('sg_n', true)">Yes</button>
          </div>
          <input type="hidden" id="safeguarding_flag" value="No">
          <div id="sg_n" class="nested">
@@ -931,7 +1020,7 @@
              </select>
              <div class="segmented-control" style="margin-top:10px;">
                  <button type="button" class="segment-btn active" onclick="setSeg('journey_type', 'Routine', this)">Routine</button>
-                 <button type="button" class="segment-btn" style="color:#ef4444;" onclick="setSeg('journey_type', 'Blue Call', this)">Blue Call</button>
+                 <button type="button" class="segment-btn btn-red" onclick="setSeg('journey_type', 'Blue Call', this)">Blue Call</button>
              </div>
              <input type="hidden" id="journey_type" value="Routine">
              <select id="moved_to_amb" style="margin-top:10px;">
@@ -960,6 +1049,7 @@
       </div>
     </div>
 
+    <!-- 10. ADVICE & REFUSAL (MCA) -->
     <button class="accordion" id="advice_acc">📄 Advice & Refusal</button>
     <div class="panel" id="advice_pan">
       
@@ -977,7 +1067,7 @@
       <div class="question" style="background:#fff1f2; border:1px solid #fecdd3; padding:10px; border-radius:8px;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Patient Consents to Clinical Plan?
          <div class="segmented-control">
              <button type="button" class="segment-btn active" onclick="setSeg('consent_plan', 'Yes', this); toggleMenu('mca_tool', false)">Yes</button>
-             <button type="button" class="segment-btn" style="color:#ef4444;" onclick="setSeg('consent_plan', 'No', this); toggleMenu('mca_tool', true)">No (Refusing)</button>
+             <button type="button" class="segment-btn btn-red" onclick="setSeg('consent_plan', 'No', this); toggleMenu('mca_tool', true)">No (Refusing)</button>
          </div>
          <input type="hidden" id="consent_plan" value="Yes">
          <div id="mca_tool" class="nested">
@@ -1019,12 +1109,14 @@
       </div>
     </div>
 
+    <!-- BOTTOM BUTTONS -->
     <button class="submit-btn" id="generate_btn" onclick="generateOutput()">GENERATE ePCR COPY</button>
     <button class="calc-btn" id="not_found_btn" style="background:#64748b;" onclick="generateNotFound()">🚫 PATIENT NOT FOUND (Copy Notes)</button>
     <button class="calc-btn" style="background:transparent; color:#ef4444; border:2px solid #ef4444;" onclick="resetForm()">RESET FORM (Clear Data)</button>
 
   </div>
 
+  <!-- DDX HUD (LIVE LISTENER) -->
   <div class="ddx-hud" id="ddx_hud">
     <div class="ddx-icon" id="ddx_icon">💡</div>
     <div class="ddx-content">
@@ -1073,11 +1165,11 @@
         btn.classList.add('active');
         
         var v = parseInt(valNum);
-        var bg = '#10b981'; // Green for 0
-        if(v >= 1 && v <= 3) bg = '#84cc16'; // Lime/Yellow-Green
-        else if(v >= 4 && v <= 6) bg = '#f59e0b'; // Amber
-        else if(v >= 7 && v <= 8) bg = '#ea580c'; // Orange
-        else if(v >= 9 && v <= 10) bg = '#ef4444'; // Red
+        var bg = '#10b981'; 
+        if(v >= 1 && v <= 3) bg = '#84cc16'; 
+        else if(v >= 4 && v <= 6) bg = '#f59e0b'; 
+        else if(v >= 7 && v <= 8) bg = '#ea580c'; 
+        else if(v >= 9 && v <= 10) bg = '#ef4444'; 
         
         btn.style.background = bg;
         btn.style.color = 'white';
@@ -1249,8 +1341,8 @@
         var disp = document.getElementById('final_news2_disp');
         if(disp) {
             disp.innerText = score;
-            if(score >= 5) { disp.parentNode.style.background = '#fef2f2'; disp.parentNode.style.color = '#ef4444'; }
-            else if(score >= 3) { disp.parentNode.style.background = '#fffbeb'; disp.parentNode.style.color = '#d97706'; }
+            if(score >= 5) { disp.parentNode.style.background = 'var(--acc-grad-1)'; disp.parentNode.style.color = 'white'; }
+            else if(score >= 3) { disp.parentNode.style.background = '#fef3c7'; disp.parentNode.style.color = '#b45309'; }
             else { disp.parentNode.style.background = 'var(--input-bg)'; disp.parentNode.style.color = 'var(--text-color)'; }
         }
         checkPulseAlert();
@@ -1571,7 +1663,11 @@
         // NEURO
         var neuro = [];
         if(!isOmitted('fast_val')) {
-            if(val('fast_val')==='Yes') neuro.push("- FAST Check:\n  Face: " + val('f_w') + "\n  Arm: " + val('l_w') + "\n  Speech: " + val('s_w') + "\n  Onset: " + val('fast_time'));
+            if(val('fast_val')==='Yes') {
+                var fst = "- FAST Check:\n  Face: " + val('f_w') + "\n  Arm: " + val('l_w') + "\n  Speech: " + val('s_w');
+                if(val('f_w') !== 'Normal' || val('l_w') !== 'Normal' || val('s_w') !== 'Normal') fst += "\n  Onset: " + val('fast_time');
+                neuro.push(fst);
+            }
             else neuro.push("- FAST Stroke Check not indicated");
         }
         if(!isOmitted('nausea_val')) {

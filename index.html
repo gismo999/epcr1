@@ -11,14 +11,19 @@
 
     :root {
       --bg-color: #f8fafc; --text-color: #0f172a; --panel-bg: #ffffff; --input-bg: #f1f5f9;
-      --border-color: #e2e8f0; --nested-bg: #f8fafc; --acc-grad-1: #0ea5e9; --acc-grad-2: #0369a1;
+      --border-color: #e2e8f0; --nested-bg: #f8fafc; 
+      /* Ambulance Colors: Dark Green to Dark Blue */
+      --acc-grad-1: #065f46; 
+      --acc-grad-2: #1e3a8a; 
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04); --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
       --radius-sm: 12px; --radius-md: 20px; --radius-pill: 9999px;
     }
     
     body.dark-mode {
       --bg-color: #020617; --text-color: #f8fafc; --panel-bg: #0f172a; --input-bg: #1e293b;
-      --border-color: #334155; --nested-bg: #0b1120; --acc-grad-1: #38bdf8; --acc-grad-2: #0284c7;
+      --border-color: #334155; --nested-bg: #0b1120; 
+      --acc-grad-1: #059669; 
+      --acc-grad-2: #2563eb;
     }
 
     body { font-family: 'Inter', sans-serif; padding: 16px; padding-bottom: 120px; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.4s, color 0.4s; }
@@ -50,6 +55,12 @@
     .segment-btn { flex: 1; padding: 12px 8px; border: none; background: transparent; color: var(--text-color); font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 8px; transition: 0.3s; text-align: center; }
     .segment-btn.active { background: var(--acc-grad-1); color: white; box-shadow: var(--shadow-sm); }
     body.dark-mode .segment-btn.active { background: var(--acc-grad-2); }
+    
+    /* DYNAMIC RED BUTTONS */
+    .segment-btn.btn-red { color: #ef4444; }
+    .segment-btn.btn-red.active { background: #ef4444 !important; color: white !important; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3) !important; }
+    body.dark-mode .segment-btn.btn-red { color: #fca5a5; }
+    body.dark-mode .segment-btn.btn-red.active { background: #ef4444 !important; color: white !important; }
 
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
@@ -229,8 +240,13 @@
         </div>
       </div>
 
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_sepsis"> Suspected Sepsis / Infection?</div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_allerg"> Suspected Anaphylaxis?</div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_sepsis" onchange="toggleMenu('sus_sepsis_n', this.checked)"> Suspected Sepsis / Infection?
+        <div id="sus_sepsis_n" class="nested"><input type="text" id="sus_sepsis_det" placeholder="Source of infection?"></div>
+      </div>
+      
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_allerg" onchange="toggleMenu('sus_allerg_n', this.checked)"> Suspected Anaphylaxis?
+        <div id="sus_allerg_n" class="nested"><input type="text" id="sus_allerg_det" placeholder="Suspected trigger?"></div>
+      </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
         <div class="segmented-control">
@@ -460,6 +476,23 @@
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="oedema" onchange="toggleMenu('oedema_n', this.checked)"> Swollen legs/ankles?
         <div id="oedema_n" class="nested"><input type="text" id="oedema_det" placeholder="Pitting? Bilateral/Unilateral?"></div>
       </div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Skin / Perfusion?
+          <div class="segmented-control grid-3">
+            <button type="button" class="segment-btn active" onclick="setSeg('skin_cond', 'Warm & Dry', this)">Warm/Dry</button>
+            <button type="button" class="segment-btn" onclick="setSeg('skin_cond', 'Pale', this)">Pale</button>
+            <button type="button" class="segment-btn" onclick="setSeg('skin_cond', 'Clammy / Sweaty', this)">Clammy</button>
+            <button type="button" class="segment-btn" onclick="setSeg('skin_cond', 'Flushed / Hot', this)">Flushed</button>
+            <button type="button" class="segment-btn" onclick="setSeg('skin_cond', 'Mottled', this)">Mottled</button>
+          </div>
+          <input type="hidden" id="skin_cond" value="Warm & Dry">
+          <div style="margin-top:10px; font-weight:bold; font-size:11px;">Capillary Refill Time (CRT):</div>
+          <div class="segmented-control">
+            <button type="button" class="segment-btn active" onclick="setSeg('crt_val', '< 2 seconds', this)">Under 2s</button>
+            <button type="button" class="segment-btn btn-red" onclick="setSeg('crt_val', '> 2 seconds', this)">Over 2s</button>
+          </div>
+          <input type="hidden" id="crt_val" value="< 2 seconds">
+      </div>
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Was a 12-Lead ECG performed?
          <div class="segmented-control">
@@ -527,6 +560,17 @@
           <input type="text" id="fast_mimics" placeholder="Is BM normal? History of seizures?">
           <input type="text" id="fast_time" placeholder="Time of Onset" style="margin-top:10px;">
         </div>
+      </div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Pupils?
+          <div class="segmented-control grid-3">
+            <button type="button" class="segment-btn active" onclick="setSeg('pupils_val', 'PEARL Size 3-4', this)">PEARL Normal</button>
+            <button type="button" class="segment-btn" onclick="setSeg('pupils_val', 'Pinpoint', this)">Pinpoint</button>
+            <button type="button" class="segment-btn" onclick="setSeg('pupils_val', 'Dilated', this)">Dilated</button>
+            <button type="button" class="segment-btn" onclick="setSeg('pupils_val', 'Sluggish', this)">Sluggish</button>
+            <button type="button" class="segment-btn" onclick="setSeg('pupils_val', 'Unequal', this)">Unequal</button>
+          </div>
+          <input type="hidden" id="pupils_val" value="PEARL Size 3-4">
       </div>
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Nausea / Vomiting?
@@ -712,12 +756,12 @@
         <div id="ur_pain_n" style="display:none; margin-top:5px;"><input type="text" id="ur_pain_start" placeholder="When did it start?"></div>
         
         <div style="margin-top:10px;">Blood in urine?</div>
-        <div class="segmented-control"><button class="segment-btn active" onclick="setSeg('ur_blood','No',this); toggleMenu('ur_blood_n', false)">No</button><button class="segment-btn" onclick="setSeg('ur_blood','Yes',this); toggleMenu('ur_blood_n', true)">Yes</button></div>
+        <div class="segmented-control"><button class="segment-btn active" onclick="setSeg('ur_blood','No',this); toggleMenu('ur_blood_n', false)">No</button><button class="segment-btn btn-red" onclick="setSeg('ur_blood','Yes',this); toggleMenu('ur_blood_n', true)">Yes</button></div>
         <input type="hidden" id="ur_blood" value="No"> 
         <div id="ur_blood_n" style="display:none; margin-top:5px;"><input type="number" id="ur_blood_times" placeholder="How many times?"></div>
         
         <div style="margin-top:10px;">Unable to urinate?</div>
-        <div class="segmented-control"><button class="segment-btn active" onclick="setSeg('ur_ret','No',this); toggleMenu('ur_ret_n', false)">No</button><button class="segment-btn" onclick="setSeg('ur_ret','Yes',this); toggleMenu('ur_ret_n', true)">Yes</button></div>
+        <div class="segmented-control"><button class="segment-btn active" onclick="setSeg('ur_ret','No',this); toggleMenu('ur_ret_n', false)">No</button><button class="segment-btn btn-red" onclick="setSeg('ur_ret','Yes',this); toggleMenu('ur_ret_n', true)">Yes</button></div>
         <input type="hidden" id="ur_ret" value="No"> 
         <div id="ur_ret_n" style="display:none; margin-top:5px;"><input type="text" id="ur_ret_time" placeholder="How long for?"></div>
       </div>
@@ -929,24 +973,14 @@
 
     <button class="accordion" id="mh_acc" style="display:none;">💭 Mental Health</button>
     <div class="panel" id="mh_pan">
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mh_known" onchange="toggleMenu('mh_known_n', this.checked)"> Known to MH services?
-         <div id="mh_known_n" class="nested"><input type="text" id="mh_team" placeholder="Team/Borough"></div>
-      </div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mh_self" onchange="toggleMenu('mh_self_n', this.checked)"> Thoughts of self-harm/suicide?
-         <div id="mh_self_n" class="nested"><input type="text" id="mh_self_det" placeholder="Intent, plan, means? Past attempts?"></div>
-      </div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mh_others" onchange="toggleMenu('mh_others_n', this.checked)"> Risk of harm to others?
-         <div id="mh_others_n" class="nested"><input type="text" id="mh_others_det" placeholder="Details of threats, target identified?"></div>
-      </div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mh_halluc" onchange="toggleMenu('mh_halluc_n', this.checked)"> Hallucinations/delusions?
-         <div id="mh_halluc_n" class="nested"><input type="text" id="mh_halluc_det" placeholder="Auditory/Visual? Command hallucinations?"></div>
-      </div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mh_intox" onchange="toggleMenu('mh_intox_n', this.checked)"> Intoxication / Overdose?
-         <div id="mh_intox_n" class="nested">
-             <input type="text" id="mh_alc_det" placeholder="Alcohol details (Amount/Type)..." style="margin-bottom:5px;">
-             <input type="text" id="mh_drugs_det" placeholder="Drugs/Meds Overdose details (Amount/Time)..." style="margin-bottom:5px;">
-             <input type="text" id="toxbase_advice" placeholder="Toxbase Advice..." style="margin-top:5px;">
-         </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Known to MH services? <input type="text" id="mh_team" placeholder="Team/Borough" style="margin-top:5px;"></div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Thoughts of self-harm/suicide? <input type="text" id="mh_self_det" placeholder="Intent, plan, means? Past attempts?" style="margin-top:5px;"></div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Risk of harm to others? <input type="text" id="mh_others_det" placeholder="Details of threats, target identified?" style="margin-top:5px;"></div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Hallucinations/delusions? <input type="text" id="mh_halluc_det" placeholder="Auditory/Visual? Command hallucinations?" style="margin-top:5px;"></div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Intoxication / Overdose? 
+          <input type="text" id="mh_alc_det" placeholder="Alcohol details (Amount/Type)..." style="margin-top:5px;">
+          <input type="text" id="mh_drugs_det" placeholder="Drugs/Meds Overdose details (Amount/Time)..." style="margin-top:5px;">
+          <input type="text" id="toxbase_advice" placeholder="Toxbase Advice..." style="margin-top:5px;">
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
@@ -964,7 +998,7 @@
     <!-- 8. MEDS & SOCIAL -->
     <button class="accordion" id="meds_social_acc">💊 Meds & Social</button>
     <div class="panel" id="meds_social_pan">
-      
+
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Medications Given?
          <div class="segmented-control grid-2" style="margin-bottom:10px;">
              <button type="button" class="segment-btn" onclick="quickMed('Aspirin 300mg')">Aspirin 300mg</button>
@@ -1183,7 +1217,7 @@
         haptic('light');
         var hidden = document.getElementById(hiddenId);
         if(hidden) hidden.value = valNum;
-        var btns = btn.parentNode.querySelectorAll('button');
+        var btns = btn.parentNode.querySelectorAll('.segment-btn');
         btns.forEach(function(b) { b.classList.remove('active'); });
         btn.classList.add('active');
     }
@@ -1377,8 +1411,8 @@
         var disp = document.getElementById('final_news2_disp');
         if(disp) {
             disp.innerText = score;
-            if(score >= 5) { disp.parentNode.style.background = 'var(--acc-grad-1)'; disp.parentNode.style.color = 'white'; }
-            else if(score >= 3) { disp.parentNode.style.background = '#fef3c7'; disp.parentNode.style.color = '#b45309'; }
+            if(score >= 5) { disp.parentNode.style.background = '#fef2f2'; disp.parentNode.style.color = '#ef4444'; }
+            else if(score >= 3) { disp.parentNode.style.background = '#fffbeb'; disp.parentNode.style.color = '#d97706'; }
             else { disp.parentNode.style.background = 'var(--input-bg)'; disp.parentNode.style.color = 'var(--text-color)'; }
         }
         checkPulseAlert();
@@ -1694,6 +1728,9 @@
         if(!isOmitted('sync')) card.push(document.getElementById('sync').checked ? "- Syncope noted (" + val('sync_det') + ")" : "- No syncope");
         if(!isOmitted('dizzy')) card.push(document.getElementById('dizzy').checked ? "- Dizziness noted (" + val('dizzy_det') + ")" : "- No dizziness");
         if(!isOmitted('oedema')) card.push(document.getElementById('oedema').checked ? "- Peripheral Oedema noted (" + val('oedema_det') + ")" : "- No peripheral oedema");
+        
+        if(!isOmitted('skin_cond')) card.push("- Perfusion: Skin is " + val('skin_cond') + " | CRT: " + val('crt_val'));
+
         if(!isOmitted('ecg_perf')) {
             if(val('ecg_perf')==='Yes') {
                 var ecg = "- ECG: Yes (" + val('ecg_desc') + ")\n  ST Elev: " + (document.getElementById('st_elev').checked?"Yes":"No");
@@ -1719,6 +1756,9 @@
             }
             else neuro.push("- FAST Stroke Check not indicated");
         }
+        
+        if(!isOmitted('pupils_val')) neuro.push("- Pupils: " + val('pupils_val'));
+
         if(!isOmitted('nausea_val')) {
             if(val('nausea_val') !== 'No') neuro.push("- GI/Neuro: " + val('nausea_val') + "\n  Start: " + val('vomit_start') + "\n  Times: " + val('vomit_times') + "\n  Blood: " + val('vomit_blood'));
             else neuro.push("- No nausea or vomiting");
@@ -1805,7 +1845,7 @@
         // FALLS
         if(document.getElementById('complaint').value === 'fall') {
             var fal = [];
-            if(!isOmitted('fall_65')) fal.push(document.getElementById('fall_65').checked ? "- Patient 65+: Yes" : "- Patient under 65");
+            if(!isOmitted('fall_65')) fal.push(document.getElementById('fall_65').checked ? "- Patient 65+: Yes (" + val('fall_65_det') + ")" : "- Patient under 65");
             if(!isOmitted('fall_lie')) fal.push(document.getElementById('fall_lie').checked ? "- Long lie (>1hr): Yes (" + val('fall_lie_det') + ")" : "- No long lie (>1hr)");
             if(!isOmitted('fall_cog')) fal.push(document.getElementById('fall_cog').checked ? "- New confusion: Yes (" + val('fall_cog_det') + ")" : "- No new confusion");
             if(!isOmitted('fall_inj')) fal.push(document.getElementById('fall_inj').checked ? "- Minor injuries: Yes (" + val('fall_inj_det') + ")" : "- No minor injuries");
@@ -1837,7 +1877,7 @@
         if(!isOmitted('soc_support')) soc.push("- Support: " + val('soc_support'));
         if(!isOmitted('soc_level')) soc.push("- Level of Care: " + val('soc_level'));
         if(val('det_medsoc_val') === 'Yes') soc.push("Further Details:\n" + (val('det_medsoc_txt') || "None recorded."));
-        buildSec("Social History", soc);
+        buildSec("Meds & Social", soc);
 
         // VITALS & MEDS
         var vm = [];

@@ -240,11 +240,11 @@
         </div>
       </div>
 
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_sepsis" onchange="toggleMenu('sus_sepsis_n', this.checked)"> Suspected Sepsis / Infection?
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_sepsis" onchange="toggleMenu('sus_sepsis_n', this.checked); calculateDDx();"> Suspected Sepsis / Infection?
         <div id="sus_sepsis_n" class="nested"><input type="text" id="sus_sepsis_det" placeholder="Source of infection?"></div>
       </div>
       
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_allerg" onchange="toggleMenu('sus_allerg_n', this.checked)"> Suspected Anaphylaxis?
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_allerg" onchange="toggleMenu('sus_allerg_n', this.checked); calculateDDx();"> Suspected Anaphylaxis?
         <div id="sus_allerg_n" class="nested"><input type="text" id="sus_allerg_det" placeholder="Suspected trigger?"></div>
       </div>
 
@@ -625,7 +625,7 @@
               <label>BP (SYS/DIA)</label>
               <div style="display:flex; gap:4px;">
                 <input type="number" id="sys_bp" placeholder="SYS" class="news-input" oninput="calcNEWS2()">
-                <input type="number" id="dia_bp" placeholder="DIA" class="news-input">
+                <input type="number" id="dia_bp" placeholder="DIA" class="news-input" oninput="calcNEWS2()">
               </div>
             </div>
             <div class="vital-input-card">
@@ -664,7 +664,7 @@
             <label><input type="checkbox" id="copd_scale" class="news-cb" onchange="calcNEWS2()"> COPD SpO2 Scale?</label>
         </div>
         
-        <button type="button" class="calc-btn" onclick="snapshotVitals()" style="background:var(--acc-grad-1);">📸 Snapshot Vitals Set (Clears Fields)</button>
+        <button type="button" class="calc-btn" onclick="snapshotVitals()" style="background:var(--acc-grad-1);">📸 Snapshot Vitals Set (Saves & Clears Boxes)</button>
         <div id="news_badge_norm" style="text-align:center; font-weight:800; font-size:18px; padding:10px; margin-top:10px; border-radius:8px; background:#f1f5f9;">NEWS2 Score: <span id="final_news2_disp">0</span></div>
         <input type="hidden" id="final_news2" value="0">
         
@@ -902,13 +902,13 @@
 
     <button class="accordion" id="trauma_acc" style="display:none;">💥 Trauma / RTC Details</button>
     <div class="panel" id="trauma_pan">
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_mtc" onchange="toggleMenu('trauma_mtc_n', this.checked)"> MTC Step 3 Trigger?
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_mtc" onchange="toggleMenu('trauma_mtc_n', this.checked); calculateDDx();"> MTC Step 3 Trigger?
          <div id="trauma_mtc_n" class="nested"><input type="text" id="trauma_mtc_det" placeholder="Which trigger? (e.g. >55y, anticoagulated)"></div>
       </div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_red" onchange="toggleMenu('trauma_red_n', this.checked)"> RED Discriminator?
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_red" onchange="toggleMenu('trauma_red_n', this.checked); calculateDDx();"> RED Discriminator?
          <div id="trauma_red_n" class="nested"><input type="text" id="trauma_red_det" placeholder="Which trigger? (e.g. severe pain, LOC)"></div>
       </div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_amber" onchange="toggleMenu('trauma_amber_n', this.checked)"> AMBER Discriminator?
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_amber" onchange="toggleMenu('trauma_amber_n', this.checked); calculateDDx();"> AMBER Discriminator?
          <div id="trauma_amber_n" class="nested"><input type="text" id="trauma_amber_det" placeholder="Which trigger? (e.g. unable to bear weight)"></div>
       </div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Vehicle Damage: <textarea id="rtc_veh_cond" rows="2" placeholder="Frontal, side impact, rollover, airbags deployed?"></textarea></div>
@@ -937,25 +937,25 @@
 
     <button class="accordion" id="fall_acc" style="display:none;">📉 Falls Assessment</button>
     <div class="panel" id="fall_pan">
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_65" onchange="toggleMenu('fall_65_n', this.checked)"> Patient 65+ Years Old?
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_65" onchange="toggleMenu('fall_65_n', this.checked); calculateDDx();"> Patient 65+ Years Old?
          <div id="fall_65_n" class="nested"><input type="text" id="fall_65_det" placeholder="Further details..."></div>
       </div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_lie" onchange="toggleMenu('fall_lie_n', this.checked)"> Long lie (> 1 hour)?
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_lie" onchange="toggleMenu('fall_lie_n', this.checked); calculateDDx();"> Long lie (> 1 hour)?
          <div id="fall_lie_n" class="nested"><input type="text" id="fall_lie_det" placeholder="Estimated duration on floor?"></div>
       </div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_cog" onchange="toggleMenu('fall_cog_n', this.checked)"> Change in cognition / new confusion?
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_cog" onchange="toggleMenu('fall_cog_n', this.checked); calculateDDx();"> Change in cognition / new confusion?
          <div id="fall_cog_n" class="nested"><input type="text" id="fall_cog_det" placeholder="Collateral history confirmed?"></div>
       </div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_inj" onchange="toggleMenu('fall_inj_n', this.checked)"> Minor injuries (friction, cuts)?
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_inj" onchange="toggleMenu('fall_inj_n', this.checked); calculateDDx();"> Minor injuries (friction, cuts)?
          <div id="fall_inj_n" class="nested"><input type="text" id="fall_inj_det" placeholder="Location/Type? Need closing/dressing?"></div>
       </div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_hypo" onchange="toggleMenu('fall_hypo_n', this.checked)"> Unexplained postural hypotension?
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_hypo" onchange="toggleMenu('fall_hypo_n', this.checked); calculateDDx();"> Unexplained postural hypotension?
          <div id="fall_hypo_n" class="nested"><input type="text" id="fall_hypo_det" placeholder="Lying/Standing BP readings?"></div>
       </div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_hist" onchange="toggleMenu('fall_hist_n', this.checked)"> 2+ falls in last 7 days?
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_hist" onchange="toggleMenu('fall_hist_n', this.checked); calculateDDx();"> 2+ falls in last 7 days?
          <div id="fall_hist_n" class="nested"><input type="text" id="fall_hist_det" placeholder="Any pattern to the falls?"></div>
       </div>
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_anticoag" onchange="toggleMenu('fall_anticoag_n', this.checked)"> On Anticoagulant / Antiplatelet?
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_anticoag" onchange="toggleMenu('fall_anticoag_n', this.checked); calculateDDx();"> On Anticoagulant / Antiplatelet?
          <div id="fall_anticoag_n" class="nested"><input type="text" id="fall_anticoag_det" placeholder="Which medication? Head strike?"></div>
       </div>
 
@@ -998,7 +998,7 @@
     <!-- 8. MEDS & SOCIAL -->
     <button class="accordion" id="meds_social_acc">💊 Meds & Social</button>
     <div class="panel" id="meds_social_pan">
-
+      
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Medications Given?
          <div class="segmented-control grid-2" style="margin-bottom:10px;">
              <button type="button" class="segment-btn" onclick="quickMed('Aspirin 300mg')">Aspirin 300mg</button>
@@ -1286,14 +1286,33 @@
     var isAlerting = false;
     function checkPulseAlert() {
         var cp = document.getElementById('cp_val');
-        var news = document.getElementById('final_news2');
         var isCp = (cp && cp.value === 'Yes' && !isOmitted('cp_val'));
-        var isNews = (news && parseInt(news.value) >= 5);
         
+        var isNews = false;
+        var news = document.getElementById('final_news2');
+        if (news && parseInt(news.value) >= 5) {
+            isNews = true;
+        } else {
+            var logText = document.getElementById('vitals_log') ? document.getElementById('vitals_log').value : "";
+            if (logText) {
+                var nMatch = logText.match(/NEWS:(\d+)/g);
+                if(nMatch && parseInt(nMatch[nMatch.length-1].replace('NEWS:','')) >= 5) isNews = true;
+            }
+        }
+
         var isSepsis = (document.getElementById('sus_sepsis') && document.getElementById('sus_sepsis').checked && !isOmitted('sus_sepsis'));
         var isAllerg = (document.getElementById('sus_allerg') && document.getElementById('sus_allerg').checked && !isOmitted('sus_allerg'));
         var isSobAtRest = (val('sob_val') === 'Yes' && (val('sob_when') === 'At Rest' || val('sob_when') === 'Both'));
+        
         var notAlert = (val('alert_val') === 'No');
+        if (!notAlert) {
+            var logText = document.getElementById('vitals_log') ? document.getElementById('vitals_log').value : "";
+            if (logText) {
+                var aMatch = logText.match(/ACVPU:([ACVPU])/g);
+                if(aMatch && aMatch[aMatch.length-1].replace('ACVPU:','') !== 'A') notAlert = true;
+            }
+        }
+
         var isDib = (val('dib_val') === 'Yes');
         
         var shouldAlert = (isCp || isNews || isSepsis || isAllerg || isSobAtRest || notAlert || isDib);
@@ -1373,6 +1392,7 @@
 
     function calcNEWS2() {
         var sys = parseInt(document.getElementById('sys_bp').value) || 0;
+        var dia = parseInt(document.getElementById('dia_bp').value) || 0;
         var hr = parseInt(document.getElementById('hr_val_news').value) || 0;
         var rr = parseInt(document.getElementById('rr_val_news').value) || 0;
         var spo2 = parseInt(document.getElementById('spo2_val_news').value) || 0;
@@ -1386,7 +1406,11 @@
         
         inputs.forEach(function(i) { if(i) { i.classList.remove('vital-normal', 'vital-abnormal'); }});
         function color(el, v, min, max) { if(el && v) { if(v>=min && v<=max) el.classList.add('vital-normal'); else el.classList.add('vital-abnormal'); } }
-        color(inputs[0], sys, 111, 219); color(inputs[2], hr, 51, 90); color(inputs[3], rr, 12, 20); color(inputs[5], temp, 36.1, 38.0);
+        color(inputs[0], sys, 111, 219); 
+        color(inputs[1], dia, 60, 90); 
+        color(inputs[2], hr, 51, 90); 
+        color(inputs[3], rr, 12, 20); 
+        color(inputs[5], temp, 36.1, 38.0);
         color(inputs[6], bm, 4.0, 11.0);
         
         if(spo2>0) {
@@ -1442,11 +1466,12 @@
         inputs.forEach(function(i) { i.value = ''; i.classList.remove('vital-normal', 'vital-abnormal'); });
         document.getElementById('on_o2').checked = false;
         document.getElementById('copd_scale').checked = false;
-        document.getElementById('final_news2_disp').innerText = "0";
-        document.getElementById('final_news2_disp').parentNode.style.background = 'var(--input-bg)';
-        document.getElementById('final_news2_disp').parentNode.style.color = 'var(--text-color)';
-        document.getElementById('final_news2').value = "0";
+        
+        var btnA = document.querySelector('button[onclick*="\'acvpu\', \'A\'"]');
+        if(btnA) setSeg('acvpu', 'A', btnA);
+
         checkPulseAlert();
+        calculateDDx();
     }
 
     function quickMed(med) {
@@ -1472,7 +1497,6 @@
 
     // --- LIVE BACKGROUND DECISION & DDX ENGINE ---
     function calculateDDx() {
-      // 1. Build Differential Diagnosis
       var ddx = []; 
       var cp = val('cp_val')==='Yes'; var sob = val('sob_val')==='Yes';
       var fast = val('fast_val')==='Yes'; var f_w = val('f_w')!=='Normal'; var l_w = val('l_w')!=='Normal'; var s_w = val('s_w')!=='Normal';
@@ -1483,10 +1507,39 @@
       var neuro_seiz = document.getElementById('seizure').checked && !isOmitted('seizure');
       var dizzy = document.getElementById('dizzy').checked && !isOmitted('dizzy'); 
       var sync = document.getElementById('sync').checked && !isOmitted('sync');
-      var bm = parseFloat(document.getElementById('bm_val').value) || 0;
       var notAlert = val('alert_val') === 'No';
       var sobAtRest = val('sob_when') === 'At Rest' || val('sob_when') === 'Both';
+      
+      var bm = parseFloat(document.getElementById('bm_val').value);
+      var t = parseFloat(document.getElementById('temp_val').value);
+      var currentNews = parseInt(document.getElementById('final_news2').value) || 0;
 
+      // Log Fallback Logic
+      var logText = document.getElementById('vitals_log') ? document.getElementById('vitals_log').value : "";
+      if(logText) {
+          if(!bm || isNaN(bm)) {
+              var bMatch = logText.match(/BM:([\d\.]+)/g);
+              if(bMatch) bm = parseFloat(bMatch[bMatch.length-1].replace('BM:',''));
+          }
+          if(!t || isNaN(t)) {
+              var tMatch = logText.match(/T:([\d\.]+)/g);
+              if(tMatch) t = parseFloat(tMatch[tMatch.length-1].replace('T:',''));
+          }
+          var nMatch = logText.match(/NEWS:(\d+)/g);
+          if(nMatch) {
+              var lastNews = parseInt(nMatch[nMatch.length-1].replace('NEWS:',''));
+              if(lastNews > currentNews) currentNews = lastNews; 
+          }
+          var aMatch = logText.match(/ACVPU:([ACVPU])/g);
+          if(aMatch) {
+              var lastA = aMatch[aMatch.length-1].replace('ACVPU:','');
+              if(lastA !== 'A') notAlert = true;
+          }
+      }
+      bm = bm || 0;
+      t = t || 0;
+
+      // 1. Build Differential Diagnosis
       if (allerg && sob) { ddx.push("ANAPHYLAXIS"); }
       if (sepsis) { ddx.push("Sepsis / Severe Infection"); }
       if (fast && (f_w || l_w || s_w)) { ddx.push("Stroke / TIA"); ddx.push("Hypoglycaemia"); ddx.push("Bell's Palsy"); }
@@ -1510,7 +1563,7 @@
 
       if(val('init_airway') === 'Compromised' || val('init_airway') === 'Obstructed') redFlags.push("Airway Compromise");
       if(val('cp_val') === 'Yes') redFlags.push("Chest Pain");
-      if((parseInt(document.getElementById('final_news2').value) || 0) >= 5) redFlags.push("NEWS2 >= 5");
+      if(currentNews >= 5) redFlags.push("NEWS2 >= 5");
       if(sepsis) redFlags.push("Sepsis");
       if(notAlert) redFlags.push("Reduced Level of Consciousness (" + (val('vpu_level')||"Not Alert") + ")");
       if(sob && sobAtRest) redFlags.push("Shortness of Breath at Rest");
@@ -1525,7 +1578,6 @@
       if(val('ur_ret') === 'Yes') amberFlags.push("Urine Retention");
       if(val('walk_p') === 'Yes') amberFlags.push("Can't Walk");
       
-      var t = parseFloat(document.getElementById('temp_val').value) || 0;
       if(t > 0 && (t <= 35 || t >= 40)) amberFlags.push("Temp Extreme");
       else if(t >= 38.5) amberFlags.push("High Temp");
 

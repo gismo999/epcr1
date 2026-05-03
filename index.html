@@ -1007,6 +1007,14 @@
     <button class="accordion" id="meds_social_acc">💊 Meds & Social</button>
     <div class="panel" id="meds_social_pan">
 
+      <!-- OFFLINE MED LOOKUP TOOL -->
+      <div style="background:#e0f2fe; border:1px solid #bae6fd; padding:10px; border-radius:8px; margin-bottom:15px;">
+        <h4 style="color:#0369a1; margin-top:0; margin-bottom:5px;">🔍 Offline Med Lookup (Internal Use)</h4>
+        <div style="font-size:11px; opacity:0.8; margin-bottom:8px; color:var(--text-color);">Does NOT copy to ePCR. Type a common UK med to see what it is used for.</div>
+        <input type="text" id="med_lookup" placeholder="Type a medication name..." oninput="lookupMed()" style="background:white; color:black;">
+        <div id="med_lookup_out" style="display:none; margin-top:8px; font-size:12px; background:white; color:black; padding:8px; border-radius:6px; border:1px solid #bae6fd;"></div>
+      </div>
+
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Medications Given?
          <div class="segmented-control grid-2" style="margin-bottom:10px;">
              <button type="button" class="segment-btn" onclick="quickMed('Aspirin 300mg')">Aspirin 300mg</button>
@@ -1204,6 +1212,90 @@
   </div>
 
   <script>
+    // --- MED DICTIONARY ENGINE ---
+    const medDictionary = {
+        "apixaban": "Anticoagulant (Blood thinner) - Prevents clots, AFib, DVT/PE risk.",
+        "rivaroxaban": "Anticoagulant (Blood thinner) - Prevents clots, AFib, DVT/PE risk.",
+        "edoxaban": "Anticoagulant (Blood thinner) - Prevents clots, AFib, DVT/PE risk.",
+        "warfarin": "Anticoagulant (Blood thinner) - Prevents clots.",
+        "clopidogrel": "Antiplatelet (Blood thinner) - Post heart-attack/stroke.",
+        "ticagrelor": "Antiplatelet (Blood thinner) - Post heart-attack/stent.",
+        "ramipril": "ACE Inhibitor - High blood pressure, heart failure.",
+        "lisinopril": "ACE Inhibitor - High blood pressure, heart failure.",
+        "amlodipine": "Calcium Channel Blocker - High blood pressure, angina.",
+        "bisoprolol": "Beta Blocker - High blood pressure, heart failure, AFib.",
+        "atenolol": "Beta Blocker - High blood pressure, angina, arrhythmias.",
+        "furosemide": "Loop Diuretic (Water pill) - Heart failure, edema.",
+        "bumetanide": "Loop Diuretic (Water pill) - Heart failure, edema.",
+        "spironolactone": "Potassium-sparing Diuretic - Heart failure, liver disease.",
+        "metformin": "Biguanide - Type 2 Diabetes.",
+        "gliclazide": "Sulfonylurea - Type 2 Diabetes.",
+        "insulin": "Hormone - Type 1 or Type 2 Diabetes.",
+        "omeprazole": "PPI - Acid reflux, GORD, stomach ulcers.",
+        "lansoprazole": "PPI - Acid reflux, GORD, stomach ulcers.",
+        "levothyroxine": "Hormone - Hypothyroidism (underactive thyroid).",
+        "atorvastatin": "Statin - High cholesterol, cardiovascular disease prevention.",
+        "simvastatin": "Statin - High cholesterol.",
+        "sertraline": "SSRI Antidepressant - Depression, anxiety, panic/OCD.",
+        "citalopram": "SSRI Antidepressant - Depression, panic disorder.",
+        "fluoxetine": "SSRI Antidepressant - Depression, anxiety.",
+        "amitriptyline": "TCA - Nerve pain, depression, migraine prevention.",
+        "mirtazapine": "Antidepressant - Depression, anxiety, sleep aid.",
+        "gabapentin": "Anticonvulsant - Nerve pain, epilepsy.",
+        "pregabalin": "Anticonvulsant - Nerve pain, anxiety, epilepsy.",
+        "salbutamol": "SABA Inhaler - Asthma, COPD (Reliever).",
+        "tiotropium": "LAMA Inhaler - COPD.",
+        "montelukast": "Leukotriene receptor antagonist - Asthma, allergies.",
+        "allopurinol": "Xanthine oxidase inhibitor - Gout prevention.",
+        "tramadol": "Opioid Analgesic - Moderate to severe pain.",
+        "co-codamol": "Analgesic compound - Mild to moderate pain.",
+        "morphine": "Opioid Analgesic - Severe pain.",
+        "levetiracetam": "Anticonvulsant - Epilepsy/Seizures (Keppra).",
+        "sodium valproate": "Anticonvulsant - Epilepsy, bipolar disorder.",
+        "carbamazepine": "Anticonvulsant - Epilepsy, nerve pain.",
+        "methotrexate": "Immunosuppressant - Rheumatoid arthritis, psoriasis, cancers.",
+        "prednisolone": "Corticosteroid - Inflammation, asthma/COPD exacerbation, allergies.",
+        "dexamethasone": "Corticosteroid - Inflammation, croup, severe allergies.",
+        "digoxin": "Cardiac Glycoside - AFib, heart failure.",
+        "diltiazem": "Calcium Channel Blocker - Angina, high blood pressure, arrhythmias.",
+        "quetiapine": "Atypical Antipsychotic - Schizophrenia, bipolar disorder, severe depression.",
+        "olanzapine": "Atypical Antipsychotic - Schizophrenia, bipolar disorder.",
+        "lorazepam": "Benzodiazepine - Seizures, anxiety, agitation.",
+        "diazepam": "Benzodiazepine - Seizures, anxiety, muscle spasms.",
+        "naproxen": "NSAID - Pain, inflammation.",
+        "ibuprofen": "NSAID - Pain, fever, inflammation.",
+        "paracetamol": "Analgesic - Pain, fever.",
+        "macrogol": "Laxative - Constipation.",
+        "senna": "Laxative - Constipation.",
+        "lactulose": "Laxative - Constipation.",
+        "ondansetron": "Antiemetic - Nausea and vomiting.",
+        "cyclizine": "Antiemetic - Nausea and vomiting.",
+        "metoclopramide": "Antiemetic - Nausea and vomiting, gastroparesis."
+    };
+
+    function lookupMed() {
+        var input = document.getElementById('med_lookup').value.toLowerCase().trim();
+        var out = document.getElementById('med_lookup_out');
+        if(input.length < 3) {
+            out.innerHTML = "";
+            out.style.display = 'none';
+            return;
+        }
+        var found = [];
+        for(var key in medDictionary) {
+            if(key.includes(input)) {
+                found.push("<b style='color:#0369a1;'>" + key.charAt(0).toUpperCase() + key.slice(1) + "</b>: " + medDictionary[key]);
+            }
+        }
+        if(found.length > 0) {
+            out.innerHTML = found.join("<br><br>");
+            out.style.display = 'block';
+        } else {
+            out.innerHTML = "<i style='color:#ef4444;'>No common match found for '" + input + "' in offline dictionary.</i>";
+            out.style.display = 'block';
+        }
+    }
+
     // --- HAPTIC FEEDBACK ---
     function haptic(type) {
         try {

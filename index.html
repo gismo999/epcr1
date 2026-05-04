@@ -522,7 +522,7 @@
                             <input type="checkbox" onchange="toggleMenu('r1_det', this.checked)" style="margin:0; width:14px; height:14px; margin-top:1px;">
                             <div><b style="color:#7dd3fc;">1.</b> PR interval 120-200ms (3-5 small squares).</div>
                         </label>
-                        <div id="r1_det" style="display:none; margin-left:20px; margin-top:4px; padding:6px; background:rgba(255,255,255,0.05); border-radius:4px; color:#cbd5e1;"><b>Look for:</b> Measure start of P to start of QRS. &gt;200ms = Heart Block. &lt;120ms = WPW.</div>
+                        <div id="r1_det" style="display:none; margin-left:20px; margin-top:4px; padding:6px; background:rgba(255,255,255,0.05); border-radius:4px; color:#cbd5e1;"><b>Look for:</b> Measure start of P to start of QRS. >200ms = Heart Block. &lt;120ms = WPW.</div>
                     </div>
                     <div>
                         <label style="display:flex; gap:6px; cursor:pointer; align-items:flex-start;">
@@ -1943,7 +1943,12 @@
             if(val('cough_val') === 'Yes') resp.push("- Cough: Yes\n  Phlegm: " + val('phlegm_val') + (val('phlegm_val')==='Yes' ? " (Colour: "+val('phlegm_color')+" | Blood: "+val('phlegm_blood')+")" : ""));
             else resp.push("- No recent cough");
         }
-        if(!isOmitted('rr_norm')) resp.push("- Resp Rate Normal? " + (val('rr_norm')||"Yes"));
+        
+        if(!isOmitted('rr_norm')) {
+            var rr_n = val('rr_norm');
+            resp.push(rr_n ? "- Resp Rate Noted: " + rr_n : "- Resp rate within ranges");
+        }
+        
         if(!isOmitted('air_entry')) resp.push("- Lung Sounds: " + val('air_entry'));
         if(val('det_resp_val') === 'Yes') resp.push("Further Details:\n" + (val('det_resp_txt') || "None recorded."));
         buildSec("Respiratory", resp);

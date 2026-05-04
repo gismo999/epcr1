@@ -93,6 +93,10 @@
     #privacy_shield .lock-icon { font-size: 72px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2)); margin-bottom: 16px; }
     #privacy_shield .unlock-text { font-size: 18px; font-weight: 800; color: var(--text-color); text-transform: uppercase; background: var(--panel-bg); padding: 12px 24px; border-radius: var(--radius-pill); box-shadow: var(--shadow-md);}
 
+    /* MED SAFETY MODAL */
+    #med_safety_modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 16px; }
+    .med-modal-content { background: var(--panel-bg); width: 100%; max-width: 400px; padding: 24px; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border-top: 6px solid #ef4444; }
+
     /* DDX HUD */
     .ddx-hud { position: fixed; bottom: 15px; left: 16px; right: 16px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: white; padding: 12px 16px; border-radius: var(--radius-sm); box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); z-index: 9998; display: flex; align-items: center; gap: 10px; transform: translateY(150%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s; }
     .ddx-hud.visible { transform: translateY(0); }
@@ -115,6 +119,18 @@
   <div id="privacy_shield" onclick="togglePrivacy()">
     <div class="lock-icon">🔒</div>
     <div class="unlock-text">Tap to Unlock</div>
+  </div>
+
+  <!-- CONTRAINDICATION STOP MODAL -->
+  <div id="med_safety_modal">
+    <div class="med-modal-content">
+       <h3 style="color:#ef4444; margin-top:0; display:flex; align-items:center; gap:8px;">⚠️ Safety Check</h3>
+       <div id="med_modal_text" style="font-size:14px; margin-bottom:20px; color:var(--text-color); line-height:1.5;"></div>
+       <div style="display:flex; gap:10px;">
+          <button style="flex:1; padding:14px; background:#e2e8f0; color:#0f172a; border:none; border-radius:var(--radius-sm); font-weight:800; cursor:pointer;" onclick="closeMedModal()">CANCEL</button>
+          <button style="flex:1; padding:14px; background:#ef4444; color:white; border:none; border-radius:var(--radius-sm); font-weight:800; cursor:pointer;" onclick="confirmMed()">ADMINISTER</button>
+       </div>
+    </div>
   </div>
 
   <div class="top-bar">
@@ -1482,6 +1498,54 @@
   </div>
 
   <script>
+    // --- MED CONTRAINDICATIONS & SAFETY STOP ENGINE ---
+    const medContraindications = {
+        "Aspirin": "⚠️ Active GI bleeding or bleeding disorders.\n⚠️ Known bleeding ulcer.\n⚠️ Children under 16 years old.\n⚠️ Severe hepatic impairment.",
+        "Paracetamol": "⚠️ Known allergy/hypersensitivity.\n⚠️ Extreme caution in severe hepatic impairment.",
+        "Ibuprofen": "⚠️ Active GI bleeding or peptic ulcer.\n⚠️ 3rd Trimester of pregnancy.\n⚠️ Severe heart, renal, or liver failure.\n⚠️ History of NSAID-induced asthma.",
+        "Ondansetron": "⚠️ Prolonged QT syndrome.\n⚠️ Known hypersensitivity.",
+        "Entonox": "⚠️ Suspected pneumothorax or maxillo-facial injuries.\n⚠️ Severe head injury with impaired consciousness.\n⚠️ Suspected bowel obstruction.\n⚠️ Decompression sickness (diving within 48h).",
+        "Salbutamol": "⚠️ Known hypersensitivity.\n⚠️ Caution in severe tachycardia or thyrotoxicosis."
+    };
+
+    var pendingMedToGive = "";
+
+    function quickMed(med) {
+        if(!med) return;
+        
+        // Find if the typed med matches any of our critical warnings
+        var matchedKey = Object.keys(medContraindications).find(k => med.toLowerCase().includes(k.toLowerCase()));
+        
+        if(matchedKey) {
+            pendingMedToGive = med;
+            var warningText = "<b style='font-size:16px;'>" + med + "</b><br><br><span style='color:#ef4444; font-weight:600;'>" + medContraindications[matchedKey].replace(/\n/g, '<br>') + "</span><br><br><b>Are you sure you want to administer?</b>";
+            document.getElementById('med_modal_text').innerHTML = warningText;
+            document.getElementById('med_safety_modal').style.display = 'flex';
+            haptic('heavy');
+        } else {
+            // If no contraindications in dictionary, just add it instantly
+            executeMed(med);
+        }
+    }
+
+    function closeMedModal() {
+        document.getElementById('med_safety_modal').style.display = 'none';
+        pendingMedToGive = "";
+        haptic('light');
+    }
+
+    function confirmMed() {
+        executeMed(pendingMedToGive);
+        closeMedModal();
+    }
+
+    function executeMed(med) {
+        var d = new Date(); var time = ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+        var ta = document.getElementById('meds_log');
+        ta.value += (ta.value ? "\n" : "") + "[" + time + "] " + med;
+        haptic('light');
+    }
+
     function colorPaedsVitals() {
         var age = parseInt(document.getElementById('pt_age').value) || 0;
         
@@ -1959,13 +2023,6 @@
 
         checkPulseAlert();
         calculateDDx();
-    }
-
-    function quickMed(med) {
-        if(!med) return;
-        var d = new Date(); var time = ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
-        var ta = document.getElementById('meds_log');
-        ta.value += (ta.value ? "\n" : "") + "[" + time + "] " + med;
     }
 
     function updateSections() {

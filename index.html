@@ -78,7 +78,7 @@
     .pain-btn.active { background: var(--acc-grad-1); color: white; box-shadow: var(--shadow-sm); }
 
     /* VITALS CARDS */
-    .vital-input-card { background: var(--input-bg); padding: 12px 8px; border-radius: var(--radius-sm); text-align: center; border: 1px solid var(--border-color); }
+    .vital-input-card { background: var(--input-bg); padding: 12px 8px; border-radius: var(--radius-sm); text-align: center; border: 1px solid var(--border-color); transition: background-color 0.3s, box-shadow 0.3s; }
     .vital-input-card label { font-size: 10px; display: block; margin-bottom: 6px; opacity: 0.8; font-weight: 800; color: var(--acc-grad-1); }
     .vital-normal { background-color: #d1fae5 !important; color: #047857 !important; font-weight: 700; box-shadow: inset 0 0 0 2px #34d399 !important; }
     .vital-abnormal { background-color: #ffe4e6 !important; color: #be123c !important; font-weight: 700; box-shadow: inset 0 0 0 2px #fb7185 !important; }
@@ -319,7 +319,7 @@
           <input type="hidden" id="sob_norm" value="">
           
           <div id="sob_copd" style="display:none; margin-top:10px;">
-            <div style="font-size:11px; font-weight:bold; margin-bottom:4px;">History of:</div>
+            <div style="font-size:11px; font-weight:bold; margin-bottom:4px;">Do they have COPD or Asthma?</div>
             <div class="segmented-control">
               <button type="button" class="segment-btn adult-only" onclick="setSeg('sob_type', 'COPD', this)">COPD</button>
               <button type="button" class="segment-btn" onclick="setSeg('sob_type', 'Asthma', this)">Asthma</button>
@@ -871,26 +871,36 @@
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Recorded Vitals
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; margin-top:10px;">
             <div class="vital-input-card">
+              <label>BP (SYS/DIA)</label>
+              <div style="display:flex; gap:4px;">
+                <input type="number" id="p_sys_bp" placeholder="SYS" class="news-input" oninput="colorPaedsVitals()">
+                <input type="number" id="p_dia_bp" placeholder="DIA" class="news-input" oninput="colorPaedsVitals()">
+              </div>
+            </div>
+            <div class="vital-input-card">
               <label>HR</label>
-              <input type="number" id="p_hr_val" placeholder="---" class="news-input">
+              <input type="number" id="p_hr_val" placeholder="---" class="news-input" oninput="colorPaedsVitals()">
             </div>
             <div class="vital-input-card">
               <label>RR</label>
-              <input type="number" id="p_rr_val" placeholder="---" class="news-input">
+              <input type="number" id="p_rr_val" placeholder="---" class="news-input" oninput="colorPaedsVitals()">
             </div>
             <div class="vital-input-card">
               <label>SpO2 %</label>
-              <input type="number" id="p_spo2_val" placeholder="---" class="news-input">
+              <input type="number" id="p_spo2_val" placeholder="---" class="news-input" oninput="colorPaedsVitals()">
             </div>
             <div class="vital-input-card">
                 <label>TEMP</label>
-                <input type="number" id="p_temp_val" step="0.1" placeholder="---" class="news-input">
+                <input type="number" id="p_temp_val" step="0.1" placeholder="---" class="news-input" oninput="colorPaedsVitals()">
             </div>
             <div class="vital-input-card">
                 <label>GLUCOSE</label>
-                <input type="number" id="p_bm_val" step="0.1" placeholder="---" class="news-input">
+                <input type="number" id="p_bm_val" step="0.1" placeholder="---" class="news-input" oninput="colorPaedsVitals()">
             </div>
         </div>
+        
+        <button type="button" class="calc-btn" onclick="snapshotVitals()" style="background:var(--acc-grad-1);">📸 Snapshot Vitals Set (Saves & Clears Boxes)</button>
+        <textarea id="p_vitals_log" readonly style="font-family:monospace; font-size:11px; height:80px; margin-top:10px; width:100%;" placeholder="Snapshots save here..."></textarea>
       </div>
     </div>
 
@@ -1283,9 +1293,9 @@
           <input type="text" id="paeds_accompanied" placeholder="Who is accompanying the child? (Name/Relation)" style="margin-top:8px;">
           <div style="margin-top:10px; font-size:11px; font-weight:bold;">Does the adult have Parental Responsibility (PR)?</div>
           <div class="segmented-control">
-              <button type="button" class="segment-btn active" onclick="setSeg('paeds_pr', 'Yes', this)">Yes</button>
-              <button type="button" class="segment-btn btn-red" onclick="setSeg('paeds_pr', 'No', this)">No</button>
-              <button type="button" class="segment-btn btn-red" onclick="setSeg('paeds_pr', 'Unsure', this)">Unsure</button>
+              <button type="button" class="segment-btn active" onclick="setSeg('paeds_pr', 'Yes', this); calculateDDx();">Yes</button>
+              <button type="button" class="segment-btn btn-red" onclick="setSeg('paeds_pr', 'No', this); calculateDDx();">No</button>
+              <button type="button" class="segment-btn btn-red" onclick="setSeg('paeds_pr', 'Unsure', this); calculateDDx();">Unsure</button>
           </div>
           <input type="hidden" id="paeds_pr" value="Yes">
       </div>
@@ -1470,6 +1480,51 @@
   </div>
 
   <script>
+    function colorPaedsVitals() {
+        var age = parseInt(document.getElementById('pt_age').value) || 0;
+        
+        var hrEl = document.getElementById('p_hr_val');
+        var rrEl = document.getElementById('p_rr_val');
+        var sysEl = document.getElementById('p_sys_bp');
+        var diaEl = document.getElementById('p_dia_bp');
+        var spo2El = document.getElementById('p_spo2_val');
+        var tempEl = document.getElementById('p_temp_val');
+        var bmEl = document.getElementById('p_bm_val');
+        
+        var hr = parseInt(hrEl ? hrEl.value : NaN);
+        var rr = parseInt(rrEl ? rrEl.value : NaN);
+        var sys = parseInt(sysEl ? sysEl.value : NaN);
+        var dia = parseInt(diaEl ? diaEl.value : NaN);
+        var spo2 = parseInt(spo2El ? spo2El.value : NaN);
+        var temp = parseFloat(tempEl ? tempEl.value : NaN);
+        var bm = parseFloat(bmEl ? bmEl.value : NaN);
+        
+        var minHr, maxHr, minRr, maxRr, minSys, maxSys;
+        
+        if (age < 1) { minHr=110; maxHr=160; minRr=30; maxRr=40; minSys=70; maxSys=90; }
+        else if (age < 2) { minHr=100; maxHr=150; minRr=25; maxRr=35; minSys=80; maxSys=95; }
+        else if (age < 5) { minHr=95; maxHr=140; minRr=25; maxRr=30; minSys=80; maxSys=100; }
+        else if (age < 12) { minHr=80; maxHr=120; minRr=20; maxRr=25; minSys=90; maxSys=110; }
+        else { minHr=60; maxHr=100; minRr=15; maxRr=20; minSys=100; maxSys=120; }
+        
+        function applyColor(el, val, min, max) {
+            if(!el) return;
+            el.classList.remove('vital-normal', 'vital-abnormal');
+            if(!isNaN(val)) {
+                if(val >= min && val <= max) el.classList.add('vital-normal');
+                else el.classList.add('vital-abnormal');
+            }
+        }
+        
+        applyColor(hrEl, hr, minHr, maxHr);
+        applyColor(rrEl, rr, minRr, maxRr);
+        applyColor(sysEl, sys, minSys, maxSys);
+        applyColor(diaEl, dia, 50, 90); 
+        applyColor(spo2El, spo2, 94, 100);
+        applyColor(tempEl, temp, 36.1, 37.9);
+        applyColor(bmEl, bm, 4.0, 11.0);
+    }
+
     // --- MED DICTIONARY ENGINE ---
     const medDictionary = {
         "apixaban": "Anticoagulant (Blood thinner) - Prevents clots, AFib, DVT/PE risk.",
@@ -1763,6 +1818,7 @@
             document.getElementById('wf_bp').innerText = "111-219";
         }
         calculateDDx();
+        if(typeof colorPaedsVitals === 'function') colorPaedsVitals();
     }
 
     function setGCS(id, valNum, btn) {
@@ -1847,8 +1903,28 @@
         var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
         
         if (isPaeds) {
-            // No history box for PEWS currently, but we shouldn't wipe data.
             calcPEWS();
+            var sys = document.getElementById('p_sys_bp') ? document.getElementById('p_sys_bp').value || '-' : '-';
+            var dia = document.getElementById('p_dia_bp') ? document.getElementById('p_dia_bp').value || '-' : '-';
+            var hr = document.getElementById('p_hr_val').value || '-';
+            var rr = document.getElementById('p_rr_val').value || '-';
+            var spo2 = document.getElementById('p_spo2_val').value || '-';
+            var t = document.getElementById('p_temp_val').value || '-';
+            var bm = document.getElementById('p_bm_val').value || '-';
+            var score = document.getElementById('final_pews').value;
+
+            if (sys==='-' && hr==='-' && rr==='-' && spo2==='-') return;
+
+            var d = new Date(); var time = ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+            var log = time+" | BP:"+sys+"/"+dia+" HR:"+hr+" RR:"+rr+" SpO2:"+spo2+"% T:"+t+" BM:"+bm+" PEWS:"+score;
+            var ta = document.getElementById('p_vitals_log');
+            if(ta) ta.value += (ta.value ? "\n" : "") + log;
+
+            var inputs = document.querySelectorAll('#pews_pan input[type="number"]');
+            inputs.forEach(function(i) { i.value = ''; i.classList.remove('vital-normal', 'vital-abnormal'); });
+            
+            checkPulseAlert();
+            calculateDDx();
             return;
         }
 
@@ -2428,18 +2504,26 @@
             var pews = document.getElementById('final_pews').value;
             vm.push("- Current PEWS Score: " + pews + "\n  (Behaviour: " + val('pews_beh') + ", CV: " + val('pews_cv') + ", Resp: " + val('pews_resp') + ")");
             
-            var phr = document.getElementById('p_hr_val').value || '-';
-            var prr = document.getElementById('p_rr_val').value || '-';
-            var pspo2 = document.getElementById('p_spo2_val').value || '-';
-            var ptemp = document.getElementById('p_temp_val').value || '-';
-            var pbm = document.getElementById('p_bm_val').value || '-';
-            if(phr !== '-' || prr !== '-' || pspo2 !== '-' || ptemp !== '-' || pbm !== '-') {
-                vm.push("- Recorded Vitals: HR:"+phr+" RR:"+prr+" SpO2:"+pspo2+"% T:"+ptemp+" BM:"+pbm);
+            var p_log = document.getElementById('p_vitals_log') ? document.getElementById('p_vitals_log').value : '';
+            if(p_log) {
+                vm.push("Vitals Log:\n" + p_log);
+            } else {
+                var phr = document.getElementById('p_hr_val').value || '-';
+                var prr = document.getElementById('p_rr_val').value || '-';
+                var pspo2 = document.getElementById('p_spo2_val').value || '-';
+                var ptemp = document.getElementById('p_temp_val').value || '-';
+                var pbm = document.getElementById('p_bm_val').value || '-';
+                if(phr !== '-' || prr !== '-' || pspo2 !== '-' || ptemp !== '-' || pbm !== '-') {
+                    vm.push("- Recorded Vitals: HR:"+phr+" RR:"+prr+" SpO2:"+pspo2+"% T:"+ptemp+" BM:"+pbm);
+                } else {
+                    vm.push("No vitals snapshotted.");
+                }
             }
+        } else {
+            if(!isOmitted('vitals_log')) { var vlog = document.getElementById('vitals_log').value; vm.push(vlog ? "Vitals Log:\n" + vlog : "No vitals snapshotted."); }
         }
-        
-        if(!isOmitted('vitals_log')) { var vlog = document.getElementById('vitals_log').value; vm.push(vlog ? vlog : "No vitals snapshotted."); }
-        if(!isOmitted('meds_log')) { var mlog = document.getElementById('meds_log').value; vm.push(mlog ? mlog : "No meds recorded."); }
+
+        if(!isOmitted('meds_log')) { var mlog = document.getElementById('meds_log').value; vm.push(mlog ? "Medications Administered:\n" + mlog : "No meds recorded."); }
         if(val('det_news_val') === 'Yes' && !isPaeds) vm.push("Further Details:\n" + (val('det_news_txt') || "None recorded."));
         buildSec("Vitals Trend & Meds", vm);
 

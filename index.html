@@ -1351,7 +1351,7 @@
          <input type="hidden" id="plan_val" value="">
          
          <div id="convey_div" style="display:none; margin-top:10px;">
-             <select id="hosp_dest">
+             <select id="hosp_dest" onchange="toggleMenu('hosp_dest_other', this.value === 'Other')">
                  <option value="">-- Select Hospital --</option>
                  <option value="St Thomas'">St Thomas'</option>
                  <option value="King's College">King's College</option>
@@ -1359,6 +1359,8 @@
                  <option value="Royal London">Royal London</option>
                  <option value="Other">Other</option>
              </select>
+             <input type="text" id="hosp_dest_other" placeholder="Specify Hospital..." style="display:none; margin-top:8px;">
+             
              <div class="segmented-control" style="margin-top:10px;">
                  <button type="button" class="segment-btn active" onclick="setSeg('journey_type', 'Routine', this)">Routine</button>
                  <button type="button" class="segment-btn btn-red" onclick="setSeg('journey_type', 'Blue Call', this)">Blue Call</button>
@@ -2535,7 +2537,9 @@
         }
         if(!isOmitted('plan_val')) {
             if(val('plan_val')==='Convey') {
-                plan.push("Convey to: " + val('hosp_dest') + " (" + val('journey_type') + ")");
+                var dest = val('hosp_dest');
+                if(dest === 'Other') dest = val('hosp_dest_other') || 'Other';
+                plan.push("Convey to: " + dest + " (" + val('journey_type') + ")");
                 if(val('moved_to_amb')) plan.push("Moved via: " + val('moved_to_amb'));
             }
             else if (val('plan_val')==='Discharge') plan.push("Discharge/Refer: " + val('discharge_notes'));

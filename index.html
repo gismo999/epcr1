@@ -725,15 +725,27 @@
         </div>
       </div>
 
-      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Pupils?
-          <div class="segmented-control grid-3">
-            <button type="button" class="segment-btn active" onclick="setSeg('pupils_val', 'PEARL Size 3-4', this)">PEARL Normal</button>
-            <button type="button" class="segment-btn btn-red" onclick="setSeg('pupils_val', 'Pinpoint', this)">Pinpoint</button>
-            <button type="button" class="segment-btn btn-red" onclick="setSeg('pupils_val', 'Dilated', this)">Dilated</button>
-            <button type="button" class="segment-btn btn-red" onclick="setSeg('pupils_val', 'Sluggish', this)">Sluggish</button>
-            <button type="button" class="segment-btn btn-red" onclick="setSeg('pupils_val', 'Unequal', this)">Unequal</button>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="pupils_checked" onchange="toggleMenu('pupils_n', this.checked)"> Pupils Checked?
+        <div id="pupils_n" class="nested">
+          <div style="font-size:11px; font-weight:bold; margin-bottom:4px;">Size (mm):</div>
+          <div class="segmented-control grid-4">
+              <button type="button" class="segment-btn" onclick="setSeg('pupil_size', 'Pinpoint (1-2mm)', this); toggleMenu('pupil_unequal_n', false)">1-2</button>
+              <button type="button" class="segment-btn active" onclick="setSeg('pupil_size', 'Normal (3-4mm)', this); toggleMenu('pupil_unequal_n', false)">3-4</button>
+              <button type="button" class="segment-btn" onclick="setSeg('pupil_size', 'Dilated (5-6mm)', this); toggleMenu('pupil_unequal_n', false)">5-6</button>
+              <button type="button" class="segment-btn btn-red" onclick="setSeg('pupil_size', 'Unequal', this); toggleMenu('pupil_unequal_n', true)">Unequal</button>
           </div>
-          <input type="hidden" id="pupils_val" value="PEARL Size 3-4">
+          <input type="hidden" id="pupil_size" value="Normal (3-4mm)">
+          <div id="pupil_unequal_n" style="display:none; margin-top:5px;"><input type="text" id="pupil_unequal_det" placeholder="Specify left vs right sizes..."></div>
+
+          <div style="font-size:11px; font-weight:bold; margin-top:10px; margin-bottom:4px;">Reactivity:</div>
+          <div class="segmented-control grid-3">
+              <button type="button" class="segment-btn active" onclick="setSeg('pupil_react', 'Both React (PEARL)', this); toggleMenu('pupil_react_det_n', false)">PEARL</button>
+              <button type="button" class="segment-btn btn-red" onclick="setSeg('pupil_react', 'Sluggish', this); toggleMenu('pupil_react_det_n', true)">Sluggish</button>
+              <button type="button" class="segment-btn btn-red" onclick="setSeg('pupil_react', 'Fixed', this); toggleMenu('pupil_react_det_n', true)">Fixed</button>
+          </div>
+          <input type="hidden" id="pupil_react" value="Both React (PEARL)">
+          <div id="pupil_react_det_n" style="display:none; margin-top:5px;"><input type="text" id="pupil_react_det" placeholder="Which side? (e.g. Left sluggish)"></div>
+        </div>
       </div>
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Nausea / Vomiting?
@@ -1486,15 +1498,6 @@
     <button class="calc-btn" id="not_found_btn" style="background:#64748b;" onclick="generateNotFound()">🚫 PATIENT NOT FOUND (Copy Notes)</button>
     <button class="calc-btn" style="background:transparent; color:#ef4444; border:2px solid #ef4444;" onclick="resetForm()">RESET FORM (Clear Data)</button>
 
-  </div>
-
-  <!-- DDX HUD (LIVE LISTENER) -->
-  <div class="ddx-hud" id="ddx_hud">
-    <div class="ddx-icon" id="ddx_icon">💡</div>
-    <div class="ddx-content">
-      <div class="ddx-title" id="ddx_title">Clinical Insights</div>
-      <div class="ddx-text" id="ddx_text" style="font-size:11px; opacity:0.9;">DDx: Awaiting assessment...</div>
-    </div>
   </div>
 
   <script>
@@ -2288,9 +2291,9 @@
 
     // --- STRICT EXPORT WITH PERTINENT NEGATIVES & VERTICAL SOCRATES ---
     function generateOutput() {
-        var e = "--- ePCR CLINICAL SUMMARY ---\n";
         var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
         
+        var e = "";
         e += "Age: " + (document.getElementById('pt_age').value || "Unknown") + (isPaeds ? " (PAEDIATRIC)" : "") + " | Gender: " + document.getElementById('pt_gender').value + "\n";
         e += "Complaint: " + document.getElementById('complaint').options[document.getElementById('complaint').selectedIndex].text + "\n";
         e += "--------------------------------------------------\n\n";
@@ -2414,7 +2417,17 @@
             else neuro.push("- FAST Stroke Check not indicated");
         }
         
-        if(!isOmitted('pupils_val')) neuro.push("- Pupils: " + val('pupils_val'));
+        if(!isOmitted('pupils_checked')) {
+            if(document.getElementById('pupils_checked').checked) {
+                var pupStr = "- Pupils: " + val('pupil_size');
+                if (val('pupil_size') === 'Unequal') pupStr += " (" + val('pupil_unequal_det') + ")";
+                pupStr += " | " + val('pupil_react');
+                if (val('pupil_react') !== 'Both React (PEARL)') pupStr += " (" + val('pupil_react_det') + ")";
+                neuro.push(pupStr);
+            } else {
+                neuro.push("- Pupils not checked");
+            }
+        }
 
         if(!isOmitted('nausea_val')) {
             if(val('nausea_val') !== 'No') neuro.push("- GI/Neuro: " + val('nausea_val') + "\n  Start: " + val('vomit_start') + "\n  Times: " + val('vomit_times') + "\n  Blood: " + val('vomit_blood'));
@@ -2560,29 +2573,55 @@
         // VITALS & MEDS
         var vm = [];
         if(isPaeds) {
-            var pews = document.getElementById('final_pews').value;
-            vm.push("- Current PEWS Score: " + pews + "\n  (Behaviour: " + val('pews_beh') + ", CV: " + val('pews_cv') + ", Resp: " + val('pews_resp') + ")");
-            
             var p_log = document.getElementById('p_vitals_log') ? document.getElementById('p_vitals_log').value : '';
-            if(p_log) {
-                vm.push("Vitals Log:\n" + p_log);
-            } else {
-                var phr = document.getElementById('p_hr_val').value || '-';
-                var prr = document.getElementById('p_rr_val').value || '-';
-                var pspo2 = document.getElementById('p_spo2_val').value || '-';
-                var ptemp = document.getElementById('p_temp_val').value || '-';
-                var pbm = document.getElementById('p_bm_val').value || '-';
-                if(phr !== '-' || prr !== '-' || pspo2 !== '-' || ptemp !== '-' || pbm !== '-') {
-                    vm.push("- Recorded Vitals: HR:"+phr+" RR:"+prr+" SpO2:"+pspo2+"% T:"+ptemp+" BM:"+pbm);
+            var phr = document.getElementById('p_hr_val').value || '';
+            var prr = document.getElementById('p_rr_val').value || '';
+            var pspo2 = document.getElementById('p_spo2_val').value || '';
+            var ptemp = document.getElementById('p_temp_val').value || '';
+            var pbm = document.getElementById('p_bm_val').value || '';
+            var psys = document.getElementById('p_sys_bp').value || '';
+            var pdia = document.getElementById('p_dia_bp').value || '';
+            
+            var hasVitals = p_log !== '' || phr !== '' || prr !== '' || pspo2 !== '' || ptemp !== '' || pbm !== '' || psys !== '' || pdia !== '';
+            
+            if(!isOmitted('p_vitals_log') && hasVitals) {
+                var pews = document.getElementById('final_pews').value;
+                vm.push("- Current PEWS Score: " + pews + "\n  (Behaviour: " + val('pews_beh') + ", CV: " + val('pews_cv') + ", Resp: " + val('pews_resp') + ")");
+                
+                if(p_log) {
+                    vm.push("Vitals Log:\n" + p_log);
                 } else {
-                    vm.push("No vitals snapshotted.");
+                    vm.push("- Recorded Vitals: BP:"+(psys||'-')+"/"+(pdia||'-')+" HR:"+(phr||'-')+" RR:"+(prr||'-')+" SpO2:"+(pspo2||'-')+"% T:"+(ptemp||'-')+" BM:"+(pbm||'-'));
                 }
             }
         } else {
-            if(!isOmitted('vitals_log')) { var vlog = document.getElementById('vitals_log').value; vm.push(vlog ? "Vitals Log:\n" + vlog : "No vitals snapshotted."); }
+            var vlog = document.getElementById('vitals_log') ? document.getElementById('vitals_log').value : '';
+            var sys = document.getElementById('sys_bp').value || '';
+            var dia = document.getElementById('dia_bp').value || '';
+            var hr = document.getElementById('hr_val_news').value || '';
+            var rr = document.getElementById('rr_val_news').value || '';
+            var spo2 = document.getElementById('spo2_val_news').value || '';
+            var t = document.getElementById('temp_val').value || '';
+            var bm = document.getElementById('bm_val').value || '';
+            
+            var hasVitals = vlog !== '' || sys !== '' || dia !== '' || hr !== '' || rr !== '' || spo2 !== '' || t !== '' || bm !== '';
+
+            if(!isOmitted('vitals_log') && hasVitals) { 
+                if(vlog) {
+                    vm.push("Vitals Log:\n" + vlog); 
+                } else {
+                    var n_score = document.getElementById('final_news2').value;
+                    var n_acvpu = document.getElementById('acvpu').value;
+                    vm.push("- Recorded Vitals: BP:"+(sys||'-')+"/"+(dia||'-')+" HR:"+(hr||'-')+" RR:"+(rr||'-')+" SpO2:"+(spo2||'-')+"% T:"+(t||'-')+" BM:"+(bm||'-')+" ACVPU:"+n_acvpu+" NEWS:"+n_score);
+                }
+            }
         }
 
-        if(!isOmitted('meds_log')) { var mlog = document.getElementById('meds_log').value; vm.push(mlog ? "Medications Administered:\n" + mlog : "No meds recorded."); }
+        if(!isOmitted('meds_log')) { 
+            var mlog = document.getElementById('meds_log').value; 
+            if(mlog) vm.push("Medications Administered:\n" + mlog); 
+        }
+        
         if(val('det_news_val') === 'Yes' && !isPaeds) vm.push("Further Details:\n" + (val('det_news_txt') || "None recorded."));
         buildSec("Vitals Trend & Meds", vm);
 
@@ -2606,9 +2645,8 @@
 
         // ADVICE / MCA
         var adv = [];
-        if(!isOmitted('wca_given')) {
-            if(val('wca_given')==='Yes') adv.push("- Worsening Care Advice Given:\n" + val('wca_text'));
-            else adv.push("- Worsening Care Advice not given");
+        if(!isOmitted('wca_given') && val('wca_given')==='Yes') {
+            adv.push("- Worsening Care Advice Given:\n" + val('wca_text'));
         }
         
         if(!isPaeds && !isOmitted('consent_plan')) {

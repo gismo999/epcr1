@@ -32,7 +32,676 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
+            position: sticky;<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UHS ALL IN ONE Handbook</title>
+    <style>
+        :root {
+            --primary: #005eb8; 
+            --secondary: #009639; 
+            --danger: #d52b1e; 
+            --bg: #f4f7f6;
+            --text: #333;
+            --card-bg: #fff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 70px;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
             position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0; font-size: 1.4rem; }
+        h2 { color: var(--primary); font-size: 1.2rem; border-bottom: 2px solid var(--primary); padding-bottom: 5px; }
+        h3 { color: var(--secondary); font-size: 1.1rem; margin-top: 15px; margin-bottom: 5px;}
+
+        .container {
+            padding: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Accordion Styles */
+        .accordion {
+            background-color: var(--card-bg);
+            color: var(--text);
+            cursor: pointer;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            text-align: left;
+            outline: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: 0.3s;
+            margin-bottom: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion:hover, .accordion.active-acc {
+            background-color: #e9f5ff;
+            color: var(--primary);
+        }
+
+        .accordion::after {
+            content: '\002B';
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .accordion.active-acc::after {
+            content: "\2212";
+        }
+
+        .panel {
+            padding: 0 15px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 10px;
+        }
+
+        .panel-inner { padding: 15px 0; }
+
+        /* Tables */
+        .table-responsive { overflow-x: auto; margin-bottom: 1rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.9rem; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: var(--secondary); color: white; }
+        tr:hover { background-color: #f1f1f1; }
+
+        /* Grade specific headers inside tables */
+        .grade-header th { background-color: #333; }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+        }
+        .nav-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+            border-top: 3px solid transparent;
+            min-width: 65px;
+        }
+        .nav-btn.active {
+            color: var(--primary);
+            border-top: 3px solid var(--primary);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .alert {
+            background-color: #ffebee;
+            border-left: 5px solid var(--danger);
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .highlight { font-weight: bold; color: var(--danger); }
+        
+        #medSearch {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid var(--primary);
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            position: sticky;
+            top: 60px;
+            z-index: 90;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        ul { margin-top: 5px; padding-left: 20px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>UHS Handbook & Guidance</h1>
+    </header>
+
+    <nav class="nav-bar">
+        <button class="nav-btn active" onclick="openTab('policies')">Policies</button>
+        <button class="nav-btn" onclick="openTab('clinical')">Clinical</button>
+        <button class="nav-btn" onclick="openTab('vitals')">Vitals</button>
+        <button class="nav-btn" onclick="openTab('meds')">Meds</button>
+        <button class="nav-btn" onclick="openTab('driving')">Drive</button>
+    </nav>
+
+    <div class="container">
+
+        <div id="policies" class="tab-content active">
+            <h2>Operational Standard v2.0</h2>
+            <button class="accordion">1. Purpose & 2. Scope</button>
+            <div class="panel"><div class="panel-inner">
+                <p><strong>Purpose:</strong> Outlines operational standards, professional expectations, and clinical procedures for all staff working within the UHS Ambulance and Hospital Service to ensure safe, effective, and professional care.</p>
+                <p><strong>Scope:</strong> Applies to all UHS personnel, including Student Paramedics, Emergency Care Assistants/Technicians, Paramedics, Senior Paramedics, Critical Care/HEMS, HARTS, Nurses, Doctors, Hospital-based clinical staff, and Supervisors/Command leads.</p>
+            </div></div>
+
+            <button class="accordion">3. Professional Uniform Standards</button>
+            <div class="panel"><div class="panel-inner">
+                <p>All personnel must maintain a clean, professional appearance at all times.</p>
+                <h3>3.1 General</h3>
+                <ul>
+                    <li>Uniform must be clean, well-fitted, and appropriate to the role.</li>
+                    <li>High-visibility jackets must be worn at roadside, outdoor, or hazardous incidents.</li>
+                    <li>Footwear must be black, enclosed, and suitable for emergencies.</li>
+                    <li>ID badges visible at all times.</li>
+                    <li>PPE used appropriately. No unauthorised headgear or non-issued clothing.</li>
+                </ul>
+                <h3>3.2 Role-Specific</h3>
+                <ul>
+                    <li><strong>Ambulance:</strong> Green operational uniform, hi-vis for outdoors, stab vest where issued, clinical PPE.</li>
+                    <li><strong>HEMS:</strong> Aviation-approved flight suit, specialist PPE.</li>
+                    <li><strong>HARTS:</strong> Technical uniform, BA equipment when required, specialist PPE (CBRN, water, confined spaces), helmets, harnesses.</li>
+                    <li><strong>Hospital:</strong> Scrubs/tunics, appropriate PPE, hair tied back, no loose jewellery.</li>
+                </ul>
+            </div></div>
+
+            <button class="accordion">4. Equipment Use Policy</button>
+            <div class="panel"><div class="panel-inner">
+                <h3>4.1 General Rules</h3>
+                <p>Use for intended purpose only. Maintain competency. Report faults immediately. Replenish medical bags after every incident.</p>
+                <h3>4.2 Clinical Equipment</h3>
+                <ul>
+                    <li><strong>Defibrillators:</strong> Cardiac arrest or clinically indicated arrhythmias only.</li>
+                    <li><strong>Airway & Monitoring:</strong> Use according to condition/competency; apply monitoring to unresponsive/unwell patients.</li>
+                    <li><strong>Immobilisation:</strong> Scoop stretchers/spinal boards for trauma.</li>
+                    <li><strong>Controlled Drugs:</strong> Handled per legislation and policy.</li>
+                </ul>
+                <h3>4.3 Vehicle Equipment</h3>
+                <p>Radios must be used professionally. Blue-lights activated only as required. Check medical equipment at shift start.</p>
+            </div></div>
+
+            <button class="accordion">5. Vehicle Operation & Driver Standards</button>
+            <div class="panel"><div class="panel-inner">
+                <h3>5.1 Standard Road Driving</h3>
+                <p>Follow all road traffic laws, speed limits, and drive with consideration. Park safely without obstructing access.</p>
+                <h3>5.2 Emergency Driving</h3>
+                <p>Blue-light response ONLY for: Immediately life-threatening emergencies, urgent inter-facility transfers, major incidents, and rapid deployments (HARTS, cardiac arrest, serious trauma).</p>
+                <p><strong>Principles:</strong> Maintain full control, slow down at junctions/red lights, avoid collisions, use appropriate siren tone, and prioritize public/crew safety.</p>
+            </div></div>
+
+            <button class="accordion">6. Health & Safety</button>
+            <div class="panel"><div class="panel-inner">
+                <h3>6.1 Staff Safety</h3>
+                <p>Wear PPE based on risk assessment. Remove yourself from unsafe scenes until supported. Maintain situational awareness.</p>
+                <h3>6.2 Patient Safety</h3>
+                <p>Assess scenes before approaching. Use safe lifting. Secure patients during transport. Communicate before procedures.</p>
+                <h3>6.3 Workplace Safety</h3>
+                <p>Report hazards/faults. Maintain cleanliness. Do not obstruct exits/equipment.</p>
+            </div></div>
+
+            <button class="accordion">7. HARTS Operations</button>
+            <div class="panel"><div class="panel-inner">
+                <p>HARTS responds to CBRN/HAZMAT, water rescue, confined spaces, major incidents, and structural collapse.</p>
+                <p><strong>Equipment:</strong> BA used only by trained staff. Carry out dynamic risk assessments before entering hazardous zones.</p>
+                <p><strong>Team Safety:</strong> Operate in pairs/teams, maintain radio contact, follow command structure during major incidents.</p>
+            </div></div>
+
+            <button class="accordion">8. Conduct & 9. Discipline</button>
+            <div class="panel"><div class="panel-inner">
+                <h3>8. Conduct & Attitude</h3>
+                <p>Treat patients respectfully, remain calm, avoid conflict, and uphold confidentiality. Use clear radio comms and accurate SBAR handovers. Follow national guidelines and participate in training.</p>
+                <h3>9. Supervision & Discipline</h3>
+                <p>Leaders promote safe practice; staff are accountable for actions. Breaches may result in: Verbal advice, written warnings, temporary suspension, removal from duties, or review of professional status.</p>
+            </div></div>
+
+            <h2 style="margin-top:20px;">General Hospital Policies</h2>
+
+            <button class="accordion">Hospital Lockdown Policy</button>
+            <div class="panel"><div class="panel-inner">
+                <div class="alert">A hospital lockdown may only be initiated by the Police Department (PD). No member of UHS staff has the authority to order this.</div>
+                <p>If initiated, it must be documented and reported to GOLD COMMAND. A joint decision between UHS Gold Command and PD enacts it based on risk.</p>
+                <p><strong>Continuity of Care:</strong> Triage tents must be established without delay. Treat members of the public within tents. No staff should remain idle; focus on patient care and public safety.</p>
+            </div></div>
+
+            <button class="accordion">Required On-Duty Items</button>
+            <div class="panel"><div class="panel-inner">
+                <ul>
+                    <li>1x Badge & 1x Radio</li>
+                    <li>1x Medical Bag & 1x First Aid Kit</li>
+                    <li>10x Bandages & 1x Quick Clot</li>
+                    <li>1x Defib & 1x ECG</li>
+                    <li>1x Sedative, 1x Morphine</li>
+                    <li>1x Suture Kit, 1x Sewing Kit, 1x Tweezers</li>
+                    <li>1x Blood Bag & 1x Saline IV</li>
+                    <li>1x Tourniquet & 1x Elastic Bandage</li>
+                    <li>1x Medical Needle</li>
+                    <li>5x Emergency Revive Kit</li>
+                    <li>2x Medical Crutch</li>
+                    <li>1x Flashlight, 1x Prescription Pad</li>
+                    <li>1x UHS Key Card</li>
+                    <li>1x Axon Body Camera & 1x Cleaning Kit</li>
+                </ul>
+            </div></div>
+
+            <button class="accordion">Roleplay Mechanics</button>
+            <div class="panel"><div class="panel-inner">
+                <h3>Treating Animations</h3>
+                <p><strong>Standing (Bed/Window):</strong> Use <code>/e mechanic</code></p>
+                <p><strong>Floor Level (Overturned Car/Ground):</strong> Use <code>/e mechanic 4</code></p>
+                <h3>Uniform Configurations</h3>
+                <ul>
+                    <li><strong>Bag:</strong> Item 119 (Unisex)</li>
+                    <li><strong>Stabvests/Helmets:</strong> ONLY to be used during scenes where weapons or dangerous situations are present.</li>
+                </ul>
+            </div></div>
+
+            <button class="accordion">MDT & Admin</button>
+            <div class="panel"><div class="panel-inner">
+                <h3>MDT Report Template</h3>
+                <ul>
+                    <li>Where? Postal/Hospital</li>
+                    <li>What they said happened</li>
+                    <li>What you found upon examination</li>
+                    <li>Pain scale (1-10)</li>
+                    <li>Treatment Notes</li>
+                    <li>Medication given (with dosage)</li>
+                    <li>X-ray/MRI (Yes/No & Results)</li>
+                    <li>Sign with Callsign</li>
+                    <li>Follow up required?</li>
+                </ul>
+                <h3>Leave Requests</h3>
+                <p>Post in the LOA Request channel. Must include: Start Date, End Date, Reason.</p>
+                <h3>Complaints</h3>
+                <p>All complaints are confidential. File via the UHS Internal Complaints Form.</p>
+            </div></div>
+        </div>
+
+        <div id="clinical" class="tab-content">
+            <button class="accordion">Primary Survey (CABCDE)</button>
+            <div class="panel"><div class="panel-inner">
+                <ul>
+                    <li><strong>C (Catastrophic Haemorrhage):</strong> Direct pressure, field dressing, Celox, Tourniquet, TXA.</li>
+                    <li><strong>A (Airway):</strong> Patent/Clear/Occluded. Jaw lift/chin thrust. Use adjuncts.</li>
+                    <li><strong>B (Breathing):</strong> Rate and effort. Auscultation. SpO2. Consider oxygen.</li>
+                    <li><strong>C (Circulation):</strong> Skin colour/cap refill. Pulse rate/quality. BP.</li>
+                    <li><strong>D (Disability):</strong> BM, AVPU, GCS, PERRLa.</li>
+                    <li><strong>E (Expose):</strong> Undress to check injuries. Cover up ASAP to prevent hypothermia.</li>
+                </ul>
+            </div></div>
+
+            <button class="accordion">Airway Management & CPR</button>
+            <div class="panel"><div class="panel-inner">
+                <h3>Airways</h3>
+                <p><strong>Head Tilt-Chin Lift:</strong> Standard method.</p>
+                <p><strong>Jaw Thrust:</strong> Use for suspected spinal injuries.</p>
+                <p><strong>OPA (Oropharyngeal):</strong> "Invert, Insert, Rotate, Locate." Use on unconscious patients.</p>
+                <p><strong>NPA (Nasopharyngeal):</strong> Insert in nostril, bevel toward septum.</p>
+                <h3>CPR / BLS</h3>
+                <p>Start if unconscious and not breathing. 30 compressions : 2 breaths. Average 2 compressions/second. Connect Defib/AED and shock if advised. Repeat for 3 sets. If no ROSC after 10 minutes, reassess.</p>
+                <h3>DNR (Do Not Resuscitate)</h3>
+                <p>Valid for chronic illnesses, terminal age. NOT valid for acts of violence (stabbing) or young healthy individuals (Police/Fire).</p>
+            </div></div>
+
+            <button class="accordion">Common Emergencies</button>
+            <div class="panel"><div class="panel-inner">
+                <p><strong>Heart Attack (MI):</strong> Chest pain, sweating, left arm pain. Give 300mg Aspirin, GTN (if BP safe), O2.</p>
+                <p><strong>Anaphylaxis:</strong> Swelling, wheeze, low BP. Give IM Adrenaline (0.5mg), high-flow O2.</p>
+                <p><strong>Asthma Attack:</strong> Wheeze, short of breath. Give Salbutamol (Neb/MDI), O2.</p>
+                <p><strong>Hypoglycaemia:</strong> Confusion, sweating, collapse. Give Oral Glucose if awake.</p>
+                <p><strong>Opioid Overdose:</strong> Slow/absent breathing, pinpoint pupils. Give Naloxone, ventilate.</p>
+                <div class="alert"><strong>Transport Immediately If:</strong> Chest pain, Major Trauma, Anaphylaxis, Severe Asthma, Stroke, Unconscious, Serious bleeding, Seizure > 5 mins.</div>
+            </div></div>
+
+            <button class="accordion">Trauma & Burns</button>
+            <div class="panel"><div class="panel-inner">
+                <p><strong>Major Bleeding:</strong> Direct pressure, bandage, tourniquet.</p>
+                <p><strong>Head Injury:</strong> Keep airway clear, minimise movement, X-ray/MRI needed.</p>
+                <p><strong>Spinal Precautions:</strong> Use if high-energy mechanism, neck/back pain, unconscious. MRI required.</p>
+                <h3>Burns (Rule of Nines)</h3>
+                <ul>
+                    <li>Head/Neck: 9%</li>
+                    <li>Arms: 9% each</li>
+                    <li>Chest: 18% | Abdomen: 18%</li>
+                    <li>Upper Back: 9% | Lower Back/Buttocks: 18%</li>
+                    <li>Legs: 18% each</li>
+                </ul>
+            </div></div>
+        </div>
+
+        <div id="vitals" class="tab-content">
+            <button class="accordion">Vital Sign Ranges</button>
+            <div class="panel"><div class="panel-inner">
+                <div class="table-responsive">
+                    <table>
+                        <tr><th>Vital</th><th>Normal</th><th>Low / High Danger</th></tr>
+                        <tr><td>Heart Rate</td><td>60 - 100 BPM</td><td>&lt;40 or &gt;120</td></tr>
+                        <tr><td>Respiratory Rate</td><td>12 - 20</td><td>&lt;8 or &gt;28</td></tr>
+                        <tr><td>Blood Pressure</td><td>120/80 mmHg</td><td>&lt;90/60 or &gt;150/100</td></tr>
+                        <tr><td>O2 (SpO2)</td><td>95 - 100%</td><td>&lt;80%</td></tr>
+                        <tr><td>Blood Glucose</td><td>4 - 8 mmol/L</td><td>&lt;2 or &gt;12</td></tr>
+                        <tr><td>Temperature</td><td>36.5°C</td><td>&lt;35°C or &gt;39°C</td></tr>
+                        <tr><td>GCS</td><td>15</td><td>&lt;8 (Coma)</td></tr>
+                    </table>
+                </div>
+            </div></div>
+
+            <button class="accordion">Assessment Acronyms</button>
+            <div class="panel"><div class="panel-inner">
+                <h3>AVPU (Consciousness)</h3>
+                <p><strong>A:</strong> Alert | <strong>V:</strong> Responds to Voice | <strong>P:</strong> Responds to Pain | <strong>U:</strong> Unresponsive</p>
+                <h3>SAMPLE (History)</h3>
+                <p>Signs/Symptoms, Allergies, Medications, Past Medical Hx, Last Oral Intake, Events leading up.</p>
+                <h3>OPQRST (Pain)</h3>
+                <p>Onset, Provoking factors, Quality, Region & Radiation, Severity (0-10), Time.</p>
+                <h3>BEFAST (Stroke)</h3>
+                <p>Balance, Eyes, Face, Arms, Speech, Time.</p>
+                <h3>ATMIST (Handover)</h3>
+                <p>Age, Time, Mechanism of Injury, Injuries, Signs (Vitals), Treatment administered.</p>
+            </div></div>
+        </div>
+
+        <div id="meds" class="tab-content">
+            <input type="text" id="medSearch" onkeyup="searchMeds()" placeholder="🔍 Search any medication or symptom...">
+            
+            <div class="alert" style="margin-top: 0;">
+                Staff may administer medications listed under their current grade, <strong>as well as all medications from the grades below them.</strong>
+            </div>
+
+            <button class="accordion med-accordion">Student Paramedic</button>
+            <div class="panel"><div class="panel-inner">
+                <div class="table-responsive">
+                    <table class="medTable">
+                        <tr class="grade-header"><th>Medication</th><th>Indication</th><th>Form/Dose</th></tr>
+                        <tr><td>Oxygen</td><td>Cardiac arrest, trauma, sepsis, shock</td><td>Gas</td></tr>
+                        <tr><td>Aspirin</td><td>Suspected MI / ACS</td><td>300mg</td></tr>
+                        <tr><td>Paracetamol</td><td>Mild/moderate pain, fever</td><td>1g (1000mg)</td></tr>
+                        <tr><td>Ibuprofen</td><td>Mild/moderate pain, inflammation</td><td>400mg</td></tr>
+                        <tr><td>Glucose (Oral)</td><td>Hypoglycemia (conscious patient)</td><td>Oral Gel / Tablet</td></tr>
+                    </table>
+                </div>
+            </div></div>
+
+            <button class="accordion med-accordion">Paramedic</button>
+            <div class="panel"><div class="panel-inner">
+                <div class="table-responsive">
+                    <table class="medTable">
+                        <tr class="grade-header"><th>Medication</th><th>Indication</th><th>Form/Dose</th></tr>
+                        <tr><td>Adrenaline</td><td>Cardiac arrest, anaphylaxis</td><td>1mg/10ml (IV) / 0.5mg (IM)</td></tr>
+                        <tr><td>Amiodarone</td><td>Cardiac arrest (pulseless VT/VF)</td><td>300mg/10ml</td></tr>
+                        <tr><td>Atropine</td><td>Symptomatic bradycardia (&lt;40 pulse)</td><td>600 micrograms</td></tr>
+                        <tr><td>Diazepam</td><td>Acute muscle spasms, seizure control</td><td>5mg</td></tr>
+                        <tr><td>Ipratropium Bromide</td><td>Life-threatening asthma, COPD</td><td>250mcg/3ml</td></tr>
+                        <tr><td>Morphine Sulfate</td><td>Moderate to severe pain relief</td><td>10mg/1ml</td></tr>
+                        <tr><td>TXA</td><td>Major trauma, catastrophic bleeding</td><td>100mg/1ml</td></tr>
+                        <tr><td>Glucose (IV)</td><td>Hypoglycemia (unconscious)</td><td>10% or 50g/500ml</td></tr>
+                    </table>
+                </div>
+            </div></div>
+
+            <button class="accordion med-accordion">Advanced Paramedic</button>
+            <div class="panel"><div class="panel-inner">
+                <div class="table-responsive">
+                    <table class="medTable">
+                        <tr class="grade-header"><th>Medication</th><th>Indication</th><th>Form/Dose</th></tr>
+                        <tr><td>Ketamine</td><td>Severe pain management, sedation</td><td>10mg/1ml</td></tr>
+                        <tr><td>Midazolam</td><td>Status epilepticus (seizures), sedation</td><td>5mg/5ml</td></tr>
+                        <tr><td>Prednisolone</td><td>Moderate acute asthma, croup</td><td>5mg</td></tr>
+                        <tr><td>Fentanyl</td><td>Severe pain management</td><td>100mcg/2ml</td></tr>
+                        <tr><td>Propofol</td><td>Induction of anaesthesia, sedation</td><td>10mg/1ml</td></tr>
+                        <tr><td>Suxamethonium</td><td>Paralytic for rapid sequence intubation</td><td>100mg/2ml</td></tr>
+                        <tr><td>Ondansetron</td><td>Nausea and vomiting</td><td>4mg/2ml</td></tr>
+                        <tr><td>Noradrenaline</td><td>Severe hypotension, shock</td><td>4mg/4ml</td></tr>
+                        <tr><td>Sodium Bicarbonate</td><td>Severe acidosis, hyperkalaemia</td><td>8.4%</td></tr>
+                        <tr><td>Calcium Chloride</td><td>Hyperkalaemia, calcium channel blocker OD</td><td>10%</td></tr>
+                        <tr><td>Magnesium Sulfate</td><td>Eclampsia, severe asthma, arrhythmias</td><td>50%</td></tr>
+                        <tr><td>Hypertonic Saline</td><td>Raised intracranial pressure (TBI)</td><td>3%</td></tr>
+                        <tr><td>Mannitol</td><td>Raised intracranial pressure</td><td>20%</td></tr>
+                    </table>
+                </div>
+            </div></div>
+
+            <button class="accordion med-accordion">HEMS</button>
+            <div class="panel"><div class="panel-inner">
+                <div class="table-responsive">
+                    <table class="medTable">
+                        <tr class="grade-header"><th>Medication</th><th>Indication</th><th>Form/Dose</th></tr>
+                        <tr><td>Oxygen</td><td>Hypoxia, major trauma, shock</td><td>Gas</td></tr>
+                        <tr><td>Fentanyl</td><td>Severe pain management</td><td>100mcg/2ml</td></tr>
+                        <tr><td>Morphine Sulfate</td><td>Moderate to severe pain relief</td><td>10mg/1ml</td></tr>
+                        <tr><td>Midazolam</td><td>Sedation, status epilepticus</td><td>5mg/5ml</td></tr>
+                        <tr><td>Ketamine</td><td>Severe pain, procedural sedation</td><td>10mg/1ml</td></tr>
+                        <tr><td>Tranexamic Acid (TXA)</td><td>Major trauma, catastrophic bleeding</td><td>100mg/1ml</td></tr>
+                        <tr><td>Rocuronium</td><td>Paralytic for advanced intubation (RSI)</td><td>50mg/5ml</td></tr>
+                        <tr><td>Propofol</td><td>Induction of anaesthesia, sedation</td><td>10mg/1ml</td></tr>
+                        <tr><td>Suxamethonium</td><td>Paralytic for rapid sequence intubation</td><td>100mg/2ml</td></tr>
+                        <tr><td>Ondansetron</td><td>Nausea and vomiting</td><td>4mg/2ml</td></tr>
+                        <tr><td>Packed Red Blood Cells (PRBC)</td><td>Massive haemorrhage, severe trauma</td><td>1 unit</td></tr>
+                        <tr><td>Fresh Frozen Plasma (FFP)</td><td>Coagulopathy in major bleeding</td><td>1 unit</td></tr>
+                        <tr><td>Noradrenaline</td><td>Severe hypotension, shock</td><td>4mg/4ml</td></tr>
+                        <tr><td>Sodium Bicarbonate</td><td>Severe acidosis, hyperkalaemia</td><td>8.4%</td></tr>
+                        <tr><td>Calcium Chloride</td><td>Hyperkalaemia, calcium channel blocker OD</td><td>10%</td></tr>
+                        <tr><td>Magnesium Sulfate</td><td>Eclampsia, severe asthma, arrhythmias</td><td>50%</td></tr>
+                        <tr><td>Hypertonic Saline</td><td>Raised intracranial pressure (TBI)</td><td>3%</td></tr>
+                        <tr><td>Mannitol</td><td>Raised intracranial pressure</td><td>20%</td></tr>
+                    </table>
+                </div>
+            </div></div>
+
+            <button class="accordion">Disease Outbreak / Pharmacy Meds</button>
+            <div class="panel"><div class="panel-inner">
+                <div class="table-responsive">
+                    <table class="medTable">
+                        <tr class="grade-header"><th>Disease</th><th>Symptoms</th><th>Approved Meds</th></tr>
+                        <tr><td>Cold</td><td>Sneezing, coughing</td><td>Tylacare, DayRelief, PainAway</td></tr>
+                        <tr><td>Headache</td><td>Head pain, visual discomfort</td><td>Tylacare, Ibrofenix, PainAway</td></tr>
+                        <tr><td>Flu</td><td>Coughing, fever, weakness</td><td>Flurimax, DayRelief, Ibrofenix, PainAway, Zithromed</td></tr>
+                        <tr><td>Food Poisoning</td><td>Vomiting, nausea</td><td>GutGuard, StopDiaril, Loprexin</td></tr>
+                        <tr><td>Migraine</td><td>Severe headache, blurred vision, nausea</td><td>Triptaril, Ibrofenix, Tylacare, PainAway</td></tr>
+                        <tr><td>Allergies</td><td>Sneezing, irritated eyes, rash</td><td>AllerBlock, ClearAirin, PainAway</td></tr>
+                        <tr><td>Dizziness</td><td>Loss of balance, vertigo</td><td>Motionex, Meklirin, PainAway</td></tr>
+                        <tr><td>DBI</td><td>Persistent coughing, fever, headache</td><td>Vironix, Ibrofenix, Tylacare, Zithromed, Vaxora, Doxallin</td></tr>
+                        <tr><td>Fatigue</td><td>Extreme tiredness</td><td>Ibrofenix</td></tr>
+                    </table>
+                </div>
+            </div></div>
+
+            <button class="accordion">Prescription Pad Guide</button>
+            <div class="panel"><div class="panel-inner">
+                <p>When issuing a prescription, ensure you:</p>
+                <ol>
+                    <li>Fill in the patient's full name and CSN number (address not needed).</li>
+                    <li>Select the correct medication based on the Outbreak Treatment list.</li>
+                    <li>Fill out treatment days (Max 4 days currently).</li>
+                    <li>Sign at the bottom and save.</li>
+                    <li>Hand to the patient and direct them to the pharmacy.</li>
+                </ol>
+            </div></div>
+        </div>
+
+        <div id="driving" class="tab-content">
+            <button class="accordion">State Codes & Comms</button>
+            <div class="panel"><div class="panel-inner">
+                <div class="table-responsive">
+                    <table>
+                        <tr><th>Code</th><th>Status</th></tr>
+                        <tr><td>State 0</td><td>Urgent Assistance</td></tr>
+                        <tr><td>State 1</td><td>On duty</td></tr>
+                        <tr><td>State 2</td><td>On patrol</td></tr>
+                        <tr><td>State 3</td><td>At hospital (Available)</td></tr>
+                        <tr><td>State 4</td><td>Taking a break</td></tr>
+                        <tr><td>State 5</td><td>En-route to incident</td></tr>
+                        <tr><td>State 6</td><td>On Scene</td></tr>
+                        <tr><td>State 7</td><td>Committed/Busy (Can divert)</td></tr>
+                        <tr><td>State 8</td><td>Committed/Busy (Not deployable)</td></tr>
+                        <tr><td>State 9</td><td>Patient transport</td></tr>
+                        <tr><td>State 10</td><td>Gov situation</td></tr>
+                        <tr><td>State 11</td><td>Off duty</td></tr>
+                    </table>
+                </div>
+            </div></div>
+
+            <button class="accordion">Emergency Driving & Exemptions</button>
+            <div class="panel"><div class="panel-inner">
+                <p>Blue-lights should only be used for: Life-threatening emergencies, urgent transfers, major incidents, and rapid deployments.</p>
+                <h3>Exemptions allowed under Emergency Conditions:</h3>
+                <ul>
+                    <li>Exceeding speed limits (See warning below)</li>
+                    <li>Travelling on the wrong side of the road</li>
+                    <li>Treating RED lights as give way</li>
+                    <li>Stopping on a motorway</li>
+                </ul>
+                <div class="alert"><strong>Speed Rule:</strong> Driving at a speed exceeding 20 mph above the speed limit is NOT recommended. Breaching this may result in loss of CERAD certification.</div>
+            </div></div>
+
+            <button class="accordion">Controls & Sirens</button>
+            <div class="panel"><div class="panel-inner">
+                <p><strong>Q:</strong> Primary 360 Lights</p>
+                <p><strong>K:</strong> Rear Red emergency lights</p>
+                <p><strong>Y:</strong> Additional lighting</p>
+                <p><strong>G:</strong> Toggle Sirens</p>
+                <p><strong>R:</strong> Cycle Siren Tones</p>
+                <p><strong>E:</strong> Bullhorn</p>
+
+                <h3>Siren Tones</h3>
+                <ul>
+                    <li><strong>Wail:</strong> Normal siren, for high-speed roads to warn traffic far ahead.</li>
+                    <li><strong>Yelp:</strong> Short range, use when approaching junctions.</li>
+                    <li><strong>Phaser:</strong> Very loud, use crossing busy intersections. Short durations only.</li>
+                    <li><strong>Bull-Horn:</strong> Additional warning in heavy traffic. Do not use aggressively.</li>
+                </ul>
+            </div></div>
+
+            <button class="accordion">Motorways & Convoys</button>
+            <div class="panel"><div class="panel-inner">
+                <h3>Motorway Parking</h3>
+                <ul>
+                    <li><strong>Flowing Traffic:</strong> Approach in lanes 2/3 with ALL equipment on.</li>
+                    <li><strong>Slow Traffic:</strong> Approach on hard shoulder with visual warnings only.</li>
+                    <li><strong>Stationary Traffic:</strong> Approach on hard shoulder with ALL equipment on.</li>
+                </ul>
+                <h3>Tandem Driving (Convoy)</h3>
+                <p>Keep a reasonable distance. Utilize DIFFERENT siren tones than the lead vehicle. If transporting to ED, remain behind the box ambulance at all times.</p>
+                <h3>Lane Discipline</h3>
+                <p>Remain in lane three (closest to central reservation) under blue lights. DO NOT mount pavements to get around vehicles unless entering a property. If stuck at a red light with no safe way around, turn OFF sirens, keep lights ON, and wait.</p>
+            </div></div>
+        </div>
+
+    </div>
+
+    <script>
+        // Tab switching logic
+        function openTab(tabName) {
+            let i, tabcontent, navbtns;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            navbtns = document.getElementsByClassName("nav-btn");
+            for (i = 0; i < navbtns.length; i++) {
+                navbtns[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
+
+        // Accordion Logic
+        let acc = document.getElementsByClassName("accordion");
+        for (let i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active-acc");
+                let panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                } 
+            });
+        }
+
+        // Global Medication Search filter (searches across all grade tables)
+        function searchMeds() {
+            let input = document.getElementById("medSearch").value.toUpperCase();
+            let tables = document.querySelectorAll(".medTable");
+
+            tables.forEach(table => {
+                let tr = table.getElementsByTagName("tr");
+                let hasVisibleRow = false;
+                
+                // Start from i=1 to skip the header row
+                for (let i = 1; i < tr.length; i++) {
+                    tr[i].style.display = "none"; 
+                    let td = tr[i].getElementsByTagName("td");
+                    for (let j = 0; j < td.length; j++) {
+                        if (td[j]) {
+                            let txtValue = td[j].textContent || td[j].innerText;
+                            if (txtValue.toUpperCase().indexOf(input) > -1) {
+                                tr[i].style.display = ""; 
+                                hasVisibleRow = true;
+                                break; 
+                            }
+                        }
+                    }
+                }
+
+                // If searching and a match is found in a hidden accordion, auto-expand it
+                let panel = table.closest('.panel');
+                let accordionBtn = panel.previousElementSibling;
+                
+                if (input !== "") {
+                    if (hasVisibleRow) {
+                        panel.style.maxHeight = panel.scrollHeight + "px";
+                        accordionBtn.classList.add("active-acc");
+                    } else {
+                        panel.style.maxHeight = null;
+                        accordionBtn.classList.remove("active-acc");
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
             top: 0;
             z-index: 100;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);

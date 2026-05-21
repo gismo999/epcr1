@@ -121,7 +121,6 @@
     <div class="unlock-text">Tap to Unlock</div>
   </div>
 
-  <!-- CONTRAINDICATION STOP MODAL -->
   <div id="med_safety_modal">
     <div class="med-modal-content">
        <h3 style="color:#ef4444; margin-top:0; display:flex; align-items:center; gap:8px;">⚠️ Safety Check</h3>
@@ -151,7 +150,6 @@
 
   <div id="main_form_container">
     
-    <!-- PATIENT INFO -->
     <div style="display:flex; gap:10px; margin-bottom:10px; align-items:flex-end;">
       <div style="flex:1;"><label style="font-size:11px; font-weight:bold;">Age:</label><input type="number" id="pt_age" placeholder="Yrs" oninput="handleAgeInput()"></div>
       <div style="flex:2;">
@@ -165,7 +163,6 @@
       </div>
     </div>
 
-    <!-- WETFLAG / PAEDS JRCALC -->
     <div id="wetfag_container" class="paeds-only" style="border: 2px solid #0ea5e9; border-radius: 10px; padding: 12px; margin-bottom:15px; background:#f0f9ff; margin-top:10px;">
       <h4 id="wf_title" style="color:#0284c7; margin-top:0;">🧸 Paediatric Guidelines (WETFLAG)</h4>
       <div id="wetfag_grid" style="font-size:13px; display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom: 10px;">
@@ -197,11 +194,9 @@
       <option value="maternity" class="adult-only">Maternity / Obstetric</option>
     </select>
 
-    <!-- 1. INITIAL IMPRESSION -->
     <button class="accordion active" id="init_acc">⭕ Initial Impression</button>
     <div class="panel" id="init_pan" style="display:block;">
       
-      <!-- PAEDS ASSESSMENT TRIANGLE -->
       <div class="question paeds-only" style="background:#fefce8; border:1px solid #fde047; padding:10px; border-radius:8px;">
           <span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <b>Paediatric Assessment Triangle (PAT)</b>
           <div style="font-size:11px; margin-top:8px; font-weight:bold;">Appearance (Tone, Interactiveness, Gaze, Cry):</div>
@@ -248,7 +243,6 @@
         </div>
         
         <h4 style="margin:5px 0;">Voice</h4>
-        <!-- ADULT VOICE -->
         <div class="segmented-control adult-only">
           <button type="button" id="btn_g_v_5" class="segment-btn active" onclick="setGCS('g_v', 5, this)">5-Orient</button>
           <button type="button" class="segment-btn" onclick="setGCS('g_v', 4, this)">4-Conf</button>
@@ -256,7 +250,6 @@
           <button type="button" class="segment-btn" onclick="setGCS('g_v', 2, this)">2-Sound</button>
           <button type="button" class="segment-btn" onclick="setGCS('g_v', 1, this)">1-None</button>
         </div>
-        <!-- PAEDS VOICE -->
         <div class="segmented-control paeds-only" style="display:none;">
           <button type="button" id="btn_g_v_5_p" class="segment-btn active" onclick="setGCS('g_v', 5, this)">5-Smiles/Coos</button>
           <button type="button" class="segment-btn" onclick="setGCS('g_v', 4, this)">4-Cries Cons</button>
@@ -316,7 +309,6 @@
       </div>
     </div>
 
-    <!-- 2. BREATHING -->
     <button class="accordion" id="resp_acc">🫁 Breathing</button>
     <div class="panel" id="resp_pan">
       
@@ -401,6 +393,14 @@
         </div>
       </div>
 
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Able to speak in full sentences?
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('speak_full_val', 'Yes', this); calculateDDx();">Yes</button>
+          <button type="button" class="segment-btn btn-red" onclick="setSeg('speak_full_val', 'No', this); calculateDDx();">No</button>
+        </div>
+        <input type="hidden" id="speak_full_val" value="Yes">
+      </div>
+
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Recent Cough?
         <div class="segmented-control">
           <button type="button" class="segment-btn active" onclick="setSeg('cough_val', 'No', this); toggleMenu('cough_n', false)">No</button>
@@ -458,7 +458,6 @@
       </div>
     </div>
 
-    <!-- 3. HEART / CIRCULATION -->
     <button class="accordion" id="card_acc">🫀 Heart / Circulation</button>
     <div class="panel" id="card_pan">
       
@@ -532,7 +531,6 @@
         </div>
       </div>
       
-      <!-- PAEDS FLACC CARDIO -->
       <div class="question paeds-only" style="display:none;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Paediatric Pain Scale (FLACC)?
         <div class="segmented-control grid-3">
           <button type="button" class="segment-btn active" onclick="setSeg('flacc_c_val', '0', this)">0 (No Pain)</button>
@@ -584,7 +582,6 @@
          <input type="hidden" id="ecg_perf" value="No">
          <div id="ecg_n" class="nested">
              
-             <!-- 10 RULES OF NORMAL ECG CARD -->
              <div class="adult-only" style="margin-bottom:15px; background: linear-gradient(135deg, #1e293b, #0f172a); color: #f8fafc; padding: 16px; border-radius: var(--radius-sm); border-left: 4px solid #38bdf8; box-shadow: var(--shadow-sm);">
                 <h4 style="color: #38bdf8; margin-top: 0; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
@@ -689,7 +686,6 @@
       </div>
     </div>
 
-    <!-- 4. NEURO -->
     <button class="accordion" id="neuro_acc">🧠 Brain & Nerves</button>
     <div class="panel" id="neuro_pan">
       
@@ -791,7 +787,6 @@
       </div>
     </div>
 
-    <!-- 5. VITALS & NEWS2 -->
     <button class="accordion adult-only" id="news_acc" style="display:block;">📊 Vitals & NEWS2</button>
     <div class="panel adult-only" id="news_pan">
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Live NEWS2 Vitals
@@ -858,7 +853,6 @@
       </div>
     </div>
 
-    <!-- PAEDS PEWS VITALS SECTION -->
     <button class="accordion paeds-only" id="pews_acc" style="display:none; background: linear-gradient(135deg, #f59e0b, #d97706);">🧸 Paediatric Vitals & PEWS</button>
     <div class="panel paeds-only" id="pews_pan" style="display:none;">
       
@@ -932,7 +926,6 @@
       </div>
     </div>
 
-    <!-- 6. TUMMY (GI/GU) -->
     <button class="accordion" id="gigu_acc">🍕 Tummy & Toilet</button>
     <div class="panel" id="gigu_pan">
       
@@ -992,7 +985,6 @@
         </div>
       </div>
 
-      <!-- PAEDS FLACC ABDO -->
       <div class="question paeds-only" style="display:none;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Paediatric Pain Scale (FLACC)?
         <div class="segmented-control grid-3">
           <button type="button" class="segment-btn active" onclick="setSeg('flacc_a_val', '0', this)">0 (No Pain)</button>
@@ -1042,7 +1034,6 @@
       </div>
     </div>
 
-    <!-- 7. BONES (MSK) -->
     <button class="accordion" id="msk_acc">🦴 Bones & Muscles</button>
     <div class="panel" id="msk_pan">
       
@@ -1109,7 +1100,6 @@
         </div>
       </div>
 
-      <!-- PAEDS FLACC MSK -->
       <div class="question paeds-only" style="display:none;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Paediatric Pain Scale (FLACC)?
         <div class="segmented-control grid-3">
           <button type="button" class="segment-btn active" onclick="setSeg('flacc_m_val', '0', this)">0 (No Pain)</button>
@@ -1144,8 +1134,6 @@
       </div>
     </div>
 
-    <!-- MATERNITY, TRAUMA, FALLS, MENTAL HEALTH -->
-    
     <button class="accordion adult-only" id="maternity_acc" style="display:none;">🤰 Maternity / Obstetrics</button>
     <div class="panel adult-only" id="maternity_pan">
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Gravida/Para: <div style="display:flex; gap:10px;"><input type="number" id="mat_gravida" placeholder="Gravida (G)"><input type="number" id="mat_para" placeholder="Para (P)"></div></div>
@@ -1273,11 +1261,9 @@
       </div>
     </div>
 
-    <!-- 8. MEDS & SOCIAL -->
     <button class="accordion" id="meds_social_acc">💊 Meds & Social</button>
     <div class="panel" id="meds_social_pan">
 
-      <!-- OFFLINE MED LOOKUP TOOL -->
       <div style="background:#e0f2fe; border:1px solid #bae6fd; padding:10px; border-radius:8px; margin-bottom:15px;">
         <h4 style="color:#0369a1; margin-top:0; margin-bottom:5px;">🔍 Offline Med Lookup (Internal Use)</h4>
         <div style="font-size:11px; opacity:0.8; margin-bottom:8px; color:var(--text-color);">Does NOT copy to ePCR. Type a common UK med to see what it is used for.</div>
@@ -1315,7 +1301,6 @@
          <input type="hidden" id="cfs_val" value="">
       </div>
       
-      <!-- PAEDS SPECIFIC SOCIAL -->
       <div class="question paeds-only" style="display:none; background:#fff1f2; border:1px solid #fecdd3; padding:10px; border-radius:8px;">
           <span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <b>Paediatric Safeguarding Checks</b>
           <input type="text" id="paeds_accompanied" placeholder="Who is accompanying the child? (Name/Relation)" style="margin-top:8px;">
@@ -1350,7 +1335,6 @@
       </div>
     </div>
 
-    <!-- 9. PLAN -->
     <button class="accordion" id="plan_acc">🗺️ Plan & Handover</button>
     <div class="panel" id="plan_pan">
       
@@ -1421,7 +1405,6 @@
       </div>
     </div>
 
-    <!-- 10. ADVICE & REFUSAL (MCA) -->
     <button class="accordion" id="advice_acc">📄 Advice & Refusal</button>
     <div class="panel" id="advice_pan">
       
@@ -1493,11 +1476,18 @@
       </div>
     </div>
 
-    <!-- BOTTOM BUTTONS -->
     <button class="submit-btn" id="generate_btn" onclick="generateOutput()">GENERATE ePCR COPY</button>
     <button class="calc-btn" id="not_found_btn" style="background:#64748b;" onclick="generateNotFound()">🚫 PATIENT NOT FOUND (Copy Notes)</button>
     <button class="calc-btn" style="background:transparent; color:#ef4444; border:2px solid #ef4444;" onclick="resetForm()">RESET FORM (Clear Data)</button>
 
+  </div>
+
+  <div class="ddx-hud" id="ddx_hud">
+    <div class="ddx-icon" id="ddx_icon">💡</div>
+    <div class="ddx-content">
+      <div class="ddx-title" id="ddx_title">Clinical Insights</div>
+      <div class="ddx-text" id="ddx_text" style="font-size:11px; opacity:0.9;">DDx: Awaiting assessment...</div>
+    </div>
   </div>
 
   <script>
@@ -1807,8 +1797,9 @@
         }
 
         var isDib = (val('dib_val') === 'Yes');
+        var speakNo = (val('speak_full_val') === 'No' && !isOmitted('speak_full_val'));
         
-        var shouldAlert = (isCp || isNews || isSepsis || isAllerg || isSobAtRest || notAlert || isDib);
+        var shouldAlert = (isCp || isNews || isSepsis || isAllerg || isSobAtRest || notAlert || isDib || speakNo);
         
         if(shouldAlert) {
             document.body.classList.add('alert-pulse');
@@ -2028,6 +2019,13 @@
         calculateDDx();
     }
 
+    function quickMed(med) {
+        if(!med) return;
+        var d = new Date(); var time = ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+        var ta = document.getElementById('meds_log');
+        ta.value += (ta.value ? "\n" : "") + "[" + time + "] " + med;
+    }
+
     function updateSections() {
         var c = document.getElementById('complaint').value;
         var tb = document.getElementById('trauma_bones_section');
@@ -2058,6 +2056,7 @@
       var sync = document.getElementById('sync').checked && !isOmitted('sync');
       var notAlert = val('alert_val') === 'No';
       var sobAtRest = val('sob_when') === 'At Rest' || val('sob_when') === 'Both' || val('sob_when') === 'Feeding/Crying';
+      var speakNo = val('speak_full_val') === 'No';
       
       var bm = 0;
       var t = 0;
@@ -2140,6 +2139,7 @@
       if(sepsis) redFlags.push("Sepsis");
       if(notAlert) redFlags.push("Reduced Level of Consciousness (" + (val('vpu_level')||"Not Alert") + ")");
       if(sob && sobAtRest) redFlags.push("Shortness of Breath at Rest");
+      if(speakNo) redFlags.push("Unable to Speak in Full Sentences");
       
       var pScore = 0;
       if(isPaeds) {
@@ -2294,9 +2294,6 @@
         var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
         
         var e = "";
-        e += "Age: " + (document.getElementById('pt_age').value || "Unknown") + (isPaeds ? " (PAEDIATRIC)" : "") + " | Gender: " + document.getElementById('pt_gender').value + "\n";
-        e += "Complaint: " + document.getElementById('complaint').options[document.getElementById('complaint').selectedIndex].text + "\n";
-        e += "--------------------------------------------------\n\n";
 
         function buildSec(title, lines) {
             var valid = lines.filter(function(l) { return l && l !== ""; });
@@ -2355,6 +2352,10 @@
             if(document.getElementById('pwob_recess').checked) pwobs.push("Recession");
             if(pwobs.length > 0) resp.push("- Paeds Work of Breathing Signs:\n  " + pwobs.join(", "));
             else resp.push("- No Paeds WOB signs noted");
+        }
+        
+        if(!isOmitted('speak_full_val')) {
+            resp.push("- Speaks in full sentences: " + val('speak_full_val'));
         }
 
         if(!isOmitted('cough_val')) {

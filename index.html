@@ -669,6 +669,7 @@
                 <div id="ecg_assistant_n" style="display:none; margin-top:10px;">
                    
                    <div style="font-size:11px; font-weight:bold;">1. Rate:</div>
+                   <div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Count QRS complexes in a 10s strip x6, or divide 300 by large squares between R waves.</div>
                    <div class="segmented-control">
                        <button type="button" class="segment-btn active" onclick="setSeg('ecg_rate','Normal',this); evalEcg();">50-100</button>
                        <button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_rate','Brady',this); evalEcg();"><50</button>
@@ -678,6 +679,7 @@
                    <input type="hidden" id="ecg_rate" value="Normal">
 
                    <div style="font-size:11px; font-weight:bold; margin-top:10px;">2. Rhythm regularity:</div>
+                   <div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Map out the R-R intervals. Are they equally spaced?</div>
                    <div class="segmented-control">
                        <button type="button" class="segment-btn active" onclick="setSeg('ecg_rhythm','Regular',this); evalEcg();">Regular</button>
                        <button type="button" class="segment-btn" onclick="setSeg('ecg_rhythm','Irregular',this); evalEcg();">Irregular</button>
@@ -685,6 +687,7 @@
                    <input type="hidden" id="ecg_rhythm" value="Regular">
 
                    <div style="font-size:11px; font-weight:bold; margin-top:10px;">3. P Waves:</div>
+                   <div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Best seen in Lead II or V1. Look for a positive deflection before every QRS.</div>
                    <div class="segmented-control grid-3">
                        <button type="button" class="segment-btn active" onclick="setSeg('ecg_p','Normal',this); evalEcg();">Present & Normal</button>
                        <button type="button" class="segment-btn" onclick="setSeg('ecg_p','Absent',this); evalEcg();">Absent/Fibrillatory</button>
@@ -693,6 +696,7 @@
                    <input type="hidden" id="ecg_p" value="Normal">
 
                    <div style="font-size:11px; font-weight:bold; margin-top:10px;">4. PR Interval (if P waves present):</div>
+                   <div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Start of P to start of QRS. Normal = 120-200ms (3 to 5 small squares).</div>
                    <div class="segmented-control grid-3">
                        <button type="button" class="segment-btn active" onclick="setSeg('ecg_pr','Normal',this); evalEcg();">120-200ms (3-5 sq)</button>
                        <button type="button" class="segment-btn" onclick="setSeg('ecg_pr','Prolonged',this); evalEcg();">>200ms (Long)</button>
@@ -701,6 +705,7 @@
                    <input type="hidden" id="ecg_pr" value="Normal">
 
                    <div style="font-size:11px; font-weight:bold; margin-top:10px;">5. QRS Width:</div>
+                   <div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Start of Q to end of S. Normal is < 120ms (less than 3 small squares).</div>
                    <div class="segmented-control">
                        <button type="button" class="segment-btn active" onclick="setSeg('ecg_qrs','Narrow',this); toggleMenu('bbb_guide', false); evalEcg();">Narrow (< 3 small sq)</button>
                        <button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_qrs','Broad',this); toggleMenu('bbb_guide', true); evalEcg();">Broad (>= 3 small sq)</button>

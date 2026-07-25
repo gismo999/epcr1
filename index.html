@@ -715,9 +715,9 @@
                    </div>
 
                    <div style="font-size:11px; font-weight:bold; margin-top:10px;">5. QRS Width:</div>
-                   <div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Start of Q to end of S. Normal is < 120ms (less than 3 small squares).</div>
+                   <div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Start of Q to end of S. Normal is &lt; 120ms (less than 3 small squares).</div>
                    <div class="segmented-control">
-                       <button type="button" class="segment-btn active" onclick="setSeg('ecg_qrs','Narrow',this); toggleMenu('bbb_guide', false); evalEcg();">Narrow (< 3 small sq)</button>
+                       <button type="button" class="segment-btn active" onclick="setSeg('ecg_qrs','Narrow',this); toggleMenu('bbb_guide', false); evalEcg();">Narrow (&lt; 3 small sq)</button>
                        <button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_qrs','Broad',this); toggleMenu('bbb_guide', true); evalEcg();">Broad (>= 3 small sq)</button>
                    </div>
                    <input type="hidden" id="ecg_qrs" value="Narrow">
@@ -2873,4 +2873,43 @@
                 mcaStr += "  - Can retain info long enough? " + (val('mca_4')||"Not answered") + "\n";
                 mcaStr += "  - Can explain decision in own words? " + (val('mca_5')||"Not answered") + "\n";
                 
-                if(val('mca_1')==='Yes' && val('mca_2')==='Yes' && val('mca_3')==='Yes' && val('mca_4')==='Yes' && valI encountered an error doing what you asked. Could you try again?
+                if(val('mca_1')==='Yes' && val('mca_2')==='Yes' && val('mca_3')==='Yes' && val('mca_4')==='Yes' && val('mca_5')==='Yes') {
+                    mcaStr += "\n  OUTCOME: The patient has full capacity at this time to make this decision.\n";
+                } else {
+                    mcaStr += "\n  OUTCOME: Patient may lack full capacity for this specific decision. Act in best interests / seek senior advice.\n";
+                }
+                mcaStr += "  Details & Reason: " + (val('refusal_reason')||"None provided.");
+                adv.push(mcaStr);
+            }
+        }
+        
+        if(isPaeds && !isOmitted('paeds_consent_plan')) {
+            if(val('paeds_consent_plan') === 'Yes') {
+                adv.push("- Parent/Guardian consents to the clinical plan.");
+            } else if(val('paeds_consent_plan') === 'No') {
+                adv.push("- Parent/Guardian REFUSING Clinical Plan\n  Reason & Escalation: " + (val('paeds_refusal_reason') || "None recorded."));
+            }
+        }
+
+        if(val('det_adv_val') === 'Yes') adv.push("Further Details:\n" + (val('det_adv_txt') || "None recorded."));
+        buildSec("Advice & Refusal (Consent / MCA)", adv);
+
+        // Copy to clipboard
+        var ta = document.createElement("textarea"); ta.value = e; ta.style.position = "fixed"; document.body.appendChild(ta); ta.select(); 
+        try { 
+            document.execCommand('copy'); 
+            var btn = document.getElementById('generate_btn');
+            if(btn) {
+                var oldText = btn.innerText;
+                var oldBg = btn.style.background;
+                btn.innerText = "COMPLETE ✅";
+                btn.style.background = "#3b82f6";
+                btn.style.color = "white";
+                setTimeout(function(){ btn.innerText = oldText; btn.style.background = oldBg; }, 3000);
+            }
+        } catch(err) { }
+        document.body.removeChild(ta);
+    }
+  </script>
+</body>
+</html>

@@ -661,6 +661,67 @@
                 </div>
              </div>
 
+             <!-- NEW INTERACTIVE RHYTHM ASSISTANT -->
+             <div class="adult-only" style="margin-bottom:15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px;">
+                <h4 style="margin-top:0; color:var(--acc-grad-1); cursor:pointer;" onclick="toggleMenu('ecg_assistant_n', document.getElementById('ecg_assistant_n').style.display==='none')">
+                  📈 Interactive Rhythm Assistant (Tap to open)
+                </h4>
+                <div id="ecg_assistant_n" style="display:none; margin-top:10px;">
+                   
+                   <div style="font-size:11px; font-weight:bold;">1. Rate:</div>
+                   <div class="segmented-control">
+                       <button type="button" class="segment-btn active" onclick="setSeg('ecg_rate','Normal',this); evalEcg();">50-100</button>
+                       <button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_rate','Brady',this); evalEcg();"><50</button>
+                       <button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_rate','Tachy',this); evalEcg();">101-150</button>
+                       <button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_rate','Extreme',this); evalEcg();">>150</button>
+                   </div>
+                   <input type="hidden" id="ecg_rate" value="Normal">
+
+                   <div style="font-size:11px; font-weight:bold; margin-top:10px;">2. Rhythm regularity:</div>
+                   <div class="segmented-control">
+                       <button type="button" class="segment-btn active" onclick="setSeg('ecg_rhythm','Regular',this); evalEcg();">Regular</button>
+                       <button type="button" class="segment-btn" onclick="setSeg('ecg_rhythm','Irregular',this); evalEcg();">Irregular</button>
+                   </div>
+                   <input type="hidden" id="ecg_rhythm" value="Regular">
+
+                   <div style="font-size:11px; font-weight:bold; margin-top:10px;">3. P Waves:</div>
+                   <div class="segmented-control grid-3">
+                       <button type="button" class="segment-btn active" onclick="setSeg('ecg_p','Normal',this); evalEcg();">Present & Normal</button>
+                       <button type="button" class="segment-btn" onclick="setSeg('ecg_p','Absent',this); evalEcg();">Absent/Fibrillatory</button>
+                       <button type="button" class="segment-btn" onclick="setSeg('ecg_p','Multiple',this); evalEcg();">Multiple per QRS</button>
+                   </div>
+                   <input type="hidden" id="ecg_p" value="Normal">
+
+                   <div style="font-size:11px; font-weight:bold; margin-top:10px;">4. PR Interval (if P waves present):</div>
+                   <div class="segmented-control grid-3">
+                       <button type="button" class="segment-btn active" onclick="setSeg('ecg_pr','Normal',this); evalEcg();">120-200ms (3-5 sq)</button>
+                       <button type="button" class="segment-btn" onclick="setSeg('ecg_pr','Prolonged',this); evalEcg();">>200ms (Long)</button>
+                       <button type="button" class="segment-btn" onclick="setSeg('ecg_pr','Dissociated',this); evalEcg();">Varying/Dissoc.</button>
+                   </div>
+                   <input type="hidden" id="ecg_pr" value="Normal">
+
+                   <div style="font-size:11px; font-weight:bold; margin-top:10px;">5. QRS Width:</div>
+                   <div class="segmented-control">
+                       <button type="button" class="segment-btn active" onclick="setSeg('ecg_qrs','Narrow',this); toggleMenu('bbb_guide', false); evalEcg();">Narrow (< 3 small sq)</button>
+                       <button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_qrs','Broad',this); toggleMenu('bbb_guide', true); evalEcg();">Broad (>= 3 small sq)</button>
+                   </div>
+                   <input type="hidden" id="ecg_qrs" value="Narrow">
+                   
+                   <div id="bbb_guide" style="display:none; margin-top:8px; padding:12px; background:#e0f2fe; border:1px solid #bae6fd; border-radius:6px; font-size:12px; line-height:1.5;">
+                       <b style="color:#0369a1;">Bundle Branch Block (BBB) Guide:</b><br>
+                       Look at leads <b>V1</b> and <b>V6</b>.<br>
+                       • <b style="color:#ef4444;">LBBB</b> (WiLLiaM): 'W' shape in V1 (negative), 'M' shape in V6 (positive). <i>New LBBB + chest pain = STEMI pathway.</i><br>
+                       • <b style="color:#eab308;">RBBB</b> (MaRRoW): 'M' shape in V1 (RSR' positive), 'W' shape in V6 (slurred S wave).
+                   </div>
+
+                   <div id="ecg_eval_out" style="margin-top:15px; padding:10px; background:#1e293b; color:#38bdf8; border-radius:8px; font-weight:bold; text-align:center; font-size:13px;">
+                       Suggestion: Sinus Rhythm
+                   </div>
+                   <button type="button" class="calc-btn" style="margin-top:10px; background:#334155; padding: 12px;" onclick="document.getElementById('ecg_desc').value = document.getElementById('ecg_eval_out').innerText.replace('Suggestion: ', '');">Copy to Rhythm Findings Below</button>
+                </div>
+             </div>
+             <!-- END INTERACTIVE RHYTHM ASSISTANT -->
+
              <input type="text" id="ecg_desc" placeholder="Rhythm / Findings...">
              <label style="margin-top:10px; display:block;"><input type="checkbox" id="st_elev" onchange="toggleMenu('st_elev_n', this.checked)"> ST Elevation noted?</label>
              <div id="st_elev_n" class="nested">
@@ -1677,6 +1738,50 @@
             }
         } catch(e) {}
     }
+
+    // --- ECG EVALUATOR LOGIC ---
+    function evalEcg() {
+        var rate = document.getElementById('ecg_rate').value; 
+        var rhythm = document.getElementById('ecg_rhythm').value; 
+        var p = document.getElementById('ecg_p').value; 
+        var pr = document.getElementById('ecg_pr').value; 
+        var qrs = document.getElementById('ecg_qrs').value; 
+
+        var diag = "Sinus Rhythm";
+        var prefix = "";
+
+        if (rate === 'Brady') prefix = "Sinus Bradycardia";
+        else if (rate === 'Tachy') prefix = "Sinus Tachycardia";
+        else prefix = "Sinus Rhythm";
+
+        // Logic tree
+        if (p === 'Absent' && rhythm === 'Irregular' && qrs === 'Narrow') {
+            diag = "Atrial Fibrillation (AFib)";
+            if (rate === 'Tachy' || rate === 'Extreme') diag += " with Rapid Ventricular Response (RVR)";
+        } else if (p === 'Absent' && rhythm === 'Regular' && rate === 'Extreme' && qrs === 'Narrow') {
+            diag = "SVT (Supraventricular Tachycardia)";
+        } else if (qrs === 'Broad') {
+            if (rate === 'Extreme' || rate === 'Tachy') {
+                diag = "Ventricular Tachycardia (VT) or SVT with aberrant conduction";
+            } else if (rate === 'Brady' && p === 'Absent') {
+                diag = "Ventricular Escape Rhythm";
+            } else {
+                diag = prefix + " with Bundle Branch Block (Check V1/V6 for LBBB/RBBB)";
+            }
+        } else if (p === 'Multiple') {
+            if (rhythm === 'Regular') diag = "Atrial Flutter (with block)";
+            else diag = "Atrial Fibrillation / Flutter";
+        } else if (p === 'Normal') {
+            diag = prefix;
+            if (pr === 'Prolonged') diag += " with 1st Degree AV Block";
+            if (pr === 'Dissociated' || rhythm === 'Irregular') diag = "Possible 2nd or 3rd Degree AV Block, or Ectopics (PAC/PVC)";
+        } else {
+            diag = "Indeterminate Rhythm - " + prefix + " variants";
+        }
+
+        document.getElementById('ecg_eval_out').innerText = "Suggestion: " + diag;
+    }
+
 
     // --- INIT & EVENT LISTENERS ---
     document.addEventListener('input', calculateDDx);

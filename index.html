@@ -695,14 +695,24 @@
                    </div>
                    <input type="hidden" id="ecg_p" value="Normal">
 
-                   <div style="font-size:11px; font-weight:bold; margin-top:10px;">4. PR Interval (if P waves present):</div>
+                   <div style="font-size:11px; font-weight:bold; margin-top:10px;">4. PR Interval / AV Blocks:</div>
                    <div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Start of P to start of QRS. Normal = 120-200ms (3 to 5 small squares).</div>
-                   <div class="segmented-control grid-3">
-                       <button type="button" class="segment-btn active" onclick="setSeg('ecg_pr','Normal',this); evalEcg();">120-200ms (3-5 sq)</button>
-                       <button type="button" class="segment-btn" onclick="setSeg('ecg_pr','Prolonged',this); evalEcg();">>200ms (Long)</button>
-                       <button type="button" class="segment-btn" onclick="setSeg('ecg_pr','Dissociated',this); evalEcg();">Varying/Dissoc.</button>
+                   <div class="segmented-control grid-2">
+                       <button type="button" class="segment-btn active" onclick="setSeg('ecg_pr','Normal',this); toggleMenu('av_block_guide', false); evalEcg();">Normal (3-5 sq)</button>
+                       <button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_pr','1st_Degree',this); toggleMenu('av_block_guide', true); evalEcg();">1st Deg (Fixed >5 sq)</button>
+                       <button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_pr','Mobitz1',this); toggleMenu('av_block_guide', true); evalEcg();">Mobitz I (Lengthens)</button>
+                       <button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_pr','Mobitz2',this); toggleMenu('av_block_guide', true); evalEcg();">Mobitz II (Fixed+Drops)</button>
+                       <button type="button" class="segment-btn btn-red" style="grid-column: span 2;" onclick="setSeg('ecg_pr','3rd_Degree',this); toggleMenu('av_block_guide', true); evalEcg();">3rd Degree Complete (Dissociated)</button>
                    </div>
                    <input type="hidden" id="ecg_pr" value="Normal">
+                   
+                   <div id="av_block_guide" style="display:none; margin-top:8px; padding:12px; background:#fefce8; border:1px solid #fde047; border-radius:6px; font-size:12px; line-height:1.5;">
+                       <b style="color:#ca8a04;">AV Block Guide:</b><br>
+                       • <b style="color:#b45309;">1st Degree:</b> PR is consistently >5 small squares, but every P has a QRS.<br>
+                       • <b style="color:#b45309;">2nd Degree (Mobitz I / Wenckebach):</b> PR gets progressively longer until a QRS is dropped. "Long, longer, longest, drop".<br>
+                       • <b style="color:#ef4444;">2nd Degree (Mobitz II):</b> PR interval is constant, but QRS complexes unexpectedly drop. High risk of deterioration.<br>
+                       • <b style="color:#ef4444;">3rd Degree (Complete):</b> P waves and QRS complexes beat completely independently. P rate > QRS rate. Needs urgent pacing.
+                   </div>
 
                    <div style="font-size:11px; font-weight:bold; margin-top:10px;">5. QRS Width:</div>
                    <div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Start of Q to end of S. Normal is < 120ms (less than 3 small squares).</div>
@@ -1789,17 +1799,22 @@
                 diag = prefix + " with Bundle Branch Block (Check V1/V6 for LBBB/RBBB)";
             }
         } else if (p === 'Multiple') {
-            if (rhythm === 'Regular') diag = "Atrial Flutter (with block)";
+            if (pr === '3rd_Degree') diag = "3rd Degree (Complete) Heart Block 🚨";
+            else if (rhythm === 'Regular') diag = "Atrial Flutter (with block)";
             else diag = "Atrial Fibrillation / Flutter";
         } else if (p === 'Normal') {
             diag = prefix;
-            if (pr === 'Prolonged') diag += " with 1st Degree AV Block";
-            if (pr === 'Dissociated' || rhythm === 'Irregular') diag = "Possible 2nd or 3rd Degree AV Block, or Ectopics (PAC/PVC)";
+            if (pr === '1st_Degree') diag += " with 1st Degree AV Block";
+            else if (pr === 'Mobitz1') diag += " with 2nd Deg AV Block (Mobitz I / Wenckebach)";
+            else if (pr === 'Mobitz2') diag += " with 2nd Deg AV Block (Mobitz II) 🚨";
+            else if (pr === '3rd_Degree') diag = "3rd Degree (Complete) Heart Block 🚨";
+            else if (rhythm === 'Irregular') diag = "Possible Ectopics (PAC/PVC) or Sinus Arrhythmia";
         } else {
             diag = "Indeterminate Rhythm - " + prefix + " variants";
         }
 
         document.getElementById('ecg_eval_out').innerText = "Suggestion: " + diag;
+        calculateDDx(); // Re-run DDx to check for the new AV Block red flags
     }
 
     // --- STEMI LOCATOR LOGIC ---
@@ -2314,6 +2329,11 @@
           var outStemi = document.getElementById('stemi_location_out');
           var outShort = outStemi ? outStemi.dataset.short : "";
           redFlags.push(outShort ? "Suspected " + outShort : "ST Elevation Noted");
+      }
+
+      var ecg_pr_val = document.getElementById('ecg_pr') ? document.getElementById('ecg_pr').value : '';
+      if(ecg_pr_val === 'Mobitz2' || ecg_pr_val === '3rd_Degree') {
+          redFlags.push("High-Grade AV Block (Mobitz II / 3rd Degree)");
       }
       
       if(isPaeds) {
@@ -2853,43 +2873,4 @@
                 mcaStr += "  - Can retain info long enough? " + (val('mca_4')||"Not answered") + "\n";
                 mcaStr += "  - Can explain decision in own words? " + (val('mca_5')||"Not answered") + "\n";
                 
-                if(val('mca_1')==='Yes' && val('mca_2')==='Yes' && val('mca_3')==='Yes' && val('mca_4')==='Yes' && val('mca_5')==='Yes') {
-                    mcaStr += "\n  OUTCOME: The patient has full capacity at this time to make this decision.\n";
-                } else {
-                    mcaStr += "\n  OUTCOME: Patient may lack full capacity for this specific decision. Act in best interests / seek senior advice.\n";
-                }
-                mcaStr += "  Details & Reason: " + (val('refusal_reason')||"None provided.");
-                adv.push(mcaStr);
-            }
-        }
-        
-        if(isPaeds && !isOmitted('paeds_consent_plan')) {
-            if(val('paeds_consent_plan') === 'Yes') {
-                adv.push("- Parent/Guardian consents to the clinical plan.");
-            } else if(val('paeds_consent_plan') === 'No') {
-                adv.push("- Parent/Guardian REFUSING Clinical Plan\n  Reason & Escalation: " + (val('paeds_refusal_reason') || "None recorded."));
-            }
-        }
-
-        if(val('det_adv_val') === 'Yes') adv.push("Further Details:\n" + (val('det_adv_txt') || "None recorded."));
-        buildSec("Advice & Refusal (Consent / MCA)", adv);
-
-        // Copy to clipboard
-        var ta = document.createElement("textarea"); ta.value = e; ta.style.position = "fixed"; document.body.appendChild(ta); ta.select(); 
-        try { 
-            document.execCommand('copy'); 
-            var btn = document.getElementById('generate_btn');
-            if(btn) {
-                var oldText = btn.innerText;
-                var oldBg = btn.style.background;
-                btn.innerText = "COMPLETE ✅";
-                btn.style.background = "#3b82f6";
-                btn.style.color = "white";
-                setTimeout(function(){ btn.innerText = oldText; btn.style.background = oldBg; }, 3000);
-            }
-        } catch(err) { }
-        document.body.removeChild(ta);
-    }
-  </script>
-</body>
-</html>
+                if(val('mca_1')==='Yes' && val('mca_2')==='Yes' && val('mca_3')==='Yes' && val('mca_4')==='Yes' && valI encountered an error doing what you asked. Could you try again?

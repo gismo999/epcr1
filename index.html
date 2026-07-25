@@ -661,7 +661,7 @@
                 </div>
              </div>
 
-             <!-- NEW INTERACTIVE RHYTHM ASSISTANT -->
+             <!-- INTERACTIVE RHYTHM ASSISTANT -->
              <div class="adult-only" style="margin-bottom:15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px;">
                 <h4 style="margin-top:0; color:var(--acc-grad-1); cursor:pointer;" onclick="toggleMenu('ecg_assistant_n', document.getElementById('ecg_assistant_n').style.display==='none')">
                   📈 Interactive Rhythm Assistant (Tap to open)
@@ -720,16 +720,31 @@
                    <button type="button" class="calc-btn" style="margin-top:10px; background:#334155; padding: 12px;" onclick="document.getElementById('ecg_desc').value = document.getElementById('ecg_eval_out').innerText.replace('Suggestion: ', '');">Copy to Rhythm Findings Below</button>
                 </div>
              </div>
-             <!-- END INTERACTIVE RHYTHM ASSISTANT -->
 
              <input type="text" id="ecg_desc" placeholder="Rhythm / Findings...">
-             <label style="margin-top:10px; display:block;"><input type="checkbox" id="st_elev" onchange="toggleMenu('st_elev_n', this.checked)"> ST Elevation noted?</label>
+             
+             <!-- ST ELEVATION LOCATOR -->
+             <label style="margin-top:10px; display:block;"><input type="checkbox" id="st_elev" onchange="toggleMenu('st_elev_n', this.checked); evalStemi();"> ST Elevation noted?</label>
              <div id="st_elev_n" class="nested">
                  Which leads?
                  <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:5px; margin-top:8px; font-size:12px;">
-                    <label><input type="checkbox" id="lead_v1"> V1</label><label><input type="checkbox" id="lead_v2"> V2</label><label><input type="checkbox" id="lead_v3"> V3</label><label><input type="checkbox" id="lead_v4"> V4</label>
-                    <label><input type="checkbox" id="lead_v5"> V5</label><label><input type="checkbox" id="lead_v6"> V6</label><label><input type="checkbox" id="lead_i"> I</label><label><input type="checkbox" id="lead_ii"> II</label>
-                    <label><input type="checkbox" id="lead_iii"> III</label><label><input type="checkbox" id="lead_avr"> aVR</label><label><input type="checkbox" id="lead_avl"> aVL</label><label><input type="checkbox" id="lead_avf"> aVF</label>
+                    <label><input type="checkbox" id="lead_v1" onchange="evalStemi()"> V1</label>
+                    <label><input type="checkbox" id="lead_v2" onchange="evalStemi()"> V2</label>
+                    <label><input type="checkbox" id="lead_v3" onchange="evalStemi()"> V3</label>
+                    <label><input type="checkbox" id="lead_v4" onchange="evalStemi()"> V4</label>
+                    <label><input type="checkbox" id="lead_v5" onchange="evalStemi()"> V5</label>
+                    <label><input type="checkbox" id="lead_v6" onchange="evalStemi()"> V6</label>
+                    <label><input type="checkbox" id="lead_i" onchange="evalStemi()"> I</label>
+                    <label><input type="checkbox" id="lead_ii" onchange="evalStemi()"> II</label>
+                    <label><input type="checkbox" id="lead_iii" onchange="evalStemi()"> III</label>
+                    <label><input type="checkbox" id="lead_avr" onchange="evalStemi()"> aVR</label>
+                    <label><input type="checkbox" id="lead_avl" onchange="evalStemi()"> aVL</label>
+                    <label><input type="checkbox" id="lead_avf" onchange="evalStemi()"> aVF</label>
+                 </div>
+                 
+                 <div id="stemi_location_out" style="display:none; margin-top:10px; padding:10px; background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; border-radius:6px; font-weight:bold; font-size:12px; line-height:1.4;" data-short="">
+                    🚨 STEMI Location Suggestion:<br><span id="stemi_loc_text"></span>
+                    <button type="button" class="calc-btn" style="margin-top:8px; background:#ef4444; padding:8px; font-size:11px;" onclick="var d = document.getElementById('ecg_desc'); d.value += (d.value ? ' - ' : '') + 'Suspected ' + document.getElementById('stemi_location_out').dataset.short;">Add to Findings</button>
                  </div>
              </div>
          </div>
@@ -1782,6 +1797,66 @@
         document.getElementById('ecg_eval_out').innerText = "Suggestion: " + diag;
     }
 
+    // --- STEMI LOCATOR LOGIC ---
+    function evalStemi() {
+        var leads = {
+            v1: document.getElementById('lead_v1').checked,
+            v2: document.getElementById('lead_v2').checked,
+            v3: document.getElementById('lead_v3').checked,
+            v4: document.getElementById('lead_v4').checked,
+            v5: document.getElementById('lead_v5').checked,
+            v6: document.getElementById('lead_v6').checked,
+            i: document.getElementById('lead_i').checked,
+            ii: document.getElementById('lead_ii').checked,
+            iii: document.getElementById('lead_iii').checked,
+            avr: document.getElementById('lead_avr').checked,
+            avl: document.getElementById('lead_avl').checked,
+            avf: document.getElementById('lead_avf').checked
+        };
+
+        var inf = leads.ii || leads.iii || leads.avf;
+        var sep = leads.v1 || leads.v2;
+        var ant = leads.v3 || leads.v4;
+        var lat = leads.v5 || leads.v6 || leads.i || leads.avl;
+        
+        var summary = [];
+        var regions = [];
+
+        // Determine specific patterns first
+        if (sep && ant && lat) {
+            summary.push("Extensive Anterior (V1-V6, I, aVL)");
+            regions.push("Extensive Anterior");
+        } else if (sep && ant) {
+            summary.push("Anteroseptal (V1-V4)");
+            regions.push("Anteroseptal");
+            if (lat) { summary.push("+ Lateral"); regions.push("Lateral"); }
+        } else if (ant && lat) {
+            summary.push("Anterolateral (V3-V6, I, aVL)");
+            regions.push("Anterolateral");
+            if (sep) { summary.push("+ Septal"); regions.push("Septal"); }
+        } else {
+            if (ant) { summary.push("Anterior (V3-V4)"); regions.push("Anterior"); }
+            if (sep) { summary.push("Septal (V1-V2)"); regions.push("Septal"); }
+            if (lat) { summary.push("Lateral (V5-V6, I, aVL)"); regions.push("Lateral"); }
+        }
+        
+        if (inf) { summary.push("Inferior (II, III, aVF)"); regions.push("Inferior"); }
+        if (leads.avr) { summary.push("aVR (Consider Left Main / Triple Vessel)"); regions.push("aVR"); }
+
+        var out = document.getElementById('stemi_location_out');
+        var textEl = document.getElementById('stemi_loc_text');
+        
+        if (summary.length > 0) {
+            out.style.display = 'block';
+            textEl.innerHTML = summary.join("<br>+ ");
+            out.dataset.short = regions.join(" & ") + " STEMI"; 
+        } else {
+            out.style.display = 'none';
+            out.dataset.short = "";
+        }
+        calculateDDx();
+    }
+
 
     // --- INIT & EVENT LISTENERS ---
     document.addEventListener('input', calculateDDx);
@@ -2228,6 +2303,13 @@
 
       if(val('init_airway') === 'Compromised' || val('init_airway') === 'Obstructed') redFlags.push("Airway Compromise");
       if(val('cp_val') === 'Yes') redFlags.push("Chest Pain");
+      
+      var st_elev = document.getElementById('st_elev') && document.getElementById('st_elev').checked;
+      if(st_elev) {
+          var outStemi = document.getElementById('stemi_location_out');
+          var outShort = outStemi ? outStemi.dataset.short : "";
+          redFlags.push(outShort ? "Suspected " + outShort : "ST Elevation Noted");
+      }
       
       if(isPaeds) {
           if(currentPews >= 4) redFlags.push("PEWS >= 4");

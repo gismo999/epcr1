@@ -317,6 +317,7 @@
             <button type="button" class="segment-btn" onclick="setSeg('sob_norm', 'No', this); toggleMenu('sob_copd', false); toggleMenu('sob_onset', true)">No</button>
           </div>
           <input type="hidden" id="sob_norm" value="">
+          
           <div id="sob_copd" style="display:none; margin-top:10px;">
             <div style="font-size:11px; font-weight:bold; margin-bottom:4px;">Do they have COPD or Asthma?</div>
             <div class="segmented-control">
@@ -326,6 +327,7 @@
               <button type="button" class="segment-btn" onclick="setSeg('sob_type', 'Neither', this)">Neither</button>
             </div>
             <input type="hidden" id="sob_type" value="">
+            
             <div style="font-size:11px; font-weight:bold; margin-top:10px; margin-bottom:4px;">Recent Exacerbation History:</div>
             <div class="segmented-control grid-2">
                 <button type="button" class="segment-btn" onclick="setSeg('sob_hx', 'Recent Hosp Admission', this)">Recent Hosp Admit</button>
@@ -335,10 +337,12 @@
             </div>
             <input type="hidden" id="sob_hx" value="None / Normal">
           </div>
+          
           <div id="sob_onset" style="display:none; margin-top:10px;">
             <div style="font-size:11px; font-weight:bold; margin-bottom:4px;">When did it start?</div>
             <input type="text" id="sob_start_time" placeholder="Time / Duration">
           </div>
+          
           <div style="margin-top:10px; font-size:11px; font-weight:bold;">When does SOB occur?</div>
           <div class="segmented-control">
             <button type="button" class="segment-btn adult-only" onclick="setSeg('sob_when', 'Walking', this); calculateDDx();">Walking</button>
@@ -347,6 +351,19 @@
             <button type="button" class="segment-btn paeds-only" style="display:none;" onclick="setSeg('sob_when', 'Feeding/Crying', this); calculateDDx();">Feeding/Crying</button>
           </div>
           <input type="hidden" id="sob_when" value="">
+
+          <!-- RESP IPPA GUIDE -->
+          <div style="margin-top:15px; background: var(--input-bg); border: 1px dashed var(--acc-grad-1); border-radius: 8px; padding: 12px;">
+              <h4 style="margin-top:0; color:var(--acc-grad-1); display:flex; align-items:center; gap:6px;">🩺 IPPA Chest Exam Guide</h4>
+              <div style="font-size:11px; margin-bottom:8px; line-height:1.4;">
+                  <b style="color:var(--acc-grad-1);">I</b>nspection: Look for symmetry, scars, accessory muscle use, cyanosis.<br>
+                  <b style="color:var(--acc-grad-1);">P</b>alpation: Feel for chest expansion, tracheal deviation, crepitus.<br>
+                  <b style="color:var(--acc-grad-1);">P</b>ercussion: Tap for resonance (Normal, Dull=fluid/consolidation, Hyper=air/pneumothorax).<br>
+                  <b style="color:var(--acc-grad-1);">A</b>uscultation: Listen to all zones for air entry, wheeze, crackles, or rubs.
+              </div>
+              <input type="text" id="resp_ippa_notes" placeholder="IPPA Findings (e.g., Dull percussion R base, ↓ expansion)">
+          </div>
+
         </div>
       </div>
 
@@ -492,13 +509,29 @@
                  <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '10', this)">10</button>
               </div>
               <input type="hidden" id="soc_c_sev" value="">
+              
               <div style="margin-top:15px; border-top:1px dashed var(--border-color); padding-top:10px;">
                   Has Aspirin been given?
-                  <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('asa_given', 'No', this); toggleMenu('asa_time_div', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('asa_given', 'Yes', this); toggleMenu('asa_time_div', true)">Yes</button></div>
+                  <div class="segmented-control">
+                      <button type="button" class="segment-btn active" onclick="setSeg('asa_given', 'No', this); toggleMenu('asa_time_div', false)">No</button>
+                      <button type="button" class="segment-btn" onclick="setSeg('asa_given', 'Yes', this); toggleMenu('asa_time_div', true)">Yes</button>
+                  </div>
                   <input type="hidden" id="asa_given" value="No">
                   <div id="asa_time_div" style="display:none;"><input type="text" id="asa_time" placeholder="Time Aspirin Given"></div>
               </div>
           </div>
+
+          <!-- CARDIAC EXAM GUIDE -->
+          <div class="adult-only" style="margin-top:15px; background: var(--input-bg); border: 1px dashed var(--acc-grad-1); border-radius: 8px; padding: 12px;">
+              <h4 style="margin-top:0; color:var(--acc-grad-1); display:flex; align-items:center; gap:6px;">🩺 Cardiac Exam Guide</h4>
+              <div style="font-size:11px; margin-bottom:8px; line-height:1.4;">
+                  <b style="color:var(--acc-grad-1);">I</b>nspection: Scars (midline sternotomy), pacemaker bulges, visible heaves.<br>
+                  <b style="color:var(--acc-grad-1);">P</b>alpation: Apex beat (5th IC space, mid-clavicular line), heaves or thrills.<br>
+                  <b style="color:var(--acc-grad-1);">A</b>uscultation: Listen to 4 valves (Aortic, Pulmonary, Tricuspid, Mitral) for murmurs or rubs.
+              </div>
+              <input type="text" id="card_ippa_notes" placeholder="Exam Findings (e.g., Systolic murmur, displaced apex)">
+          </div>
+
         </div>
       </div>
       
@@ -525,15 +558,19 @@
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="palps" onchange="toggleMenu('palps_n', this.checked)"> Racing or fluttering heart?
         <div id="palps_n" class="nested"><input type="text" id="palps_det" placeholder="Onset / Frequency..."></div>
       </div>
+      
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sync" onchange="toggleMenu('sync_n', this.checked)"> Syncope / almost fainted?
         <div id="sync_n" class="nested"><input type="text" id="sync_det" placeholder="Before/During/After symptoms..."></div>
       </div>
+      
       <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="dizzy" onchange="toggleMenu('dizzy_n', this.checked)"> Dizziness / Orthostatic Symptoms?
         <div id="dizzy_n" class="nested"><input type="text" id="dizzy_det" placeholder="Postural? Room spinning?"></div>
       </div>
+      
       <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="oedema" onchange="toggleMenu('oedema_n', this.checked)"> Swollen legs/ankles?
         <div id="oedema_n" class="nested"><input type="text" id="oedema_det" placeholder="Pitting? Bilateral/Unilateral?"></div>
       </div>
+
       <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="claudication" onchange="toggleMenu('claudication_n', this.checked)"> Claudication (Leg pain when walking)?
           <div id="claudication_n" class="nested"><input type="text" id="claudication_det" placeholder="Distance before pain starts, bilateral/unilateral?"></div>
       </div>
@@ -627,10 +664,7 @@
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
-        <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('det_card_val', 'No', this); toggleMenu('det_card_n', false)">No</button>
-          <button type="button" class="segment-btn" onclick="setSeg('det_card_val', 'Yes', this); toggleMenu('det_card_n', true)">Yes</button>
-        </div>
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_card_val', 'No', this); toggleMenu('det_card_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_card_val', 'Yes', this); toggleMenu('det_card_n', true)">Yes</button></div>
         <input type="hidden" id="det_card_val" value="No">
         <div id="det_card_n" class="nested"><textarea id="det_card_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
       </div>
@@ -660,10 +694,7 @@
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> FAST Stroke Check
-        <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('fast_val', 'No', this); toggleMenu('fast_n', false)">Not Indicated</button>
-          <button type="button" class="segment-btn" onclick="setSeg('fast_val', 'Yes', this); toggleMenu('fast_n', true)">Perform Check</button>
-        </div>
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('fast_val', 'No', this); toggleMenu('fast_n', false)">Not Indicated</button><button type="button" class="segment-btn" onclick="setSeg('fast_val', 'Yes', this); toggleMenu('fast_n', true)">Perform Check</button></div>
         <input type="hidden" id="fast_val" value="No">
         <div id="fast_n" class="nested">
           Face Droop:
@@ -673,8 +704,7 @@
           Speech:
           <div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('s_w', 'Normal', this)">Normal</button><button type="button" class="segment-btn btn-red" onclick="setSeg('s_w', 'Slurred', this)">Slurred</button><button type="button" class="segment-btn btn-red" onclick="setSeg('s_w', 'Aphasic', this)">Aphasic</button></div><input type="hidden" id="s_w" value="Normal">
           <div style="font-size:11px; font-weight:bold; margin-top:10px;">BM Check / Mimic Exclusion:</div>
-          <input type="text" id="fast_mimics" placeholder="Is BM normal? History of seizures?">
-          <input type="text" id="fast_time" placeholder="Time of Onset" style="margin-top:10px;">
+          <input type="text" id="fast_mimics" placeholder="Is BM normal? History of seizures?"><input type="text" id="fast_time" placeholder="Time of Onset" style="margin-top:10px;">
         </div>
       </div>
 
@@ -711,10 +741,7 @@
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
-        <div class="segmented-control">
-          <button type="button" class="segment-btn active" onclick="setSeg('det_neuro_val', 'No', this); toggleMenu('det_neuro_n', false)">No</button>
-          <button type="button" class="segment-btn" onclick="setSeg('det_neuro_val', 'Yes', this); toggleMenu('det_neuro_n', true)">Yes</button>
-        </div>
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_neuro_val', 'No', this); toggleMenu('det_neuro_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_neuro_val', 'Yes', this); toggleMenu('det_neuro_n', true)">Yes</button></div>
         <input type="hidden" id="det_neuro_val" value="No">
         <div id="det_neuro_n" class="nested"><textarea id="det_neuro_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
       </div>
@@ -797,7 +824,7 @@
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Tummy Ache / Pain?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('abdo_p', 'No', this); toggleMenu('abdo_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('abdo_p', 'Yes', this); toggleMenu('abdo_n', true)">Yes</button></div>
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('abdo_p', 'No', this); toggleMenu('abdo_n', false)">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('abdo_p', 'Yes', this); toggleMenu('abdo_n', true)">Yes</button></div>
         <input type="hidden" id="abdo_p" value="No">
         <div id="abdo_n" class="nested">
           <h4 style="margin-top:0;">Fluid SOCRATES</h4>
@@ -818,6 +845,20 @@
               <div class="segmented-control" style="gap:2px;"><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '0', this)">0</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '1', this)">1</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '2', this)">2</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '3', this)">3</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '4', this)">4</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '5', this)">5</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '6', this)">6</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '7', this)">7</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '8', this)">8</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '9', this)">9</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '10', this)">10</button></div>
               <input type="hidden" id="soc_a_sev" value="">
           </div>
+
+          <!-- ABDO IAPP GUIDE -->
+          <div class="adult-only" style="margin-top:15px; background: var(--input-bg); border: 1px dashed var(--acc-grad-1); border-radius: 8px; padding: 12px;">
+              <h4 style="margin-top:0; color:var(--acc-grad-1); display:flex; align-items:center; gap:6px;">🩺 Abdo IAPP Exam Guide</h4>
+              <div style="font-size:11px; margin-bottom:8px; line-height:1.4;">
+                  <i>Note: Auscultate BEFORE palpating.</i><br>
+                  <b style="color:var(--acc-grad-1);">I</b>nspection: Distension, scars, hernias, visible pulsations.<br>
+                  <b style="color:var(--acc-grad-1);">A</b>uscultation: Bowel sounds (tinkling, absent, hyperactive).<br>
+                  <b style="color:var(--acc-grad-1);">P</b>ercussion: Tympany (gas) vs Dullness (fluid/feces/organs).<br>
+                  <b style="color:var(--acc-grad-1);">P</b>alpation: Feel 9 regions lightly then deeply. Note guarding, rigidity, rebound.
+              </div>
+              <input type="text" id="abdo_iapp_notes" placeholder="Exam Findings (e.g., Rigidity in RLQ, dull percussion)">
+          </div>
+
         </div>
       </div>
 
@@ -850,10 +891,8 @@
       <!-- URINARY QUESTIONS -->
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Other Urinary Symptoms:
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px; font-size:12px;">
-              <label><input type="checkbox" id="ur_freq"> Frequency / Urgency</label>
-              <label><input type="checkbox" id="ur_olig"> Oliguria (Reduced output)</label>
-              <label><input type="checkbox" id="ur_inc"> Incontinence (New)</label>
-              <label><input type="checkbox" id="ur_froth"> Foamy / Frothy Urine</label>
+              <label><input type="checkbox" id="ur_freq"> Frequency / Urgency</label><label><input type="checkbox" id="ur_olig"> Oliguria (Reduced output)</label>
+              <label><input type="checkbox" id="ur_inc"> Incontinence (New)</label><label><input type="checkbox" id="ur_froth"> Foamy / Frothy Urine</label>
           </div>
       </div>
 
@@ -895,7 +934,7 @@
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Back Pain?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('back_p', 'No', this); toggleMenu('back_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('back_p', 'Yes', this); toggleMenu('back_n', true)">Yes</button></div>
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('back_p', 'No', this); toggleMenu('back_n', false)">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('back_p', 'Yes', this); toggleMenu('back_n', true)">Yes</button></div>
         <input type="hidden" id="back_p" value="No">
         <div id="back_n" class="nested">
           <h4 style="margin-top:0;">Fluid SOCRATES</h4>
@@ -1026,9 +1065,7 @@
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Risk of harm to others? <input type="text" id="mh_others_det" placeholder="Details of threats, target identified?" style="margin-top:5px;"></div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Hallucinations/delusions? <input type="text" id="mh_halluc_det" placeholder="Auditory/Visual? Command hallucinations?" style="margin-top:5px;"></div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Intoxication / Overdose? 
-          <input type="text" id="mh_alc_det" placeholder="Alcohol details (Amount/Type)..." style="margin-top:5px;">
-          <input type="text" id="mh_drugs_det" placeholder="Drugs/Meds Overdose details (Amount/Time)..." style="margin-top:5px;">
-          <input type="text" id="toxbase_advice" placeholder="Toxbase Advice..." style="margin-top:5px;">
+          <input type="text" id="mh_alc_det" placeholder="Alcohol details (Amount/Type)..." style="margin-top:5px;"><input type="text" id="mh_drugs_det" placeholder="Drugs/Meds Overdose details (Amount/Time)..." style="margin-top:5px;"><input type="text" id="toxbase_advice" placeholder="Toxbase Advice..." style="margin-top:5px;">
       </div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
         <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_mh_val', 'No', this); toggleMenu('det_mh_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_mh_val', 'Yes', this); toggleMenu('det_mh_n', true)">Yes</button></div>
@@ -1049,8 +1086,7 @@
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Medications Given?
          <div class="segmented-control grid-2" style="margin-bottom:10px;"><button type="button" class="segment-btn" onclick="quickMed('Aspirin 300mg')">Aspirin 300mg</button><button type="button" class="segment-btn" onclick="quickMed('Paracetamol 1g')">Paracetamol 1g</button><button type="button" class="segment-btn" onclick="quickMed('Ibuprofen 400mg')">Ibuprofen 400mg</button><button type="button" class="segment-btn" onclick="quickMed('Ondansetron 4mg')">Ondansetron 4mg</button><button type="button" class="segment-btn" onclick="quickMed('Entonox')">Entonox</button><button type="button" class="segment-btn" onclick="quickMed('Salbutamol 5mg')">Salbutamol 5mg</button></div>
-         <input type="text" id="other_med" placeholder="Other med & dose...">
-         <button type="button" class="calc-btn" onclick="quickMed(document.getElementById('other_med').value); document.getElementById('other_med').value='';" style="background:#64748b;">Add Other Med</button>
+         <input type="text" id="other_med" placeholder="Other med & dose..."><button type="button" class="calc-btn" onclick="quickMed(document.getElementById('other_med').value); document.getElementById('other_med').value='';" style="background:#64748b;">Add Other Med</button>
          <textarea id="meds_log" rows="3" style="margin-top:10px;" placeholder="Medication log will appear here..."></textarea>
       </div>
 
@@ -1160,9 +1196,9 @@
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_adv_val', 'No', this); toggleMenu('det_adv_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_adv_val', 'Yes', this); toggleMenu('det_adv_n', true)">Yes</button></div>
-        <input type="hidden" id="det_adv_val" value="No">
-        <div id="det_adv_n" class="nested"><textarea id="det_adv_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_advice_val', 'No', this); toggleMenu('det_advice_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_advice_val', 'Yes', this); toggleMenu('det_advice_n', true)">Yes</button></div>
+        <input type="hidden" id="det_advice_val" value="No">
+        <div id="det_advice_n" class="nested"><textarea id="det_advice_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
       </div>
     </div>
 
@@ -1181,611 +1217,103 @@
   </div>
 
   <script>
-    // --- MED CONTRAINDICATIONS & SAFETY STOP ENGINE ---
-    const medContraindications = {
-        "Aspirin": "⚠️ Active GI bleeding or bleeding disorders.\n⚠️ Known bleeding ulcer.\n⚠️ Children under 16 years old.\n⚠️ Severe hepatic impairment.",
-        "Paracetamol": "⚠️ Known allergy/hypersensitivity.\n⚠️ Extreme caution in severe hepatic impairment.",
-        "Ibuprofen": "⚠️ Active GI bleeding or peptic ulcer.\n⚠️ 3rd Trimester of pregnancy.\n⚠️ Severe heart, renal, or liver failure.\n⚠️ History of NSAID-induced asthma.",
-        "Ondansetron": "⚠️ Prolonged QT syndrome.\n⚠️ Known hypersensitivity.",
-        "Entonox": "⚠️ Suspected pneumothorax or maxillo-facial injuries.\n⚠️ Severe head injury with impaired consciousness.\n⚠️ Suspected bowel obstruction.\n⚠️ Decompression sickness (diving within 48h).",
-        "Salbutamol": "⚠️ Known hypersensitivity.\n⚠️ Caution in severe tachycardia or thyrotoxicosis."
-    };
-
-    var pendingMedToGive = "";
-    function quickMed(med) {
-        if(!med) return;
-        var matchedKey = Object.keys(medContraindications).find(k => med.toLowerCase().includes(k.toLowerCase()));
-        if(matchedKey) {
-            pendingMedToGive = med;
-            var warningText = "<b style='font-size:16px;'>" + med + "</b><br><br><span style='color:#ef4444; font-weight:600;'>" + medContraindications[matchedKey].replace(/\n/g, '<br>') + "</span><br><br><b>Are you sure you want to administer?</b>";
-            document.getElementById('med_modal_text').innerHTML = warningText;
-            document.getElementById('med_safety_modal').style.display = 'flex';
-            haptic('heavy');
-        } else {
-            executeMed(med);
-        }
-    }
-
-    function closeMedModal() {
-        document.getElementById('med_safety_modal').style.display = 'none';
-        pendingMedToGive = "";
-        haptic('light');
-    }
-
-    function confirmMed() { executeMed(pendingMedToGive); closeMedModal(); }
-
-    function executeMed(med) {
-        var d = new Date(); var time = ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
-        var ta = document.getElementById('meds_log');
-        ta.value += (ta.value ? "\n" : "") + "[" + time + "] " + med;
-        haptic('light');
-    }
-
-    function colorPaedsVitals() {
-        var age = parseInt(document.getElementById('pt_age').value) || 0;
-        var hrEl = document.getElementById('p_hr_val'), rrEl = document.getElementById('p_rr_val');
-        var sysEl = document.getElementById('p_sys_bp'), diaEl = document.getElementById('p_dia_bp');
-        var spo2El = document.getElementById('p_spo2_val'), tempEl = document.getElementById('p_temp_val'), bmEl = document.getElementById('p_bm_val');
-        
-        var hr = parseInt(hrEl ? hrEl.value : NaN), rr = parseInt(rrEl ? rrEl.value : NaN), sys = parseInt(sysEl ? sysEl.value : NaN);
-        var dia = parseInt(diaEl ? diaEl.value : NaN), spo2 = parseInt(spo2El ? spo2El.value : NaN);
-        var temp = parseFloat(tempEl ? tempEl.value : NaN), bm = parseFloat(bmEl ? bmEl.value : NaN);
-        
-        var minHr, maxHr, minRr, maxRr, minSys, maxSys;
-        if (age < 1) { minHr=110; maxHr=160; minRr=30; maxRr=40; minSys=70; maxSys=90; }
-        else if (age < 2) { minHr=100; maxHr=150; minRr=25; maxRr=35; minSys=80; maxSys=95; }
-        else if (age < 5) { minHr=95; maxHr=140; minRr=25; maxRr=30; minSys=80; maxSys=100; }
-        else if (age < 12) { minHr=80; maxHr=120; minRr=20; maxRr=25; minSys=90; maxSys=110; }
-        else { minHr=60; maxHr=100; minRr=15; maxRr=20; minSys=100; maxSys=120; }
-        
-        function applyColor(el, val, min, max) {
-            if(!el) return;
-            el.classList.remove('vital-normal', 'vital-abnormal');
-            if(!isNaN(val)) { if(val >= min && val <= max) el.classList.add('vital-normal'); else el.classList.add('vital-abnormal'); }
-        }
-        applyColor(hrEl, hr, minHr, maxHr); applyColor(rrEl, rr, minRr, maxRr); applyColor(sysEl, sys, minSys, maxSys);
-        applyColor(diaEl, dia, 50, 90); applyColor(spo2El, spo2, 94, 100); applyColor(tempEl, temp, 36.1, 37.9); applyColor(bmEl, bm, 4.0, 11.0);
-    }
-
-    const medDictionary = {
-        "apixaban": "Anticoagulant (Blood thinner) - Prevents clots, AFib, DVT/PE risk.",
-        "rivaroxaban": "Anticoagulant (Blood thinner) - Prevents clots, AFib, DVT/PE risk.",
-        "edoxaban": "Anticoagulant (Blood thinner) - Prevents clots, AFib, DVT/PE risk.",
-        "warfarin": "Anticoagulant (Blood thinner) - Prevents clots.",
-        "clopidogrel": "Antiplatelet (Blood thinner) - Post heart-attack/stroke.",
-        "ticagrelor": "Antiplatelet (Blood thinner) - Post heart-attack/stent.",
-        "ramipril": "ACE Inhibitor - High blood pressure, heart failure.",
-        "lisinopril": "ACE Inhibitor - High blood pressure, heart failure.",
-        "amlodipine": "Calcium Channel Blocker - High blood pressure, angina.",
-        "bisoprolol": "Beta Blocker - High blood pressure, heart failure, AFib.",
-        "atenolol": "Beta Blocker - High blood pressure, angina, arrhythmias.",
-        "furosemide": "Loop Diuretic (Water pill) - Heart failure, edema.",
-        "bumetanide": "Loop Diuretic (Water pill) - Heart failure, edema.",
-        "spironolactone": "Potassium-sparing Diuretic - Heart failure, liver disease.",
-        "metformin": "Biguanide - Type 2 Diabetes.",
-        "gliclazide": "Sulfonylurea - Type 2 Diabetes.",
-        "insulin": "Hormone - Type 1 or Type 2 Diabetes.",
-        "omeprazole": "PPI - Acid reflux, GORD, stomach ulcers.",
-        "lansoprazole": "PPI - Acid reflux, GORD, stomach ulcers.",
-        "levothyroxine": "Hormone - Hypothyroidism (underactive thyroid).",
-        "atorvastatin": "Statin - High cholesterol, cardiovascular disease prevention.",
-        "simvastatin": "Statin - High cholesterol.",
-        "sertraline": "SSRI Antidepressant - Depression, anxiety, panic/OCD.",
-        "citalopram": "SSRI Antidepressant - Depression, panic disorder.",
-        "fluoxetine": "SSRI Antidepressant - Depression, anxiety.",
-        "amitriptyline": "TCA - Nerve pain, depression, migraine prevention.",
-        "mirtazapine": "Antidepressant - Depression, anxiety, sleep aid.",
-        "gabapentin": "Anticonvulsant - Nerve pain, epilepsy.",
-        "pregabalin": "Anticonvulsant - Nerve pain, anxiety, epilepsy.",
-        "salbutamol": "SABA Inhaler - Asthma, COPD (Reliever).",
-        "tiotropium": "LAMA Inhaler - COPD.",
-        "montelukast": "Leukotriene receptor antagonist - Asthma, allergies.",
-        "allopurinol": "Xanthine oxidase inhibitor - Gout prevention.",
-        "tramadol": "Opioid Analgesic - Moderate to severe pain.",
-        "co-codamol": "Analgesic compound - Mild to moderate pain.",
-        "morphine": "Opioid Analgesic - Severe pain.",
-        "levetiracetam": "Anticonvulsant - Epilepsy/Seizures (Keppra).",
-        "sodium valproate": "Anticonvulsant - Epilepsy, bipolar disorder.",
-        "carbamazepine": "Anticonvulsant - Epilepsy, nerve pain.",
-        "methotrexate": "Immunosuppressant - Rheumatoid arthritis, psoriasis, cancers.",
-        "prednisolone": "Corticosteroid - Inflammation, asthma/COPD exacerbation, allergies.",
-        "dexamethasone": "Corticosteroid - Inflammation, croup, severe allergies.",
-        "digoxin": "Cardiac Glycoside - AFib, heart failure.",
-        "diltiazem": "Calcium Channel Blocker - Angina, high blood pressure, arrhythmias.",
-        "quetiapine": "Atypical Antipsychotic - Schizophrenia, bipolar disorder, severe depression.",
-        "olanzapine": "Atypical Antipsychotic - Schizophrenia, bipolar disorder.",
-        "lorazepam": "Benzodiazepine - Seizures, anxiety, agitation.",
-        "diazepam": "Benzodiazepine - Seizures, anxiety, muscle spasms.",
-        "naproxen": "NSAID - Pain, inflammation.",
-        "ibuprofen": "NSAID - Pain, fever, inflammation.",
-        "paracetamol": "Analgesic - Pain, fever.",
-        "macrogol": "Laxative - Constipation.",
-        "senna": "Laxative - Constipation.",
-        "lactulose": "Laxative - Constipation.",
-        "ondansetron": "Antiemetic - Nausea and vomiting.",
-        "cyclizine": "Antiemetic - Nausea and vomiting.",
-        "metoclopramide": "Antiemetic - Nausea and vomiting, gastroparesis."
-    };
-
-    function lookupMed() {
-        var input = document.getElementById('med_lookup').value.toLowerCase().trim();
-        var out = document.getElementById('med_lookup_out');
-        if(input.length < 3) { out.innerHTML = ""; out.style.display = 'none'; return; }
-        var found = [];
-        for(var key in medDictionary) {
-            if(key.includes(input)) { found.push("<b style='color:#0369a1;'>" + key.charAt(0).toUpperCase() + key.slice(1) + "</b>: " + medDictionary[key]); }
-        }
-        if(found.length > 0) { out.innerHTML = found.join("<br><br>"); out.style.display = 'block'; } 
-        else { out.innerHTML = "<i style='color:#ef4444;'>No common match found for '" + input + "' in offline dictionary.</i>"; out.style.display = 'block'; }
-    }
-
-    function haptic(type) {
-        try {
-            if(window.navigator && window.navigator.vibrate) {
-                if(type === 'light') window.navigator.vibrate(10);
-                else if(type === 'heavy') window.navigator.vibrate([200, 100, 200]);
-            }
-        } catch(e) {}
-    }
-
-    function evalEcg() {
-        var rate = document.getElementById('ecg_rate').value; var rhythm = document.getElementById('ecg_rhythm').value; 
-        var p = document.getElementById('ecg_p').value; var pr = document.getElementById('ecg_pr').value; var qrs = document.getElementById('ecg_qrs').value; 
-        var diag = "Sinus Rhythm", prefix = "";
-
-        if (rate === 'Brady') prefix = "Sinus Bradycardia"; else if (rate === 'Tachy') prefix = "Sinus Tachycardia"; else prefix = "Sinus Rhythm";
-
-        if (p === 'Absent' && rhythm === 'Irregular' && qrs === 'Narrow') {
-            diag = "Atrial Fibrillation (AFib)";
-            if (rate === 'Tachy' || rate === 'Extreme') diag += " with Rapid Ventricular Response (RVR)";
-        } else if (p === 'Absent' && rhythm === 'Regular' && rate === 'Extreme' && qrs === 'Narrow') {
-            diag = "SVT (Supraventricular Tachycardia)";
-        } else if (qrs === 'Broad') {
-            if (rate === 'Extreme' || rate === 'Tachy') { diag = "Ventricular Tachycardia (VT) or SVT with aberrant conduction"; } 
-            else if (rate === 'Brady' && p === 'Absent') { diag = "Ventricular Escape Rhythm"; } 
-            else { diag = prefix + " with Bundle Branch Block (Check V1/V6 for LBBB/RBBB)"; }
-        } else if (p === 'Multiple') {
-            if (pr === '3rd_Degree') diag = "3rd Degree (Complete) Heart Block 🚨";
-            else if (rhythm === 'Regular') diag = "Atrial Flutter (with block)"; else diag = "Atrial Fibrillation / Flutter";
-        } else if (p === 'Normal') {
-            diag = prefix;
-            if (pr === '1st_Degree') diag += " with 1st Degree AV Block";
-            else if (pr === 'Mobitz1') diag += " with 2nd Deg AV Block (Mobitz I / Wenckebach)";
-            else if (pr === 'Mobitz2') diag += " with 2nd Deg AV Block (Mobitz II) 🚨";
-            else if (pr === '3rd_Degree') diag = "3rd Degree (Complete) Heart Block 🚨";
-            else if (rhythm === 'Irregular') diag = "Possible Ectopics (PAC/PVC) or Sinus Arrhythmia";
-        } else { diag = "Indeterminate Rhythm - " + prefix + " variants"; }
-
-        document.getElementById('ecg_eval_out').innerText = "Suggestion: " + diag;
-        calculateDDx(); 
-    }
-
-    function evalStemi() {
-        var leads = { v1: document.getElementById('lead_v1').checked, v2: document.getElementById('lead_v2').checked, v3: document.getElementById('lead_v3').checked, v4: document.getElementById('lead_v4').checked, v5: document.getElementById('lead_v5').checked, v6: document.getElementById('lead_v6').checked, i: document.getElementById('lead_i').checked, ii: document.getElementById('lead_ii').checked, iii: document.getElementById('lead_iii').checked, avr: document.getElementById('lead_avr').checked, avl: document.getElementById('lead_avl').checked, avf: document.getElementById('lead_avf').checked };
-
-        var inf = leads.ii || leads.iii || leads.avf; var sep = leads.v1 || leads.v2; var ant = leads.v3 || leads.v4; var lat = leads.v5 || leads.v6 || leads.i || leads.avl;
-        var summary = [], regions = [];
-
-        if (sep && ant && lat) { summary.push("Extensive Anterior (V1-V6, I, aVL)"); regions.push("Extensive Anterior"); } 
-        else if (sep && ant) { summary.push("Anteroseptal (V1-V4)"); regions.push("Anteroseptal"); if (lat) { summary.push("+ Lateral"); regions.push("Lateral"); } } 
-        else if (ant && lat) { summary.push("Anterolateral (V3-V6, I, aVL)"); regions.push("Anterolateral"); if (sep) { summary.push("+ Septal"); regions.push("Septal"); } } 
-        else {
-            if (ant) { summary.push("Anterior (V3-V4)"); regions.push("Anterior"); }
-            if (sep) { summary.push("Septal (V1-V2)"); regions.push("Septal"); }
-            if (lat) { summary.push("Lateral (V5-V6, I, aVL)"); regions.push("Lateral"); }
-        }
-        
-        if (inf) { summary.push("Inferior (II, III, aVF)"); regions.push("Inferior"); }
-        if (leads.avr) { summary.push("aVR (Consider Left Main / Triple Vessel)"); regions.push("aVR"); }
-
-        var out = document.getElementById('stemi_location_out');
-        var textEl = document.getElementById('stemi_loc_text');
-        
-        if (summary.length > 0) { out.style.display = 'block'; textEl.innerHTML = summary.join("<br>+ "); out.dataset.short = regions.join(" & ") + " STEMI"; } 
-        else { out.style.display = 'none'; out.dataset.short = ""; }
-        calculateDDx();
-    }
-
-    document.addEventListener('input', calculateDDx);
-    document.addEventListener('click', function(e) { if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') calculateDDx(); });
-
-    function setSeg(hiddenId, valNum, btn) {
-        haptic('light');
-        var hidden = document.getElementById(hiddenId);
-        if(hidden) hidden.value = valNum;
-        var btns = btn.parentNode.querySelectorAll('.segment-btn');
-        btns.forEach(function(b) { b.classList.remove('active'); });
-        btn.classList.add('active');
-    }
-
-    function setPain(hiddenId, valNum, btn) {
-        haptic('light');
-        var hidden = document.getElementById(hiddenId);
-        if(hidden) hidden.value = valNum;
-        var btns = btn.parentNode.querySelectorAll('.pain-btn');
-        btns.forEach(function(b) { b.classList.remove('active'); b.style.background = 'transparent'; b.style.color = 'var(--text-color)'; });
-        btn.classList.add('active');
-        var v = parseInt(valNum); var bg = '#10b981'; 
-        if(v >= 1 && v <= 3) bg = '#84cc16'; else if(v >= 4 && v <= 6) bg = '#f59e0b'; else if(v >= 7 && v <= 8) bg = '#ea580c'; else if(v >= 9 && v <= 10) bg = '#ef4444'; 
-        btn.style.background = bg; btn.style.color = 'white';
-        calculateDDx();
-    }
-
-    function toggleMenu(id, show) { haptic('light'); var el = document.getElementById(id); if(el) el.style.display = show ? 'block' : 'none'; }
-    function toggleOmit(btn) { haptic('light'); var q = btn.closest('.question'); if(q) q.classList.toggle('omitted'); }
-    function isOmitted(id) { var el = document.getElementById(id); if(!el) return true; var q = el.closest('.question'); return q && q.classList.contains('omitted'); }
-    function val(id) { if(isOmitted(id)) return null; var el = document.getElementById(id); if(!el) return null; if(el.type === 'checkbox') return el.checked; return el.value; }
-    function togglePrivacy() { var ps = document.getElementById('privacy_shield'); if(ps) ps.style.display = (ps.style.display === 'flex') ? 'none' : 'flex'; }
-    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
-
-    var isAlerting = false;
-    function checkPulseAlert() {
-        var cp = document.getElementById('cp_val'); var isCp = (cp && cp.value === 'Yes' && !isOmitted('cp_val'));
-        var isNews = false; var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
-        
-        if (isPaeds) { var pews = document.getElementById('final_pews'); if (pews && parseInt(pews.value) >= 4) isNews = true; } 
-        else {
-            var news = document.getElementById('final_news2');
-            if (news && parseInt(news.value) >= 5) isNews = true;
-            else { var logText = document.getElementById('vitals_log') ? document.getElementById('vitals_log').value : ""; if (logText) { var nMatch = logText.match(/NEWS:(\d+)/g); if(nMatch && parseInt(nMatch[nMatch.length-1].replace('NEWS:','')) >= 5) isNews = true; } }
-        }
-
-        var isSepsis = (document.getElementById('sus_sepsis') && document.getElementById('sus_sepsis').checked && !isOmitted('sus_sepsis'));
-        var isAllerg = (document.getElementById('sus_allerg') && document.getElementById('sus_allerg').checked && !isOmitted('sus_allerg'));
-        var isSobAtRest = (val('sob_val') === 'Yes' && (val('sob_when') === 'At Rest' || val('sob_when') === 'Both' || val('sob_when') === 'Feeding/Crying'));
-        
-        var notAlert = (val('alert_val') === 'No');
-        if (!notAlert && !isPaeds) {
-            var logText = document.getElementById('vitals_log') ? document.getElementById('vitals_log').value : "";
-            if (logText) { var aMatch = logText.match(/ACVPU:([ACVPU])/g); if(aMatch && aMatch[aMatch.length-1].replace('ACVPU:','') !== 'A') notAlert = true; }
-        }
-
-        var isDib = (val('dib_val') === 'Yes'); var speakNo = (val('speak_full_val') === 'No' && !isOmitted('speak_full_val'));
-        var shouldAlert = (isCp || isNews || isSepsis || isAllerg || isSobAtRest || notAlert || isDib || speakNo);
-        
-        if(shouldAlert) { document.body.classList.add('alert-pulse'); if(!isAlerting) { haptic('heavy'); isAlerting = true; } } 
-        else { document.body.classList.remove('alert-pulse'); isAlerting = false; }
-    }
-
-    var acc = document.getElementsByClassName("accordion");
-    for (var i = 0; i < acc.length; i++) {
-      acc[i].onclick = function() {
-        haptic('light'); this.classList.toggle("active"); var panel = this.nextElementSibling; panel.style.display = (panel.style.display === "block") ? "none" : "block";
-      }
-    }
-
-    function autoGCS() {
-        var eBtn = document.getElementById('btn_g_e_4'), vBtn = document.getElementById('btn_g_v_5'), vBtnP = document.getElementById('btn_g_v_5_p'), mBtn = document.getElementById('btn_g_m_6');
-        if(eBtn) setGCS('g_e', 4, eBtn);
-        var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
-        if(isPaeds && vBtnP) { setGCS('g_v', 5, vBtnP); } else if(vBtn) { setGCS('g_v', 5, vBtn); }
-        if(mBtn) setGCS('g_m', 6, mBtn);
-    }
-
-    function handleAgeInput() {
-        var age = parseInt(document.getElementById('pt_age').value), c = document.getElementById('wetfag_container'), mainContainer = document.getElementById('main_form_container');
-        if(isNaN(age)) { c.style.display = 'none'; mainContainer.classList.remove('paeds-mode-active'); calculateDDx(); return; }
-        c.style.display = 'block'; var grid = document.getElementById('wetfag_grid');
-        
-        if(age < 18) {
-            mainContainer.classList.add('paeds-mode-active'); grid.style.display = 'grid'; document.getElementById('wf_title').innerText = "🧸 Paediatric Guidelines & Vitals";
-            var w = age < 1 ? 5 : (age + 4) * 2;
-            document.getElementById('wf_w').innerText = w + " kg"; document.getElementById('wf_e').innerText = (w * 4) + " J"; document.getElementById('wf_t').innerText = (age / 4 + 4).toFixed(1); document.getElementById('wf_f').innerText = (w * 10) + "ml"; document.getElementById('wf_a').innerText = (w * 0.1).toFixed(1) + "ml (1:10k)"; document.getElementById('wf_g').innerText = (w * 2) + "ml (10%)";
-            if (age < 1) { document.getElementById('wf_hr').innerText = "110-160"; document.getElementById('wf_rr').innerText = "30-40"; document.getElementById('wf_bp').innerText = "70-90"; } else if (age < 2) { document.getElementById('wf_hr').innerText = "100-150"; document.getElementById('wf_rr').innerText = "25-35"; document.getElementById('wf_bp').innerText = "80-95"; } else if (age < 5) { document.getElementById('wf_hr').innerText = "95-140"; document.getElementById('wf_rr').innerText = "25-30"; document.getElementById('wf_bp').innerText = "80-100"; } else if (age < 12) { document.getElementById('wf_hr').innerText = "80-120"; document.getElementById('wf_rr').innerText = "20-25"; document.getElementById('wf_bp').innerText = "90-110"; } else { document.getElementById('wf_hr').innerText = "60-100"; document.getElementById('wf_rr').innerText = "15-20"; document.getElementById('wf_bp').innerText = "100-120"; }
-        } else {
-            mainContainer.classList.remove('paeds-mode-active'); grid.style.display = 'none'; document.getElementById('wf_title').innerText = "📊 Adult Normal Vitals (JRCALC)"; document.getElementById('wf_hr').innerText = "51-90"; document.getElementById('wf_rr').innerText = "12-20"; document.getElementById('wf_bp').innerText = "111-219";
-        }
-        calculateDDx(); if(typeof colorPaedsVitals === 'function') colorPaedsVitals();
-    }
-
-    function setGCS(id, valNum, btn) {
-        setSeg(id, valNum, btn);
-        var e = parseInt(document.getElementById('g_e').value) || 0; var v = parseInt(document.getElementById('g_v').value) || 0; var m = parseInt(document.getElementById('g_m').value) || 0;
-        document.getElementById('gcs_disp').innerText = (e+v+m); document.getElementById('manual_gcs').value = (e+v+m);
-    }
-
-    function calcPEWS() {
-        var beh = parseInt(document.getElementById('pews_beh').value) || 0; var cv = parseInt(document.getElementById('pews_cv').value) || 0; var resp = parseInt(document.getElementById('pews_resp').value) || 0; var score = beh + cv + resp;
-        document.getElementById('final_pews').value = score; var disp = document.getElementById('final_pews_disp');
-        if(disp) { disp.innerText = score; if(score >= 4 || beh===3 || cv===3 || resp===3) { disp.parentNode.style.background = '#fef2f2'; disp.parentNode.style.color = '#ef4444'; } else if(score >= 2) { disp.parentNode.style.background = '#fffbeb'; disp.parentNode.style.color = '#d97706'; } else { disp.parentNode.style.background = 'var(--input-bg)'; disp.parentNode.style.color = 'var(--text-color)'; } }
-        checkPulseAlert();
-    }
-
-    function calcNEWS2() {
-        var sys = parseInt(document.getElementById('sys_bp').value) || 0; var dia = parseInt(document.getElementById('dia_bp').value) || 0; var hr = parseInt(document.getElementById('hr_val_news').value) || 0; var rr = parseInt(document.getElementById('rr_val_news').value) || 0; var spo2 = parseInt(document.getElementById('spo2_val_news').value) || 0; var temp = parseFloat(document.getElementById('temp_val').value) || 0; var bm = parseFloat(document.getElementById('bm_val').value) || 0; var acvpu = document.getElementById('acvpu').value; var on_o2 = document.getElementById('on_o2').checked; var copd = document.getElementById('copd_scale').checked;
-        var inputs = [document.getElementById('sys_bp'), document.getElementById('dia_bp'), document.getElementById('hr_val_news'), document.getElementById('rr_val_news'), document.getElementById('spo2_val_news'), document.getElementById('temp_val'), document.getElementById('bm_val')];
-        
-        inputs.forEach(function(i) { if(i) { i.classList.remove('vital-normal', 'vital-abnormal'); }});
-        function color(el, v, min, max) { if(el && v) { if(v>=min && v<=max) el.classList.add('vital-normal'); else el.classList.add('vital-abnormal'); } }
-        color(inputs[0], sys, 111, 219); color(inputs[1], dia, 60, 90); color(inputs[2], hr, 51, 90); color(inputs[3], rr, 12, 20); color(inputs[5], temp, 36.1, 38.0); color(inputs[6], bm, 4.0, 11.0);
-        
-        if(spo2>0) { var sEl = document.getElementById('spo2_val_news'); if(!copd) { if(spo2>=94) sEl.classList.add('vital-normal'); else sEl.classList.add('vital-abnormal'); } else { if(spo2>=88 && spo2<=92) sEl.classList.add('vital-normal'); else sEl.classList.add('vital-abnormal'); } }
-        
-        var score = 0;
-        if(rr>0) { if(rr<=8) score+=3; else if(rr>=9&&rr<=11) score+=1; else if(rr>=21&&rr<=24) score+=2; else if(rr>=25) score+=3; }
-        if(sys>0) { if(sys<=90) score+=3; else if(sys>=91&&sys<=100) score+=2; else if(sys>=101&&sys<=110) score+=1; else if(sys>=220) score+=3; }
-        if(hr>0) { if(hr<=40) score+=3; else if(hr>=41&&hr<=50) score+=1; else if(hr>=91&&hr<=110) score+=1; else if(hr>=111&&hr<=130) score+=2; else if(hr>=131) score+=3; }
-        if(temp>0) { if(temp<=35.0) score+=3; else if(temp>=35.1&&temp<=36.0) score+=1; else if(temp>=38.1&&temp<=39.0) score+=1; else if(temp>=39.1) score+=2; }
-        if(acvpu !== 'A') score+=3; if(on_o2) score+=2;
-        if(spo2>0) { if(!copd) { if(spo2<=91) score+=3; else if(spo2>=92&&spo2<=93) score+=2; else if(spo2>=94&&spo2<=95) score+=1; } else { if(spo2<=83) score+=3; else if(spo2>=84&&spo2<=85) score+=2; else if(spo2>=86&&spo2<=87) score+=1; else if(on_o2&&spo2>=93&&spo2<=94) score+=1; else if(on_o2&&spo2>=95&&spo2<=96) score+=2; else if(on_o2&&spo2>=97) score+=3; } }
-
-        document.getElementById('final_news2').value = score; var disp = document.getElementById('final_news2_disp');
-        if(disp) { disp.innerText = score; if(score >= 5) { disp.parentNode.style.background = '#fef2f2'; disp.parentNode.style.color = '#ef4444'; } else if(score >= 3) { disp.parentNode.style.background = '#fffbeb'; disp.parentNode.style.color = '#d97706'; } else { disp.parentNode.style.background = 'var(--input-bg)'; disp.parentNode.style.color = 'var(--text-color)'; } }
-        checkPulseAlert();
-    }
-
-    function snapshotVitals() {
-        var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
-        if (isPaeds) {
-            calcPEWS();
-            var sys = document.getElementById('p_sys_bp') ? document.getElementById('p_sys_bp').value || '-' : '-'; var dia = document.getElementById('p_dia_bp') ? document.getElementById('p_dia_bp').value || '-' : '-'; var hr = document.getElementById('p_hr_val').value || '-'; var rr = document.getElementById('p_rr_val').value || '-'; var spo2 = document.getElementById('p_spo2_val').value || '-'; var t = document.getElementById('p_temp_val').value || '-'; var bm = document.getElementById('p_bm_val').value || '-'; var score = document.getElementById('final_pews').value;
-            if (sys==='-' && hr==='-' && rr==='-' && spo2==='-') return;
-            var d = new Date(); var time = ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
-            var log = time+" | BP:"+sys+"/"+dia+" HR:"+hr+" RR:"+rr+" SpO2:"+spo2+"% T:"+t+" BM:"+bm+" PEWS:"+score;
-            var ta = document.getElementById('p_vitals_log'); if(ta) ta.value += (ta.value ? "\n" : "") + log;
-            var inputs = document.querySelectorAll('#pews_pan input[type="number"]'); inputs.forEach(function(i) { i.value = ''; i.classList.remove('vital-normal', 'vital-abnormal'); });
-            checkPulseAlert(); calculateDDx(); return;
-        }
-
-        calcNEWS2();
-        var sys = document.getElementById('sys_bp').value || '-'; var dia = document.getElementById('dia_bp').value || '-'; var hr = document.getElementById('hr_val_news').value || '-'; var rr = document.getElementById('rr_val_news').value || '-'; var spo2 = document.getElementById('spo2_val_news').value || '-'; var t = document.getElementById('temp_val').value || '-'; var bm = document.getElementById('bm_val').value || '-'; var o2 = document.getElementById('on_o2').checked ? 'Y' : 'N'; var score = document.getElementById('final_news2').value; var acvpu = document.getElementById('acvpu').value;
-        if (sys==='-' && hr==='-' && rr==='-' && spo2==='-') return;
-        var d = new Date(); var time = ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
-        var log = time+" | BP:"+sys+"/"+dia+" HR:"+hr+" RR:"+rr+" SpO2:"+spo2+"%(O2:"+o2+") T:"+t+" BM:"+bm+" ACVPU:"+acvpu+" NEWS:"+score;
-        var ta = document.getElementById('vitals_log'); ta.value += (ta.value ? "\n" : "") + log;
-        var inputs = document.querySelectorAll('#news_pan input[type="number"]'); inputs.forEach(function(i) { i.value = ''; i.classList.remove('vital-normal', 'vital-abnormal'); });
-        document.getElementById('on_o2').checked = false; document.getElementById('copd_scale').checked = false;
-        var btnA = document.querySelector('button[onclick*="\'acvpu\', \'A\'"]'); if(btnA) setSeg('acvpu', 'A', btnA);
-        checkPulseAlert(); calculateDDx();
-    }
-
-    function calculateDDx() {
-      var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
-      var ddx = []; 
-      var cp = val('cp_val')==='Yes'; var sob = val('sob_val')==='Yes'; var fast = val('fast_val')==='Yes'; var f_w = val('f_w')!=='Normal'; var l_w = val('l_w')!=='Normal'; var s_w = val('s_w')!=='Normal'; var sepsis = document.getElementById('sus_sepsis').checked && !isOmitted('sus_sepsis'); var allerg = document.getElementById('sus_allerg').checked && !isOmitted('sus_allerg'); var abdo = val('abdo_p')==='Yes'; var vomit = val('nausea_val')==='Vomiting'; var back = val('back_p')==='Yes'; var limb = document.getElementById('limb_p').checked && !isOmitted('limb_p'); var neuro_seiz = document.getElementById('seizure').checked && !isOmitted('seizure'); var dizzy = document.getElementById('dizzy').checked && !isOmitted('dizzy'); var sync = document.getElementById('sync').checked && !isOmitted('sync'); var notAlert = val('alert_val') === 'No'; var sobAtRest = val('sob_when') === 'At Rest' || val('sob_when') === 'Both' || val('sob_when') === 'Feeding/Crying'; var speakNo = val('speak_full_val') === 'No';
-      
-      var bm = 0, t = 0;
-      if(isPaeds) { bm = parseFloat(document.getElementById('p_bm_val').value); t = parseFloat(document.getElementById('p_temp_val').value); } else { bm = parseFloat(document.getElementById('bm_val').value); t = parseFloat(document.getElementById('temp_val').value); }
-
-      var currentNews = parseInt(document.getElementById('final_news2').value) || 0; var currentPews = parseInt(document.getElementById('final_pews').value) || 0;
-
-      if(!isPaeds) {
-          var logText = document.getElementById('vitals_log') ? document.getElementById('vitals_log').value : "";
-          if(logText) {
-              if(!bm || isNaN(bm)) { var bMatch = logText.match(/BM:([\d\.]+)/g); if(bMatch) bm = parseFloat(bMatch[bMatch.length-1].replace('BM:','')); }
-              if(!t || isNaN(t)) { var tMatch = logText.match(/T:([\d\.]+)/g); if(tMatch) t = parseFloat(tMatch[tMatch.length-1].replace('T:','')); }
-              var nMatch = logText.match(/NEWS:(\d+)/g); if(nMatch) { var lastNews = parseInt(nMatch[nMatch.length-1].replace('NEWS:','')); if(lastNews > currentNews) currentNews = lastNews; }
-              var aMatch = logText.match(/ACVPU:([ACVPU])/g); if(aMatch) { var lastA = aMatch[aMatch.length-1].replace('ACVPU:',''); if(lastA !== 'A') notAlert = true; }
-          }
-      }
-      bm = bm || 0; t = t || 0;
-
-      if (allerg && sob) ddx.push("ANAPHYLAXIS");
-      if (sepsis) ddx.push("Sepsis / Severe Infection");
-      if (fast && (f_w || l_w || s_w)) { ddx.push("Stroke / TIA"); ddx.push("Hypoglycaemia"); ddx.push("Bell's Palsy"); }
-      if (cp) { ddx.push("ACS / MI"); ddx.push("PE"); ddx.push("GORD / MSK"); }
-      if (sob && !allerg) { ddx.push(isPaeds ? "Bronchiolitis / Asthma" : "Asthma/COPD Exacerbation"); ddx.push("Chest Infection"); ddx.push("Pulmonary Oedema"); }
-      if (sob && sobAtRest) { ddx.push(isPaeds ? "Severe Bronchiolitis" : "PE"); ddx.push("Pulmonary Oedema"); }
-      if (abdo) { ddx.push(isPaeds ? "Mesenteric Adenitis / Intussusception" : "Appendicitis"); ddx.push("Biliary Colic"); ddx.push("Gastroenteritis"); ddx.push(isPaeds ? "UTI" : "AAA"); }
-      if (back) { ddx.push("Sciatica / Spasm"); ddx.push("Renal Colic"); ddx.push("AAA (if older)"); }
-      if (neuro_seiz) { ddx.push(isPaeds ? "Febrile Convulsion" : "Epilepsy"); ddx.push("Head Injury"); }
-      if (dizzy || sync) { ddx.push("Arrhythmia"); ddx.push("Postural Hypotension"); ddx.push("Vasovagal"); }
-      if (bm > 0 && bm < 4.0) ddx.push("HYPOGLYCAEMIA");
-      if (bm > 15.0) ddx.push("Hyperglycaemia");
-      if (notAlert) ddx.push("Altered Mental Status / Hypoxia");
-
-      var ortho = val('ortho_val'); if (ortho !== 'No' && ortho !== null) ddx.push("Heart Failure / Fluid Overload");
-      var pulseQ = val('pulse_qual'); if (pulseQ === 'Irregular') ddx.push("Arrhythmia (e.g. AFib)");
-      var headInj = document.getElementById('neuro_head') && document.getElementById('neuro_head').checked && !isOmitted('neuro_head'); if (headInj) ddx.push("Head Injury / Concussion");
-      var prBleed = val('pr_bleed'); if (prBleed === 'Fresh Blood' || prBleed === 'Melena (Black/Tarry)') ddx.push("GI Bleed");
-      var menin = document.getElementById('neuro_meningism') && document.getElementById('neuro_meningism').checked && !isOmitted('neuro_meningism'); if (menin) ddx.push("Meningitis / SAH");
-
-      var uniqueDdx = []; for(var j=0; j<ddx.length; j++) { if(uniqueDdx.indexOf(ddx[j]) === -1) uniqueDdx.push(ddx[j]); }
-
-      var redFlags = [], amberFlags = [];
-      if(val('init_airway') === 'Compromised' || val('init_airway') === 'Obstructed') redFlags.push("Airway Compromise");
-      if(val('cp_val') === 'Yes') redFlags.push("Chest Pain");
-      
-      var st_elev = document.getElementById('st_elev') && document.getElementById('st_elev').checked;
-      if(st_elev) { var outStemi = document.getElementById('stemi_location_out'); var outShort = outStemi ? outStemi.dataset.short : ""; redFlags.push(outShort ? "Suspected " + outShort : "ST Elevation Noted"); }
-      var ecg_pr_val = document.getElementById('ecg_pr') ? document.getElementById('ecg_pr').value : '';
-      if(ecg_pr_val === 'Mobitz2' || ecg_pr_val === '3rd_Degree') redFlags.push("High-Grade AV Block (Mobitz II / 3rd Degree)");
-      if (menin) redFlags.push("Meningism Signs (Neck Stiffness / Photophobia)");
-      if (prBleed === 'Fresh Blood' || prBleed === 'Melena (Black/Tarry)') redFlags.push("GI Bleeding");
-      if (pulseQ === 'Weak / Thready') redFlags.push("Poor Perfusion / Shock");
-      
-      if(isPaeds) {
-          if(currentPews >= 4) redFlags.push("PEWS >= 4");
-          if(val('pat_app') === 'Abnormal') redFlags.push("PAT: Abnormal Appearance");
-          if(val('pat_wob') === 'Increased/Abnormal') redFlags.push("PAT: Abnormal WOB");
-          if(val('pat_circ') === 'Pale/Mottled/Cyanosed') redFlags.push("PAT: Abnormal Circulation");
-          if(document.getElementById('pwob_grunting') && document.getElementById('pwob_grunting').checked) redFlags.push("Grunting");
-          if(document.getElementById('pwob_recess') && document.getElementById('pwob_recess').checked) redFlags.push("Recession");
-          if(val('paeds_pr') === 'No' || val('paeds_pr') === 'Unsure') amberFlags.push("Safeguarding / PR Check required");
-      } else { if(currentNews >= 5) redFlags.push("NEWS2 >= 5"); }
-      
-      if(sepsis) redFlags.push("Sepsis");
-      if(notAlert) redFlags.push("Reduced Level of Consciousness (" + (val('vpu_level')||"Not Alert") + ")");
-      if(sob && sobAtRest) redFlags.push("Shortness of Breath at Rest");
-      if(speakNo) redFlags.push("Unable to Speak in Full Sentences");
-      
-      var pScore = 0;
-      if(isPaeds) { var f_c = val('flacc_c_val'); var f_a = val('flacc_a_val'); var f_m = val('flacc_m_val'); if(f_c === '7-10' || f_a === '7-10' || f_m === '7-10') pScore = 8; } else { pScore = parseInt(val('soc_c_sev')) || parseInt(val('soc_a_sev')) || parseInt(val('soc_m_sev')) || 0; }
-      if(pScore >= 7) redFlags.push("Severe Pain");
-      
-      if(fast && (f_w || l_w || s_w)) redFlags.push("FAST Positive");
-      if(allerg && sob) redFlags.push("Anaphylaxis");
-      if(document.getElementById('headache').checked && !isOmitted('headache')) amberFlags.push("Headache");
-      if(val('vomit_blood') === 'Yes') amberFlags.push("Vomit Blood");
-      if(val('ur_ret') === 'Yes') amberFlags.push("Urine Retention");
-      if(val('walk_p') === 'Yes') amberFlags.push("Can't Walk");
-      if(t > 0 && (t <= 35 || t >= 40)) amberFlags.push("Temp Extreme"); else if(t >= 38.5) amberFlags.push("High Temp");
-
-      var c = document.getElementById('complaint').value;
-      if(c === 'fall' && document.getElementById('fall_65') && document.getElementById('fall_65').checked && !isOmitted('fall_65')) {
-           if(document.getElementById('fall_lie').checked && !isOmitted('fall_lie')) amberFlags.push("Long lie");
-           if(document.getElementById('fall_cog').checked && !isOmitted('fall_cog')) amberFlags.push("Confusion");
-           if(document.getElementById('fall_inj').checked && !isOmitted('fall_inj')) amberFlags.push("Minor inj");
-           if(document.getElementById('fall_hypo').checked && !isOmitted('fall_hypo')) amberFlags.push("Postural Hypo");
-           if(document.getElementById('fall_hist').checked && !isOmitted('fall_hist')) amberFlags.push("Recurrent Falls");
-      }
-
-      if(c === 'maternity' && document.getElementById('mat_red_flags') && document.getElementById('mat_red_flags').checked && !isOmitted('mat_red_flags')) redFlags.push("Obstetric Alert");
-      if(document.getElementById('trauma_mtc') && document.getElementById('trauma_mtc').checked && !isOmitted('trauma_mtc')) redFlags.push("MTC");
-      if(document.getElementById('trauma_red') && document.getElementById('trauma_red').checked && !isOmitted('trauma_red')) redFlags.push("Trauma Red");
-      if(document.getElementById('trauma_amber') && document.getElementById('trauma_amber').checked && !isOmitted('trauma_amber')) amberFlags.push("Trauma Amber");
-
-      var hud = document.getElementById('ddx_hud'), title = document.getElementById('ddx_title'), text = document.getElementById('ddx_text'), icon = document.getElementById('ddx_icon');
-      if (hud && text && icon && title) {
-        if (uniqueDdx.length > 0 || redFlags.length > 0 || amberFlags.length > 0 || val('arrival_notes')) {
-          hud.classList.add('visible'); text.innerText = uniqueDdx.length > 0 ? "DDx: " + uniqueDdx.join(" • ") : "DDx: Undifferentiated";
-          hud.classList.remove('alert-red', 'alert-amber', 'alert-green', 'alert-blue', 'alert-mode');
-          if (redFlags.length > 0) { hud.classList.add('alert-red'); icon.innerText = "🚨"; title.innerText = "PATHWAY: CONVEY (RED FLAGS)"; } else if (amberFlags.length > 0) { hud.classList.add('alert-amber'); icon.innerText = "🔸"; title.innerText = "PATHWAY: REFER / DISCUSS (AMBER)"; } else { hud.classList.add('alert-green'); icon.innerText = "✅"; title.innerText = "PATHWAY: DISCHARGE POTENTIAL"; }
-        } else { hud.classList.remove('visible'); }
-      }
-      
-      var out = document.getElementById('decision_support_out');
-      if(out) {
-          var html = "", bg = "", border = "", color = "";
-          if(redFlags.length > 0) { html = "<h4 style='color:#ef4444; margin-top:0;'>🚨 CONVEY (Meets Red Criteria)</h4><ul style='margin:5px 0; padding-left:20px;'><li>" + redFlags.join("</li><li>") + "</li></ul><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Stabilise and immediately transfer to ED/Specialist Unit.</p>"; bg = '#fef2f2'; border = '2px solid #ef4444'; color = '#7f1d1d'; } else if (amberFlags.length > 0) { html = "<h4 style='color:#d97706; margin-top:0;'>🔸 REFER / DISCUSS (Meets Amber Criteria)</h4><ul style='margin:5px 0; padding-left:20px;'><li>" + amberFlags.join("</li><li>") + "</li></ul><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Refer into/discuss with UCR, Acute Frailty, 111*5 or ACP.</p>"; bg = '#fffbeb'; border = '2px solid #f59e0b'; color = '#92400e'; } else { html = "<h4 style='color:#10b981; margin-top:0;'>✅ DISCHARGE POTENTIAL</h4><p style='font-size:12px; margin:5px 0;'>No explicit RED or AMBER Pathfinder/Decision Tool flags triggered based on current inputs.</p><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Consider discharge if safe. Provide WCA.</p>"; bg = '#f0fdf4'; border = '2px solid #10b981'; color = '#14532d'; }
-          out.dataset.html = html; out.dataset.bg = bg; out.dataset.border = border; out.dataset.color = color;
-          if (out.style.display === 'block') { out.innerHTML = html; out.style.background = bg; out.style.border = border; out.style.color = color; }
-      }
-      setTimeout(checkPulseAlert, 50);
-    }
-
-    function runDecisionSupport() {
-        calculateDDx(); var out = document.getElementById('decision_support_out');
-        if(out) {
-            out.innerHTML = out.dataset.html || "<h4 style='color:#10b981; margin-top:0;'>✅ DISCHARGE POTENTIAL</h4><p style='font-size:12px; margin:5px 0;'>No explicit RED or AMBER flags triggered based on current inputs.</p>";
-            out.style.background = out.dataset.bg || '#f0fdf4'; out.style.border = out.dataset.border || '2px solid #10b981'; out.style.color = out.dataset.color || '#14532d'; out.style.display = 'block'; out.scrollIntoView({behavior: "smooth", block: "center"});
-            out.style.transform = 'scale(1.02)'; out.style.transition = 'transform 0.2s'; setTimeout(function() { out.style.transform = 'scale(1)'; }, 200);
-        }
-    }
-
-    function resetForm() { if(confirm("Are you sure you want to clear all data?")) { localStorage.removeItem('ePCR_draft'); location.reload(); } }
-
-    function generateNotFound() {
-        var e = "--- ePCR: PATIENT NOT FOUND ---\nAge: " + (document.getElementById('pt_age').value || "Unknown") + " | Gender: " + document.getElementById('pt_gender').value + "\n--------------------------------------------------\n\n[Arrival & Scene Notes]\n" + (document.getElementById('arrival_notes').value || "Area searched, no patient located.") + "\n\nOUTCOME:\nPatient not found on scene. Area thoroughly searched. Updated dispatch and CAD closed.\n";
-        var ta = document.createElement("textarea"); ta.value = e; ta.style.position = "fixed"; document.body.appendChild(ta); ta.select();
-        try { document.execCommand('copy'); var btn = document.getElementById('not_found_btn'); if(btn) { var oldText = btn.innerText; var oldBg = btn.style.background; btn.innerText = "COMPLETE ✅"; btn.style.background = "#3b82f6"; btn.style.color = "white"; setTimeout(function(){ btn.innerText = oldText; btn.style.background = oldBg; }, 3000); } } catch(err) { } document.body.removeChild(ta);
-    }
-
-    // --- STRICT EXPORT ---
     function generateOutput() {
         var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
         var e = "";
         function buildSec(title, lines) { var valid = lines.filter(function(l) { return l && l !== ""; }); if (valid.length > 0) e += "[" + title + "]\n" + valid.join("\n\n") + "\n\n"; }
 
-        // INIT & GENERAL
         var pri = [];
         if(isPaeds && !isOmitted('pat_app')) { pri.push("Paediatric Assessment Triangle (PAT):\nAppearance: " + val('pat_app') + " | WOB: " + val('pat_wob') + " | Circulation: " + val('pat_circ')); }
         if(!isOmitted('arrival_notes')) pri.push("Arrival:\n" + (val('arrival_notes') || "None recorded."));
         if(!isOmitted('pt_history')) pri.push("History:\n" + (val('pt_history') || "None recorded."));
 
         var gen = [];
-        if(!isOmitted('gen_fever')) gen.push(document.getElementById('gen_fever').checked ? "- Fever/Chills noted (" + val('gen_fever_det') + ")" : "- No fever, rigors, or night sweats.");
-        if(!isOmitted('gen_fatigue')) gen.push(document.getElementById('gen_fatigue').checked ? "- Fatigue/Weight Loss noted (" + val('gen_fatigue_det') + ")" : "- No fatigue, malaise, or unintended weight loss.");
-        if(!isOmitted('gen_diab')) gen.push(document.getElementById('gen_diab').checked ? "- Polyuria/Polydipsia noted (" + val('gen_diab_det') + ")" : "- No polyuria, polydipsia, or polyphagia.");
-        if(!isOmitted('gen_skin')) gen.push(document.getElementById('gen_skin').checked ? "- Rash/Skin changes noted (" + val('gen_skin_det') + ")" : "- Skin: No rash, itching, bruising, or wounds. No pallor, jaundice, or cyanosis.");
+        if(!isOmitted('gen_fever')) gen.push(document.getElementById('gen_fever').checked ? "• Fever/Chills noted (" + val('gen_fever_det') + ")" : "• No fever, rigors, or night sweats.");
+        if(!isOmitted('gen_fatigue')) gen.push(document.getElementById('gen_fatigue').checked ? "• Fatigue/Weight Loss noted (" + val('gen_fatigue_det') + ")" : "• No fatigue, malaise, or unintended weight loss.");
+        if(!isOmitted('gen_diab')) gen.push(document.getElementById('gen_diab').checked ? "• Polyuria/Polydipsia noted (" + val('gen_diab_det') + ")" : "• No polyuria, polydipsia, or polyphagia.");
+        if(!isOmitted('gen_skin')) gen.push(document.getElementById('gen_skin').checked ? "• Rash/Skin changes noted (" + val('gen_skin_det') + ")" : "• Skin: No rash, itching, bruising, or wounds. No pallor, jaundice, or cyanosis.");
         if(gen.length > 0) pri.push("General / Constitutional:\n" + gen.join("\n"));
 
         if(!isOmitted('init_airway')) { var awStr = "Airway:\n" + val('init_airway'); if(val('init_airway') !== 'Self maintained') awStr += " (Intervention: " + val('airway_int') + ")"; pri.push(awStr); }
         if(!isOmitted('manual_gcs')) pri.push("GCS:\n" + val('manual_gcs') + " (E" + val('g_e') + " V" + val('g_v') + " M" + val('g_m') + ")");
         if(!isOmitted('alert_val')) { if(val('alert_val')==='Yes') pri.push("Alert (A on ACVPU):\nYes"); else pri.push("Alert (A on ACVPU):\nNo (" + (val('vpu_level')||"Unspecified") + ")"); }
-        if(!isOmitted('sus_sepsis')) pri.push(document.getElementById('sus_sepsis').checked ? "- Suspected Sepsis / Infection\n  Details: " + val('sus_sepsis_det') : "- No suspected sepsis");
-        if(!isOmitted('sus_allerg')) pri.push(document.getElementById('sus_allerg').checked ? "- Suspected Anaphylaxis\n  Details: " + val('sus_allerg_det') : "- No suspected anaphylaxis");
+        if(!isOmitted('sus_sepsis')) pri.push(document.getElementById('sus_sepsis').checked ? "• Suspected Sepsis / Infection\n  Details: " + val('sus_sepsis_det') : "• No suspected sepsis");
+        if(!isOmitted('sus_allerg')) pri.push(document.getElementById('sus_allerg').checked ? "• Suspected Anaphylaxis\n  Details: " + val('sus_allerg_det') : "• No suspected anaphylaxis");
         if(val('det_init_val') === 'Yes') pri.push("Further Details:\n" + (val('det_init_txt') || "None recorded."));
         buildSec("Primary Survey", pri);
 
-        // RESP
         var resp = [];
         if(!isOmitted('sob_val')) {
-            if(val('sob_val') === 'Yes') { var sbStr = "- SOB: Yes\n  Normal? " + val('sob_norm'); if(val('sob_norm')==='Yes') sbStr += " (Base: "+val('sob_type')+")"; else sbStr += " (Onset: "+val('sob_start_time')+")"; var sxHx = val('sob_hx'); if(sxHx && sxHx !== 'None / Normal') sbStr += "\n  History: " + sxHx; sbStr += "\n  Occurs: " + val('sob_when'); resp.push(sbStr); } else { resp.push("- No shortness of breath (SOB)"); }
+            if(val('sob_val') === 'Yes') { var sbStr = "• SOB: Yes\n  Normal? " + val('sob_norm'); if(val('sob_norm')==='Yes') sbStr += " (Base: "+val('sob_type')+")"; else sbStr += " (Onset: "+val('sob_start_time')+")"; var sxHx = val('sob_hx'); if(sxHx && sxHx !== 'None / Normal') sbStr += "\n  History: " + sxHx; sbStr += "\n  Occurs: " + val('sob_when'); resp.push(sbStr); } else { resp.push("• No shortness of breath (No SOB)"); }
         }
-        if(!isOmitted('ortho_val')) {
-            if(val('ortho_val') !== 'No') resp.push("- Breathing position: " + val('ortho_val') + " noted.");
-            else resp.push("- No orthopnoea or PND.");
-        }
-        if(!isOmitted('dib_val') && !isPaeds) { if(val('dib_val') === 'Yes') resp.push("- DIB: Yes (" + val('dib_onset') + ", " + val('dib_when') + ")"); else resp.push("- No difficulty breathing (DIB)"); }
-        if(isPaeds && (!isOmitted('pwob_grunting') || !isOmitted('pwob_flaring') || !isOmitted('pwob_tug') || !isOmitted('pwob_recess'))) { var pwobs = []; if(document.getElementById('pwob_grunting').checked) pwobs.push("Grunting"); if(document.getElementById('pwob_flaring').checked) pwobs.push("Nasal Flaring"); if(document.getElementById('pwob_tug').checked) pwobs.push("Tracheal Tug"); if(document.getElementById('pwob_recess').checked) pwobs.push("Recession"); if(pwobs.length > 0) resp.push("- Paeds Work of Breathing Signs:\n  " + pwobs.join(", ")); else resp.push("- No Paeds WOB signs noted"); }
-        if(!isOmitted('speak_full_val')) { resp.push("- Speaks in full sentences: " + val('speak_full_val')); }
-        if(!isOmitted('cough_val')) { if(val('cough_val') === 'Yes') resp.push("- Cough: Yes\n  Phlegm: " + val('phlegm_val') + (val('phlegm_val')==='Yes' ? " (Colour: "+val('phlegm_color')+" | Blood: "+val('phlegm_blood')+")" : "")); else resp.push("- No cough. No sputum production. No haemoptysis."); }
-        if(!isOmitted('rr_norm')) { var rr_n = val('rr_norm'); resp.push(rr_n ? "- Resp Rate Noted: " + rr_n : "- Resp rate within normal limits. No tachypnoea."); }
-        if(!isOmitted('air_entry')) { 
-            resp.push("- Lung Sounds: " + val('air_entry'));
-            if(val('air_entry') === 'Air entry equal bilaterally') resp.push("- Air entry equal bilaterally. No wheeze, stridor, or crackles.");
-        }
+        if(!isOmitted('ortho_val')) { if(val('ortho_val') !== 'No') resp.push("• Breathing position: " + val('ortho_val') + " noted."); else resp.push("• No orthopnoea or PND."); }
+        if(!isOmitted('dib_val') && !isPaeds) { if(val('dib_val') === 'Yes') resp.push("• DIB: Yes (" + val('dib_onset') + ", " + val('dib_when') + ")"); else resp.push("• No difficulty breathing (No DIB)"); }
+        if(isPaeds && (!isOmitted('pwob_grunting') || !isOmitted('pwob_flaring') || !isOmitted('pwob_tug') || !isOmitted('pwob_recess'))) { var pwobs = []; if(document.getElementById('pwob_grunting').checked) pwobs.push("Grunting"); if(document.getElementById('pwob_flaring').checked) pwobs.push("Nasal Flaring"); if(document.getElementById('pwob_tug').checked) pwobs.push("Tracheal Tug"); if(document.getElementById('pwob_recess').checked) pwobs.push("Recession"); if(pwobs.length > 0) resp.push("• Paediatric Work of Breathing Signs:\n  " + pwobs.join(", ")); else resp.push("• No Paediatric WOB signs noted"); }
+        if(!isOmitted('speak_full_val')) { resp.push("• Speaks in full sentences: " + val('speak_full_val')); }
+        if(!isOmitted('cough_val')) { if(val('cough_val') === 'Yes') resp.push("• Cough: Yes\n  Phlegm: " + val('phlegm_val') + (val('phlegm_val')==='Yes' ? " (Colour: "+val('phlegm_color')+" | Blood: "+val('phlegm_blood')+")" : "")); else resp.push("• No cough. No sputum production. No haemoptysis."); }
+        if(!isOmitted('rr_norm')) { var rr_n = val('rr_norm'); resp.push(rr_n ? "• Resp Rate Noted: " + rr_n : "• Resp rate within normal limits. No tachypnoea."); }
+        if(!isOmitted('resp_ippa_notes') && val('resp_ippa_notes')) resp.push("• IPPA Chest Exam Findings:\n  " + val('resp_ippa_notes'));
+        if(!isOmitted('air_entry')) { resp.push("• Lung Sounds: " + val('air_entry')); if(val('air_entry') === 'Air entry equal bilaterally') resp.push("• Air entry equal bilaterally. No wheeze, stridor, or crackles. No chest tightness."); }
         if(val('det_resp_val') === 'Yes') resp.push("Further Details:\n" + (val('det_resp_txt') || "None recorded."));
         buildSec("Respiratory", resp);
 
-        // CARDIO
         var card = [];
-        if(!isOmitted('cp_val')) { if(val('cp_val') === 'Yes') { var cpStr = "- Chest Pain: Yes\n  SOCRATES:\n    S: " + (val('soc_c_s')||"-") + "\n    O: " + (val('soc_c_o')||"-") + "\n    C: " + (val('soc_c_c')||"-") + "\n    R: " + (val('soc_c_r')||"-") + "\n    A: " + (val('soc_c_a')||"-") + "\n    T: " + (val('soc_c_t')||"-") + "\n    E: " + (val('soc_c_e')||"-"); if(!isPaeds) cpStr += "\n    S: " + (val('soc_c_sev')||"-"); if(val('asa_given')==='Yes') cpStr += "\n  Aspirin Given: Yes at " + val('asa_time'); card.push(cpStr); } else card.push("- No chest pain or pressure. No chest tightness."); }
-        if(isPaeds && val('cp_val') === 'Yes' && !isOmitted('flacc_c_val')) card.push("- Paeds Pain (FLACC): " + val('flacc_c_val'));
-        if(!isOmitted('pulse_qual')) {
-            if(val('pulse_qual') === 'Regular & Strong') card.push("- Pulse is regular and strong.");
-            else card.push("- Pulse quality: " + val('pulse_qual'));
-        }
-        if(!isOmitted('palps')) card.push(document.getElementById('palps').checked ? "- Palpitations noted (" + val('palps_det') + ")" : "- No palpitations");
-        if(!isOmitted('sync')) card.push(document.getElementById('sync').checked ? "- Syncope noted (" + val('sync_det') + ")" : "- No syncope or presyncope");
-        if(!isOmitted('dizzy') && !isPaeds) card.push(document.getElementById('dizzy').checked ? "- Dizziness noted (" + val('dizzy_det') + ")" : "- No dizziness, lightheadedness, or orthostatic symptoms");
-        if(!isOmitted('oedema') && !isPaeds) card.push(document.getElementById('oedema').checked ? "- Peripheral Oedema noted (" + val('oedema_det') + ")" : "- No peripheral oedema");
-        if(!isOmitted('claudication') && !isPaeds) card.push(document.getElementById('claudication').checked ? "- Claudication noted (" + val('claudication_det') + ")" : "- No claudication");
-        
-        if(!isOmitted('skin_cond')) card.push("- Perfusion: Skin is " + val('skin_cond') + " | CRT: " + val('crt_val') + " (Normal < 2s)");
+        if(!isOmitted('cp_val')) { if(val('cp_val') === 'Yes') { var cpStr = "• Chest Pain: Yes\n  SOCRATES:\n    S: " + (val('soc_c_s')||"-") + "\n    O: " + (val('soc_c_o')||"-") + "\n    C: " + (val('soc_c_c')||"-") + "\n    R: " + (val('soc_c_r')||"-") + "\n    A: " + (val('soc_c_a')||"-") + "\n    T: " + (val('soc_c_t')||"-") + "\n    E: " + (val('soc_c_e')||"-"); if(!isPaeds) cpStr += "\n    S: " + (val('soc_c_sev')||"-"); if(val('asa_given')==='Yes') cpStr += "\n  Aspirin Given: Yes at " + val('asa_time'); card.push(cpStr); } else card.push("• No chest pain or pressure. No chest tightness."); }
+        if(isPaeds && val('cp_val') === 'Yes' && !isOmitted('flacc_c_val')) card.push("• Paediatric Pain (FLACC): " + val('flacc_c_val'));
+        if(!isOmitted('card_ippa_notes') && val('card_ippa_notes')) card.push("• Cardiac Exam Findings:\n  " + val('card_ippa_notes'));
+        if(!isOmitted('pulse_qual')) { if(val('pulse_qual') === 'Regular & Strong') card.push("• Pulse is regular and strong."); else card.push("• Pulse quality: " + val('pulse_qual')); }
+        if(!isOmitted('palps')) card.push(document.getElementById('palps').checked ? "• Palpitations noted (" + val('palps_det') + ")" : "• No palpitations");
+        if(!isOmitted('sync')) card.push(document.getElementById('sync').checked ? "• Syncope noted (" + val('sync_det') + ")" : "• No syncope or presyncope");
+        if(!isOmitted('dizzy') && !isPaeds) card.push(document.getElementById('dizzy').checked ? "• Dizziness noted (" + val('dizzy_det') + ")" : "• No dizziness, lightheadedness, or orthostatic symptoms");
+        if(!isOmitted('oedema') && !isPaeds) card.push(document.getElementById('oedema').checked ? "• Peripheral Oedema noted (" + val('oedema_det') + ")" : "• No peripheral oedema");
+        if(!isOmitted('claudication') && !isPaeds) card.push(document.getElementById('claudication').checked ? "• Claudication noted (" + val('claudication_det') + ")" : "• No claudication");
+        if(!isOmitted('skin_cond')) card.push("• Perfusion: Skin is " + val('skin_cond') + " | CRT: " + val('crt_val') + " (Normal < 2s). No cyanosis.");
         if(!isOmitted('ecg_perf')) {
             if(val('ecg_perf')==='Yes') {
-                var ecg = "- ECG Performed: Yes\n  Findings: " + val('ecg_desc') + "\n  ST Elev: " + (document.getElementById('st_elev').checked?"Yes":"No");
-                if(document.getElementById('st_elev').checked) {
-                    var leads = []; ['v1','v2','v3','v4','v5','v6','i','ii','iii','avr','avl','avf'].forEach(function(l) { if(document.getElementById('lead_'+l).checked) leads.push(l.toUpperCase()); });
-                    if(leads.length > 0) ecg += "\n  Leads: " + leads.join(", ");
-                    if(document.getElementById('stemi_location_out').dataset.short) ecg += "\n  Suspected: " + document.getElementById('stemi_location_out').dataset.short;
-                }
+                var ecg = "• ECG Performed: Yes\n  Findings: " + val('ecg_desc') + "\n  ST Elev: " + (document.getElementById('st_elev').checked?"Yes":"No");
+                if(document.getElementById('st_elev').checked) { var leads = []; ['v1','v2','v3','v4','v5','v6','i','ii','iii','avr','avl','avf'].forEach(function(l) { if(document.getElementById('lead_'+l).checked) leads.push(l.toUpperCase()); }); if(leads.length > 0) ecg += "\n  Leads: " + leads.join(", "); if(document.getElementById('stemi_location_out').dataset.short) ecg += "\n  Suspected: " + document.getElementById('stemi_location_out').dataset.short; }
                 card.push(ecg);
-            } else card.push("- 12-Lead ECG not performed. No acute changes noted on monitoring.");
+            } else card.push("• 12-Lead ECG not performed. No acute changes noted on monitoring.");
         }
         if(val('det_card_val') === 'Yes') card.push("Further Details:\n" + (val('det_card_txt') || "None recorded."));
         buildSec("Cardiovascular", card);
 
-        // NEURO
         var neuro = [];
-        if(!isOmitted('neuro_loc')) neuro.push(document.getElementById('neuro_loc').checked ? "- LOC reported prior to arrival: Yes (" + val('neuro_loc_det') + ")" : "- No LOC reported prior to arrival");
-        if(!isOmitted('neuro_head')) neuro.push(document.getElementById('neuro_head').checked ? "- Head Injury: Yes (" + val('neuro_head_det') + ")" : "- No obvious head injuries");
-        if(!isOmitted('neuro_meningism')) neuro.push(document.getElementById('neuro_meningism').checked ? "- Neck stiffness / Photophobia: Yes (" + val('neuro_men_det') + ")" : "- No neck stiffness or photophobia");
-        if(!isOmitted('neuro_vis')) neuro.push(document.getElementById('neuro_vis').checked ? "- Visual disturbance: Yes (" + val('neuro_vis_det') + ")" : "- No visual disturbance");
-        if(!isOmitted('neuro_numb')) neuro.push(document.getElementById('neuro_numb').checked ? "- Numbness / Motor Weakness: Yes (" + val('neuro_numb_det') + ")" : "- No numbness, tingling, or weakness");
-        if(!isOmitted('neuro_ataxia')) neuro.push(document.getElementById('neuro_ataxia').checked ? "- Ataxia / Coordination issues: Yes (" + val('neuro_ataxia_det') + ")" : "- No ataxia");
-
+        if(!isOmitted('neuro_loc')) neuro.push(document.getElementById('neuro_loc').checked ? "• Loss of Consciousness prior to arrival: Yes (" + val('neuro_loc_det') + ")" : "• No LOC reported");
+        if(!isOmitted('neuro_head')) neuro.push(document.getElementById('neuro_head').checked ? "• Head Injury: Yes (" + val('neuro_head_det') + ")" : "• No obvious head injuries");
+        if(!isOmitted('neuro_meningism')) neuro.push(document.getElementById('neuro_meningism').checked ? "• Neck Stiffness / Photophobia: Yes (" + val('neuro_men_det') + ")" : "• No neck stiffness or photophobia");
+        if(!isOmitted('neuro_vis')) neuro.push(document.getElementById('neuro_vis').checked ? "• Visual Disturbances: Yes (" + val('neuro_vis_det') + ")" : "• No visual disturbances");
+        if(!isOmitted('neuro_numb')) neuro.push(document.getElementById('neuro_numb').checked ? "• Numbness / Weakness: Yes (" + val('neuro_numb_det') + ")" : "• No weakness or numbness/tingling");
+        if(!isOmitted('neuro_ataxia')) neuro.push(document.getElementById('neuro_ataxia').checked ? "• Ataxia: Yes (" + val('neuro_ataxia_det') + ")" : "• No ataxia");
         if(!isOmitted('fast_val')) {
-            if(val('fast_val')==='Yes') { var fst = "- FAST Check:\n  Face: " + val('f_w') + "\n  Arm: " + val('l_w') + "\n  Speech: " + val('s_w'); if(val('f_w') !== 'Normal' || val('l_w') !== 'Normal' || val('s_w') !== 'Normal') fst += "\n  Onset: " + val('fast_time'); fst += "\n  Mimic Exclusion: " + (val('fast_mimics')||"-"); neuro.push(fst); }
-            else neuro.push("- FAST Stroke Check not indicated. No facial droop, slurred speech, or aphasia.");
+            if(val('fast_val')==='Yes') { var fst = "• FAST Check:\n  Face: " + val('f_w') + "\n  Arm: " + val('l_w') + "\n  Speech: " + val('s_w'); if(val('f_w') !== 'Normal' || val('l_w') !== 'Normal' || val('s_w') !== 'Normal') fst += "\n  Onset: " + val('fast_time'); fst += "\n  Mimic Exclusion: " + (val('fast_mimics')||"-"); neuro.push(fst); }
+            else neuro.push("• FAST Stroke Check not indicated. No facial droop, slurred speech, or aphasia.");
         }
         if(!isOmitted('pupils_checked')) {
-            if(document.getElementById('pupils_checked').checked) { var pupStr = "- Pupils: " + val('pupil_size'); if (val('pupil_size') === 'Unequal') pupStr += " (" + val('pupil_unequal_det') + ")"; pupStr += " | " + val('pupil_react'); if (val('pupil_react') !== 'Both React (PEARL)') pupStr += " (" + val('pupil_react_det') + ")"; neuro.push(pupStr); } 
-            else { neuro.push("- Pupils not formally checked. No gross abnormalities noted."); }
+            if(document.getElementById('pupils_checked').checked) { var pupStr = "• Pupils: " + val('pupil_size'); if (val('pupil_size') === 'Unequal') pupStr += " (" + val('pupil_unequal_det') + ")"; pupStr += " | " + val('pupil_react'); if (val('pupil_react') !== 'Both React (PEARL)') pupStr += " (" + val('pupil_react_det') + ")"; neuro.push(pupStr); } 
+            else { neuro.push("• Pupils not formally checked. No gross abnormalities."); }
         }
-        if(!isOmitted('nausea_val')) { if(val('nausea_val') !== 'No') neuro.push("- Nausea/Vomiting: " + val('nausea_val') + "\n  Start: " + val('vomit_start') + "\n  Times: " + val('vomit_times') + "\n  Blood: " + val('vomit_blood')); else neuro.push("- No nausea or vomiting"); }
-        if(!isOmitted('headache')) neuro.push(document.getElementById('headache').checked ? "- Headache noted (" + val('headache_det') + ")" : "- No headache");
-        if(!isOmitted('seizure')) neuro.push(document.getElementById('seizure').checked ? "- Seizure noted (" + val('seizure_det') + ")" : "- No seizures or post-ictal symptoms");
-        if(!isOmitted('confusion')) neuro.push(document.getElementById('confusion').checked ? "- Confusion noted (" + val('confusion_det') + ")" : "- No confusion or altered behaviour");
+        if(!isOmitted('nausea_val')) { if(val('nausea_val') !== 'No') neuro.push("• Nausea/Vomiting: " + val('nausea_val') + "\n  Start: " + val('vomit_start') + "\n  Times: " + val('vomit_times') + "\n  Blood: " + val('vomit_blood')); else neuro.push("• No nausea or vomiting"); }
+        if(!isOmitted('headache')) neuro.push(document.getElementById('headache').checked ? "• Headache noted (" + val('headache_det') + ")" : "• No headache");
+        if(!isOmitted('seizure')) neuro.push(document.getElementById('seizure').checked ? "• Seizure noted (" + val('seizure_det') + ")" : "• No seizures or post-ictal symptoms");
+        if(!isOmitted('confusion')) neuro.push(document.getElementById('confusion').checked ? "• Confusion noted (" + val('confusion_det') + ")" : "• No confusion or altered behaviour");
         if(val('det_neuro_val') === 'Yes') neuro.push("Further Details:\n" + (val('det_neuro_txt') || "None recorded."));
         buildSec("Neurological", neuro);
 
-        // GIGU
         var gigu = [];
-        if(!isOmitted('gigu_dysp')) gigu.push(document.getElementById('gigu_dysp').checked ? "- Dyspepsia noted (" + val('gigu_dysp_det') + ")" : "- No dyspepsia");
-        if(!isOmitted('bowel_habit')) gigu.push(val('bowel_habit') === 'Normal' ? "- No diarrhoea or constipation" : "- Bowel Habit: " + val('bowel_habit') + " (" + val('bowel_habit_det') + ")");
-        if(!isOmitted('pr_bleed')) gigu.push(val('pr_bleed') === 'No' ? "- No melena or haematochezia (PR Bleed)" : "- PR Bleeding: " + val('pr_bleed') + " (" + val('pr_bleed_det') + ")");
-        if(!isOmitted('gigu_dist')) gigu.push(document.getElementById('gigu_dist').checked ? "- Abdominal distension noted (" + val('gigu_dist_det') + ")" : "- No abdominal distension");
-        if(!isOmitted('gigu_flank')) gigu.push(document.getElementById('gigu_flank').checked ? "- Flank pain noted (" + val('gigu_flank_det') + ")" : "- No flank pain");
+        if(!isOmitted('gigu_dysp')) gigu.push(document.getElementById('gigu_dysp').checked ? "• Dyspepsia noted (" + val('gigu_dysp_det') + ")" : "• No dyspepsia");
+        if(!isOmitted('bowel_habit')) gigu.push(val('bowel_habit') === 'Normal' ? "• No diarrhoea or constipation" : "• Bowel Habit: " + val('bowel_habit') + " (" + val('bowel_habit_det') + ")");
+        if(!isOmitted('pr_bleed')) gigu.push(val('pr_bleed') === 'No' ? "• No melena, haematochezia, or PR bleeding" : "• PR Bleeding: " + val('pr_bleed') + " (" + val('pr_bleed_det') + ")");
+        if(!isOmitted('gigu_dist')) gigu.push(document.getElementById('gigu_dist').checked ? "• Abdominal distension noted (" + val('gigu_dist_det') + ")" : "• No abdominal distension");
+        if(!isOmitted('gigu_flank')) gigu.push(document.getElementById('gigu_flank').checked ? "• Flank pain noted (" + val('gigu_flank_det') + ")" : "• No flank pain");
 
         if(!isOmitted('abdo_p')) {
-            if(val('abdo_p')==='Yes') { var abdStr = "- Abdo Pain: Yes\n  SOCRATES:\n    S: " + (val('soc_a_s')||"-") + "\n    O: " + (val('soc_a_o')||"-") + "\n    C: " + (val('soc_a_c')||"-") + "\n    R: " + (val('soc_a_r')||"-") + "\n    A: " + (val('soc_a_a')||"-") + "\n    T: " + (val('soc_a_t')||"-") + "\n    E: " + (val('soc_a_e')||"-"); if(!isPaeds) abdStr += "\n    S: " + (val('soc_a_sev')||"-"); gigu.push(abdStr); }
-            else gigu.push("- No abdominal pain");
+            if(val('abdo_p')==='Yes') { var abdStr = "• Abdo Pain: Yes\n  SOCRATES:\n    S: " + (val('soc_a_s')||"-") + "\n    O: " + (val('soc_a_o')||"-") + "\n    C: " + (val('soc_a_c')||"-") + "\n    R: " + (val('soc_a_r')||"-") + "\n    A: " + (val('soc_a_a')||"-") + "\n    T: " + (val('soc_a_t')||"-") + "\n    E: " + (val('soc_a_e')||"-"); if(!isPaeds) abdStr += "\n    S: " + (val('soc_a_sev')||"-"); gigu.push(abdStr); }
+            else gigu.push("• No abdominal pain");
         }
-        if(isPaeds && val('abdo_p') === 'Yes' && !isOmitted('flacc_a_val')) gigu.push("- Paeds Pain (FLACC): " + val('flacc_a_val'));
-        if(!isOmitted('bs_val')) { if(val('bs_val')) gigu.push("- Bowel Sounds: " + val('bs_val') + " " + (val('bs_where')||"")); else gigu.push("- Bowel sounds normal if auscultated."); }
+        if(isPaeds && val('abdo_p') === 'Yes' && !isOmitted('flacc_a_val')) gigu.push("• Paediatric Pain (FLACC): " + val('flacc_a_val'));
+        if(!isOmitted('abdo_iapp_notes') && val('abdo_iapp_notes')) gigu.push("• IAPP Exam Findings:\n  " + val('abdo_iapp_notes'));
+        if(!isOmitted('bs_val')) { if(val('bs_val')) gigu.push("• Bowel Sounds: " + val('bs_val') + " " + (val('bs_where')||"")); else gigu.push("• Bowel sounds normal if auscultated."); }
         
         var urStr = [];
         if(!isOmitted('ur_pain')) { if(val('ur_pain')==='Yes') urStr.push("Dysuria (Start: " + val('ur_pain_start') + ")"); else urStr.push("No dysuria"); }
@@ -1795,122 +1323,110 @@
         if(document.getElementById('ur_olig') && document.getElementById('ur_olig').checked) urStr.push("Oliguria"); else urStr.push("No oliguria");
         if(document.getElementById('ur_inc') && document.getElementById('ur_inc').checked) urStr.push("Incontinence"); else urStr.push("No incontinence");
         if(document.getElementById('ur_froth') && document.getElementById('ur_froth').checked) urStr.push("Foamy/Frothy urine"); else urStr.push("No foamy/frothy urine");
-        
-        if(urStr.length > 0) gigu.push("- Urinary Findings:\n  " + urStr.join("\n  "));
+        if(urStr.length > 0) gigu.push("• Urinary Findings:\n  " + urStr.join("\n  "));
 
         if(val('det_gigu_val') === 'Yes') gigu.push("Further Details:\n" + (val('det_gigu_txt') || "None recorded."));
         buildSec("Gastrointestinal & Urinary", gigu);
 
-        // MSK
         var msk = [];
-        if(!isOmitted('msk_joint')) msk.push(document.getElementById('msk_joint').checked ? "- Joint pain/swelling: Yes (" + val('msk_joint_det') + ")" : "- No joint pain, swelling, or redness");
-        if(!isOmitted('msk_cramps')) msk.push(document.getElementById('msk_cramps').checked ? "- Muscle cramps: Yes (" + val('msk_cramps_det') + ")" : "- No muscle cramps or spasms");
-        if(!isOmitted('msk_rom')) msk.push(document.getElementById('msk_rom').checked ? "- Reduced ROM: Yes (" + val('msk_rom_det') + ")" : "- No reduced ROM");
+        if(!isOmitted('msk_joint')) msk.push(document.getElementById('msk_joint').checked ? "• Joint pain/swelling: Yes (" + val('msk_joint_det') + ")" : "• No joint pain, swelling, or redness");
+        if(!isOmitted('msk_cramps')) msk.push(document.getElementById('msk_cramps').checked ? "• Muscle cramps: Yes (" + val('msk_cramps_det') + ")" : "• No muscle cramps or spasms");
+        if(!isOmitted('msk_rom')) msk.push(document.getElementById('msk_rom').checked ? "• Reduced ROM: Yes (" + val('msk_rom_det') + ")" : "• No reduced ROM");
 
         if(document.getElementById('complaint').value === 'fall' || document.getElementById('complaint').value === 'trauma') {
-            if(!isOmitted('limb_p')) msk.push(document.getElementById('limb_p').checked ? "- Limb Pain noted (" + val('limb_p_det') + ")" : "- No limb pain");
-            if(!isOmitted('cspine_p')) msk.push(document.getElementById('cspine_p').checked ? "- C-Spine tenderness noted (" + val('cspine_p_det') + ")" : "- No C-Spine tenderness");
-            if(!isOmitted('rib_p')) msk.push(document.getElementById('rib_p').checked ? "- Rib pain noted (" + val('rib_p_det') + ")" : "- No rib pain");
-            if(!isOmitted('deformity_p')) msk.push(document.getElementById('deformity_p').checked ? "- Obvious deformity noted (" + val('deformity_p_det') + ")" : "- No deformity");
-        } else {
-            msk.push("- No limb pain. No deformity.");
-        }
+            if(!isOmitted('limb_p')) msk.push(document.getElementById('limb_p').checked ? "• Limb Pain noted (" + val('limb_p_det') + ")" : "• No limb pain");
+            if(!isOmitted('cspine_p')) msk.push(document.getElementById('cspine_p').checked ? "• C-Spine tenderness noted (" + val('cspine_p_det') + ")" : "• No C-Spine tenderness");
+            if(!isOmitted('rib_p')) msk.push(document.getElementById('rib_p').checked ? "• Rib pain noted (" + val('rib_p_det') + ")" : "• No rib pain");
+            if(!isOmitted('deformity_p')) msk.push(document.getElementById('deformity_p').checked ? "• Obvious deformity noted (" + val('deformity_p_det') + ")" : "• No deformity");
+        } else { msk.push("• No limb pain. No deformity."); }
 
         if(!isOmitted('back_p')) {
-            if(val('back_p')==='Yes') { var bkStr = "- Back Pain: Yes (" + val('back_where') + ")\n  SOCRATES:\n    S: " + (val('soc_m_s')||"-") + "\n    O: " + (val('soc_m_o')||"-") + "\n    C: " + (val('soc_m_c')||"-") + "\n    R: " + (val('soc_m_r')||"-") + "\n    A: " + (val('soc_m_a')||"-") + "\n    T: " + (val('soc_m_t')||"-") + "\n    E: " + (val('soc_m_e')||"-"); if(!isPaeds) bkStr += "\n    S: " + (val('soc_m_sev')||"-"); msk.push(bkStr); }
-            else msk.push("- No back pain");
+            if(val('back_p')==='Yes') { var bkStr = "• Back Pain: Yes (" + val('back_where') + ")\n  SOCRATES:\n    S: " + (val('soc_m_s')||"-") + "\n    O: " + (val('soc_m_o')||"-") + "\n    C: " + (val('soc_m_c')||"-") + "\n    R: " + (val('soc_m_r')||"-") + "\n    A: " + (val('soc_m_a')||"-") + "\n    T: " + (val('soc_m_t')||"-") + "\n    E: " + (val('soc_m_e')||"-"); if(!isPaeds) bkStr += "\n    S: " + (val('soc_m_sev')||"-"); msk.push(bkStr); }
+            else msk.push("• No back pain");
         }
-        if(isPaeds && (val('back_p')==='Yes' || document.getElementById('limb_p').checked) && !isOmitted('flacc_m_val')) { msk.push("- Paeds Pain (FLACC): " + val('flacc_m_val')); }
-        if(!isOmitted('walk_p')) { if(val('walk_p')==='Yes') msk.push("- Trouble walking for: " + val('walk_long')); else msk.push("- No gait disturbance. Normal walking."); }
+        if(isPaeds && (val('back_p')==='Yes' || document.getElementById('limb_p').checked) && !isOmitted('flacc_m_val')) { msk.push("• Paediatric Pain (FLACC): " + val('flacc_m_val')); }
+        if(!isOmitted('walk_p')) { if(val('walk_p')==='Yes') msk.push("• Trouble walking for: " + val('walk_long')); else msk.push("• No gait disturbance. Normal walking."); }
         if(val('det_msk_val') === 'Yes') msk.push("Further Details:\n" + (val('det_msk_txt') || "None recorded."));
         buildSec("Musculoskeletal", msk);
 
-        // MATERNITY (Adult only)
         if(!isPaeds && document.getElementById('complaint').value === 'maternity') {
             var mat = [];
-            if(!isOmitted('mat_gravida')) mat.push("- Gravida: " + val('mat_gravida') + " | Para: " + val('mat_para'));
-            if(!isOmitted('mat_gestation')) mat.push("- Gestation: " + val('mat_gestation'));
-            if(!isOmitted('mat_contractions')) mat.push(document.getElementById('mat_contractions').checked ? "- Contractions: Yes (" + val('mat_con_freq') + ")" : "- No contractions");
-            if(!isOmitted('mat_waters')) mat.push(document.getElementById('mat_waters').checked ? "- Waters: Broken (" + val('mat_wat_col') + ")" : "- Waters intact");
-            if(!isOmitted('mat_bleed')) mat.push(document.getElementById('mat_bleed').checked ? "- Bleeding/Show: Yes (" + val('mat_bleed_det') + ")" : "- No bleeding or show");
-            if(!isOmitted('mat_move')) mat.push(document.getElementById('mat_move').checked ? "- Fetal movements: Normal" : "- Fetal movements: Abnormal/Reduced (" + val('mat_move_det') + ")");
-            if(!isOmitted('mat_red_flags')) mat.push(document.getElementById('mat_red_flags').checked ? "- Red Flags: Yes (" + val('mat_rf_det') + ")" : "- No obstetric red flags");
+            if(!isOmitted('mat_gravida')) mat.push("• Gravida: " + val('mat_gravida') + " | Para: " + val('mat_para'));
+            if(!isOmitted('mat_gestation')) mat.push("• Gestation: " + val('mat_gestation'));
+            if(!isOmitted('mat_contractions')) mat.push(document.getElementById('mat_contractions').checked ? "• Contractions: Yes (" + val('mat_con_freq') + ")" : "• No contractions");
+            if(!isOmitted('mat_waters')) mat.push(document.getElementById('mat_waters').checked ? "• Waters: Broken (" + val('mat_wat_col') + ")" : "• Waters intact");
+            if(!isOmitted('mat_bleed')) mat.push(document.getElementById('mat_bleed').checked ? "• Bleeding/Show: Yes (" + val('mat_bleed_det') + ")" : "• No bleeding or show");
+            if(!isOmitted('mat_move')) mat.push(document.getElementById('mat_move').checked ? "• Fetal movements: Normal" : "• Fetal movements: Abnormal/Reduced (" + val('mat_move_det') + ")");
+            if(!isOmitted('mat_red_flags')) mat.push(document.getElementById('mat_red_flags').checked ? "• Red Flags: Yes (" + val('mat_rf_det') + ")" : "• No obstetric red flags");
             if(val('det_mat_val') === 'Yes') mat.push("Further Details:\n" + (val('det_mat_txt') || "None recorded."));
             buildSec("Maternity", mat);
         }
 
-        // TRAUMA
         if(document.getElementById('complaint').value === 'trauma') {
             var tra = [];
-            if(!isOmitted('trauma_mtc')) tra.push(document.getElementById('trauma_mtc').checked ? "- MTC Step 3 Trigger Met (" + val('trauma_mtc_det') + ")" : "- MTC Step 3 Trigger NOT Met");
-            if(!isOmitted('trauma_red')) tra.push(document.getElementById('trauma_red').checked ? "- RED Discriminator Met (" + val('trauma_red_det') + ")" : "- RED Discriminator NOT Met");
-            if(!isOmitted('trauma_amber')) tra.push(document.getElementById('trauma_amber').checked ? "- AMBER Discriminator Met (" + val('trauma_amber_det') + ")" : "- AMBER Discriminator NOT Met");
-            if(!isOmitted('rtc_veh_cond')) tra.push("- Vehicle Damage: " + val('rtc_veh_cond'));
-            if(!isOmitted('rtc_speed')) tra.push("- Speed: " + val('rtc_speed') + " | Pos: " + val('rtc_pos'));
-            if(!isOmitted('rtc_seatbelt')) tra.push(document.getElementById('rtc_seatbelt').checked ? "- Seatbelt: Worn" : "- Seatbelt: Not worn / Unrestrained (" + val('rtc_seatbelt_det') + ")");
-            if(!isOmitted('rtc_bullseye')) tra.push(document.getElementById('rtc_bullseye').checked ? "- Bullseye to windscreen: Yes (" + val('rtc_bullseye_det') + ")" : "- No bullseye to windscreen");
-            if(!isOmitted('rtc_extricated')) tra.push(document.getElementById('rtc_extricated').checked ? "- Extricated: Yes (" + val('rtc_ext_how') + ")" : "- Not extricated from vehicle");
+            if(!isOmitted('trauma_mtc')) tra.push(document.getElementById('trauma_mtc').checked ? "• MTC Step 3 Trigger Met (" + val('trauma_mtc_det') + ")" : "• MTC Step 3 Trigger NOT Met");
+            if(!isOmitted('trauma_red')) tra.push(document.getElementById('trauma_red').checked ? "• RED Discriminator Met (" + val('trauma_red_det') + ")" : "• RED Discriminator NOT Met");
+            if(!isOmitted('trauma_amber')) tra.push(document.getElementById('trauma_amber').checked ? "• AMBER Discriminator Met (" + val('trauma_amber_det') + ")" : "• AMBER Discriminator NOT Met");
+            if(!isOmitted('rtc_veh_cond')) tra.push("• Vehicle Damage: " + val('rtc_veh_cond'));
+            if(!isOmitted('rtc_speed')) tra.push("• Speed: " + val('rtc_speed') + " | Pos: " + val('rtc_pos'));
+            if(!isOmitted('rtc_seatbelt')) tra.push(document.getElementById('rtc_seatbelt').checked ? "• Seatbelt: Worn" : "• Seatbelt: Not worn / Unrestrained (" + val('rtc_seatbelt_det') + ")");
+            if(!isOmitted('rtc_bullseye')) tra.push(document.getElementById('rtc_bullseye').checked ? "• Bullseye to windscreen: Yes (" + val('rtc_bullseye_det') + ")" : "• No bullseye to windscreen");
+            if(!isOmitted('rtc_extricated')) tra.push(document.getElementById('rtc_extricated').checked ? "• Extricated: Yes (" + val('rtc_ext_how') + ")" : "• Not extricated from vehicle");
             if(val('det_trauma_val') === 'Yes') tra.push("Further Details:\n" + (val('det_trauma_txt') || "None recorded."));
             buildSec("Trauma", tra);
         }
 
-        // FALLS
         if(document.getElementById('complaint').value === 'fall') {
             var fal = [];
-            if(!isOmitted('fall_65')) fal.push(document.getElementById('fall_65').checked ? "- Patient 65+: Yes (" + val('fall_65_det') + ")" : "- Patient under 65");
-            if(!isOmitted('fall_lie')) fal.push(document.getElementById('fall_lie').checked ? "- Long lie (>1hr): Yes (" + val('fall_lie_det') + ")" : "- No long lie (>1hr)");
-            if(!isOmitted('fall_cog')) fal.push(document.getElementById('fall_cog').checked ? "- New confusion: Yes (" + val('fall_cog_det') + ")" : "- No new confusion");
-            if(!isOmitted('fall_inj')) fal.push(document.getElementById('fall_inj').checked ? "- Minor injuries: Yes (" + val('fall_inj_det') + ")" : "- No minor injuries");
-            if(!isOmitted('fall_hypo')) fal.push(document.getElementById('fall_hypo').checked ? "- Postural hypotension: Yes (" + val('fall_hypo_det') + ")" : "- No postural hypotension");
-            if(!isOmitted('fall_hist')) fal.push(document.getElementById('fall_hist').checked ? "- 2+ falls in 7 days: Yes (" + val('fall_hist_det') + ")" : "- No history of 2+ falls in 7 days");
-            if(!isOmitted('fall_anticoag')) fal.push(document.getElementById('fall_anticoag').checked ? "- On anticoagulants: Yes (" + val('fall_anticoag_det') + ")" : "- Not on anticoagulants");
+            if(!isOmitted('fall_65')) fal.push(document.getElementById('fall_65').checked ? "• Patient 65+: Yes (" + val('fall_65_det') + ")" : "• Patient under 65");
+            if(!isOmitted('fall_lie')) fal.push(document.getElementById('fall_lie').checked ? "• Long lie (>1hr): Yes (" + val('fall_lie_det') + ")" : "• No long lie (>1hr)");
+            if(!isOmitted('fall_cog')) fal.push(document.getElementById('fall_cog').checked ? "• New confusion: Yes (" + val('fall_cog_det') + ")" : "• No new confusion");
+            if(!isOmitted('fall_inj')) fal.push(document.getElementById('fall_inj').checked ? "• Minor injuries: Yes (" + val('fall_inj_det') + ")" : "• No minor injuries");
+            if(!isOmitted('fall_hypo')) fal.push(document.getElementById('fall_hypo').checked ? "• Postural hypotension: Yes (" + val('fall_hypo_det') + ")" : "• No postural hypotension");
+            if(!isOmitted('fall_hist')) fal.push(document.getElementById('fall_hist').checked ? "• 2+ falls in 7 days: Yes (" + val('fall_hist_det') + ")" : "• No history of 2+ falls in 7 days");
+            if(!isOmitted('fall_anticoag')) fal.push(document.getElementById('fall_anticoag').checked ? "• On anticoagulants: Yes (" + val('fall_anticoag_det') + ")" : "• Not on anticoagulants");
             if(val('det_fall_val') === 'Yes') fal.push("Further Details:\n" + (val('det_fall_txt') || "None recorded."));
             buildSec("Falls", fal);
         }
 
-        // MENTAL HEALTH
         if(document.getElementById('complaint').value === 'mental') {
             var mh = [];
-            if(!isOmitted('mh_team')) mh.push("- Known to MH: " + (val('mh_team') || "No"));
-            if(!isOmitted('mh_self_det')) mh.push("- Self harm/suicide thoughts: " + (val('mh_self_det') || "No"));
-            if(!isOmitted('mh_others_det')) mh.push("- Risk to others: " + (val('mh_others_det') || "No"));
-            if(!isOmitted('mh_halluc_det')) mh.push("- Hallucinations/Delusions: " + (val('mh_halluc_det') || "No"));
-            if(!isOmitted('mh_alc_det') || !isOmitted('mh_drugs_det')) { mh.push("- Intox/OD: Alc(" + (val('mh_alc_det')||"None") + ") Drugs(" + (val('mh_drugs_det')||"None") + ")\n  Toxbase: " + val('toxbase_advice')); }
+            if(!isOmitted('mh_team')) mh.push("• Known to MH: " + (val('mh_team') || "No"));
+            if(!isOmitted('mh_self_det')) mh.push("• Self harm/suicide thoughts: " + (val('mh_self_det') || "No"));
+            if(!isOmitted('mh_others_det')) mh.push("• Risk to others: " + (val('mh_others_det') || "No"));
+            if(!isOmitted('mh_halluc_det')) mh.push("• Hallucinations/Delusions: " + (val('mh_halluc_det') || "No"));
+            if(!isOmitted('mh_alc_det') || !isOmitted('mh_drugs_det')) { mh.push("• Intox/OD: Alc(" + (val('mh_alc_det')||"None") + ") Drugs(" + (val('mh_drugs_det')||"None") + ")\n  Toxbase: " + val('toxbase_advice')); }
             if(val('det_mh_val') === 'Yes') mh.push("Further Details:\n" + (val('det_mh_txt') || "None recorded."));
             buildSec("Mental Health / Tox", mh);
         }
 
-        // SOCIAL HISTORY
         var soc = [];
-        if(isPaeds && !isOmitted('paeds_pr')) { soc.push("- Paeds Safeguarding:\n  Accompanied by: " + (val('paeds_accompanied')||"Not specified") + "\n  Parental Responsibility? " + val('paeds_pr')); }
-        if(!isPaeds && !isOmitted('cfs_val')) soc.push("- Frailty (CFS): " + val('cfs_val'));
-        if(!isPaeds && !isOmitted('soc_home')) soc.push("- Home: " + val('soc_home'));
-        if(!isPaeds && !isOmitted('soc_support')) soc.push("- Support: " + val('soc_support'));
-        if(!isPaeds && !isOmitted('soc_level')) soc.push("- Level of Care: " + val('soc_level'));
+        if(isPaeds && !isOmitted('paeds_pr')) { soc.push("• Paeds Safeguarding:\n  Accompanied by: " + (val('paeds_accompanied')||"Not specified") + "\n  Parental Responsibility? " + val('paeds_pr')); }
+        if(!isPaeds && !isOmitted('cfs_val')) soc.push("• Frailty (CFS): " + val('cfs_val'));
+        if(!isPaeds && !isOmitted('soc_home')) soc.push("• Home: " + val('soc_home'));
+        if(!isPaeds && !isOmitted('soc_support')) soc.push("• Support: " + val('soc_support'));
+        if(!isPaeds && !isOmitted('soc_level')) soc.push("• Level of Care: " + val('soc_level'));
         if(val('det_medsoc_val') === 'Yes') soc.push("Further Details:\n" + (val('det_medsoc_txt') || "None recorded."));
         buildSec("Meds & Social", soc);
 
-        // VITALS & MEDS
         var vm = [];
         if(isPaeds) {
             var p_log = document.getElementById('p_vitals_log') ? document.getElementById('p_vitals_log').value : '';
             var phr = document.getElementById('p_hr_val').value || '', prr = document.getElementById('p_rr_val').value || '', pspo2 = document.getElementById('p_spo2_val').value || '';
             var ptemp = document.getElementById('p_temp_val').value || '', pbm = document.getElementById('p_bm_val').value || '', psys = document.getElementById('p_sys_bp').value || '', pdia = document.getElementById('p_dia_bp').value || '';
-            
             var hasVitals = p_log !== '' || phr !== '' || prr !== '' || pspo2 !== '' || ptemp !== '' || pbm !== '' || psys !== '' || pdia !== '';
             if(!isOmitted('p_vitals_log') && hasVitals) {
                 var pews = document.getElementById('final_pews').value;
-                vm.push("- Current PEWS Score: " + pews + "\n  (Behaviour: " + val('pews_beh') + ", CV: " + val('pews_cv') + ", Resp: " + val('pews_resp') + ")");
-                if(p_log) { vm.push("Vitals Log:\n" + p_log); } else { vm.push("- Recorded Vitals: BP:"+(psys||'-')+"/"+(pdia||'-')+" HR:"+(phr||'-')+" RR:"+(prr||'-')+" SpO2:"+(pspo2||'-')+"% T:"+(ptemp||'-')+" BM:"+(pbm||'-')); }
+                vm.push("• Current PEWS Score: " + pews + "\n  (Behaviour: " + val('pews_beh') + ", CV: " + val('pews_cv') + ", Resp: " + val('pews_resp') + ")");
+                if(p_log) { vm.push("Vitals Log:\n" + p_log); } else { vm.push("• Recorded Vitals: BP:"+(psys||'-')+"/"+(pdia||'-')+" HR:"+(phr||'-')+" RR:"+(prr||'-')+" SpO2:"+(pspo2||'-')+"% T:"+(ptemp||'-')+" BM:"+(pbm||'-')); }
             }
         } else {
             var vlog = document.getElementById('vitals_log') ? document.getElementById('vitals_log').value : '';
             var sys = document.getElementById('sys_bp').value || '', dia = document.getElementById('dia_bp').value || '', hr = document.getElementById('hr_val_news').value || '';
             var rr = document.getElementById('rr_val_news').value || '', spo2 = document.getElementById('spo2_val_news').value || '', t = document.getElementById('temp_val').value || '', bm = document.getElementById('bm_val').value || '';
             var hasVitals = vlog !== '' || sys !== '' || dia !== '' || hr !== '' || rr !== '' || spo2 !== '' || t !== '' || bm !== '';
-
             if(!isOmitted('vitals_log') && hasVitals) { 
-                if(vlog) { vm.push("Vitals Log:\n" + vlog); } else { var n_score = document.getElementById('final_news2').value, n_acvpu = document.getElementById('acvpu').value; vm.push("- Recorded Vitals: BP:"+(sys||'-')+"/"+(dia||'-')+" HR:"+(hr||'-')+" RR:"+(rr||'-')+" SpO2:"+(spo2||'-')+"% T:"+(t||'-')+" BM:"+(bm||'-')+" ACVPU:"+n_acvpu+" NEWS:"+n_score); }
+                if(vlog) { vm.push("Vitals Log:\n" + vlog); } else { var n_score = document.getElementById('final_news2').value, n_acvpu = document.getElementById('acvpu').value; vm.push("• Recorded Vitals: BP:"+(sys||'-')+"/"+(dia||'-')+" HR:"+(hr||'-')+" RR:"+(rr||'-')+" SpO2:"+(spo2||'-')+"% T:"+(t||'-')+" BM:"+(bm||'-')+" ACVPU:"+n_acvpu+" NEWS:"+n_score); }
             }
         }
 
@@ -1918,9 +1434,8 @@
         if(val('det_news_val') === 'Yes' && !isPaeds) vm.push("Further Details:\n" + (val('det_news_txt') || "None recorded."));
         buildSec("Vitals Trend & Meds", vm);
 
-        // PLAN & SAFEGUARDING
         var plan = [];
-        if(!isOmitted('safeguarding_flag')) { if(val('safeguarding_flag')==='Yes') plan.push("🚩 SAFEGUARDING CONCERNS:\n" + val('sg_details')); else plan.push("- No safeguarding concerns"); }
+        if(!isOmitted('safeguarding_flag')) { if(val('safeguarding_flag')==='Yes') plan.push("🚩 SAFEGUARDING CONCERNS:\n" + val('sg_details')); else plan.push("• No safeguarding concerns"); }
         if(!isOmitted('plan_val')) {
             if(val('plan_val')==='Convey') {
                 var dest = val('hosp_dest'); if(dest === 'Other') dest = val('hosp_dest_other') || 'Other';
@@ -1931,14 +1446,13 @@
         if(val('det_plan_val') === 'Yes') plan.push("Further Details:\n" + (val('det_plan_txt') || "None recorded."));
         buildSec("Plan", plan);
 
-        // ADVICE / MCA
         var adv = [];
-        if(!isOmitted('wca_given') && val('wca_given')==='Yes') { adv.push("- Worsening Care Advice Given:\n" + val('wca_text')); }
+        if(!isOmitted('wca_given') && val('wca_given')==='Yes') { adv.push("• Worsening Care Advice Given:\n" + val('wca_text')); }
         
         if(!isPaeds && !isOmitted('consent_plan')) {
-            if(val('consent_plan')==='Yes') { adv.push("- Patient consents to the clinical plan."); } 
+            if(val('consent_plan')==='Yes') { adv.push("• Patient consents to the clinical plan."); } 
             else if(val('consent_plan')==='No') {
-                var mcaStr = "- Patient REFUSING Clinical Plan\n  MCA Assessment:\n";
+                var mcaStr = "• Patient REFUSING Clinical Plan\n  MCA Assessment:\n";
                 mcaStr += "  - Given sufficient info appropriately? " + (val('mca_1')||"Not answered") + "\n";
                 mcaStr += "  - Able to understand info? " + (val('mca_2')||"Not answered") + "\n";
                 mcaStr += "  - Rational conversation on pros/cons? " + (val('mca_3')||"Not answered") + "\n";
@@ -1950,11 +1464,11 @@
         }
         
         if(isPaeds && !isOmitted('paeds_consent_plan')) {
-            if(val('paeds_consent_plan') === 'Yes') { adv.push("- Parent/Guardian consents to the clinical plan."); } 
-            else if(val('paeds_consent_plan') === 'No') { adv.push("- Parent/Guardian REFUSING Clinical Plan\n  Reason & Escalation: " + (val('paeds_refusal_reason') || "None recorded.")); }
+            if(val('paeds_consent_plan') === 'Yes') { adv.push("• Parent/Guardian consents to the clinical plan."); } 
+            else if(val('paeds_consent_plan') === 'No') { adv.push("• Parent/Guardian REFUSING Clinical Plan\n  Reason & Escalation: " + (val('paeds_refusal_reason') || "None recorded.")); }
         }
 
-        if(val('det_adv_val') === 'Yes') adv.push("Further Details:\n" + (val('det_adv_txt') || "None recorded."));
+        if(val('det_advice_val') === 'Yes') adv.push("Further Details:\n" + (val('det_advice_txt') || "None recorded."));
         buildSec("Advice & Refusal (Consent / MCA)", adv);
 
         var ta = document.createElement("textarea"); ta.value = e; ta.style.position = "fixed"; document.body.appendChild(ta); ta.select(); 
@@ -1962,8 +1476,7 @@
             document.execCommand('copy'); 
             var btn = document.getElementById('generate_btn');
             if(btn) { var oldText = btn.innerText; var oldBg = btn.style.background; btn.innerText = "COMPLETE ✅"; btn.style.background = "#3b82f6"; btn.style.color = "white"; setTimeout(function(){ btn.innerText = oldText; btn.style.background = oldBg; }, 3000); }
-        } catch(err) { }
-        document.body.removeChild(ta);
+        } catch(err) { } document.body.removeChild(ta);
     }
   </script>
 </body>

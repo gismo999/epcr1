@@ -501,3 +501,1050 @@
         <div id="det_neuro_n" class="nested"><textarea id="det_neuro_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
       </div>
     </div>
+    <!-- 5. VITALS & NEWS2 -->
+    <button class="accordion adult-only" id="news_acc" style="display:block;">📊 Vitals & NEWS2</button>
+    <div class="panel adult-only" id="news_pan">
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Live NEWS2 Vitals
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; margin-top:10px;">
+            <div class="vital-input-card"><label>BP (SYS/DIA)</label><div style="display:flex; gap:4px;"><input type="number" id="sys_bp" placeholder="SYS" class="news-input" oninput="calcNEWS2()"><input type="number" id="dia_bp" placeholder="DIA" class="news-input" oninput="calcNEWS2()"></div></div>
+            <div class="vital-input-card"><label>HR</label><input type="number" id="hr_val_news" placeholder="---" class="news-input" oninput="calcNEWS2()"></div>
+            <div class="vital-input-card"><label>RR</label><input type="number" id="rr_val_news" placeholder="---" class="news-input" oninput="calcNEWS2()"></div>
+            <div class="vital-input-card"><label>SpO2 %</label><input type="number" id="spo2_val_news" placeholder="---" class="news-input" oninput="calcNEWS2()"></div>
+            <div class="vital-input-card"><label>TEMP</label><input type="number" id="temp_val" step="0.1" placeholder="---" class="news-input" oninput="calcNEWS2()"></div>
+            <div class="vital-input-card"><label>GLUCOSE</label><input type="number" id="bm_val" step="0.1" placeholder="---" class="news-input" oninput="calcNEWS2()"></div>
+        </div>
+        <div class="segmented-control" style="margin-bottom:10px;"><button type="button" class="segment-btn active" onclick="setSeg('acvpu', 'A', this); autoGCS(); calcNEWS2();">Alert</button><button type="button" class="segment-btn" onclick="setSeg('acvpu', 'C', this); calcNEWS2()">New Conf</button><button type="button" class="segment-btn" onclick="setSeg('acvpu', 'V', this); calcNEWS2()">Voice</button><button type="button" class="segment-btn" onclick="setSeg('acvpu', 'P', this); calcNEWS2()">Pain</button><button type="button" class="segment-btn" onclick="setSeg('acvpu', 'U', this); calcNEWS2()">Unresp</button></div><input type="hidden" id="acvpu" value="A">
+        <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px; font-size:12px; font-weight:bold;"><label><input type="checkbox" id="on_o2" class="news-cb" onchange="calcNEWS2()"> On Oxygen?</label><label><input type="checkbox" id="copd_scale" class="news-cb" onchange="calcNEWS2()"> COPD SpO2 Scale?</label></div>
+        <button type="button" class="calc-btn" onclick="snapshotVitals()" style="background:var(--acc-grad-1);">📸 Snapshot Vitals Set (Saves & Clears Boxes)</button>
+        <div id="news_badge_norm" style="text-align:center; font-weight:800; font-size:18px; padding:10px; margin-top:10px; border-radius:8px; background:#f1f5f9;">NEWS2 Score: <span id="final_news2_disp">0</span></div><input type="hidden" id="final_news2" value="0">
+        <textarea id="vitals_log" readonly style="font-family:monospace; font-size:11px; height:80px; margin-top:10px; width:100%;" placeholder="Snapshots save here..."></textarea>
+      </div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_news_val', 'No', this); toggleMenu('det_news_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_news_val', 'Yes', this); toggleMenu('det_news_n', true)">Yes</button></div><input type="hidden" id="det_news_val" value="No">
+        <div id="det_news_n" class="nested"><textarea id="det_news_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- 6. PAEDS PEWS -->
+    <button class="accordion paeds-only" id="pews_acc" style="display:none; background:linear-gradient(135deg, #f59e0b, #d97706);">🧸 Paediatric Vitals & PEWS</button>
+    <div class="panel paeds-only" id="pews_pan" style="display:none;">
+      <div class="question" style="background:#fefce8; border:1px solid #fde047; padding:10px; border-radius:8px;">
+          <span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <b>PEWS Calculator</b>
+          <div style="font-size:11px; margin-top:8px; font-weight:bold;">Behaviour:</div><div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('pews_beh', '0', this); calcPEWS();">Playing/Apprp</button><button type="button" class="segment-btn" onclick="setSeg('pews_beh', '1', this); calcPEWS();">Sleeping</button><button type="button" class="segment-btn" onclick="setSeg('pews_beh', '2', this); calcPEWS();">Irritable</button><button type="button" class="segment-btn btn-red" style="grid-column: span 3;" onclick="setSeg('pews_beh', '3', this); calcPEWS();">Lethargic/Confused/Reduced Pain Resp</button></div><input type="hidden" id="pews_beh" value="0">
+          <div style="font-size:11px; margin-top:8px; font-weight:bold;">Cardiovascular:</div><div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('pews_cv', '0', this); calcPEWS();">Pink / CRT 1-2s</button><button type="button" class="segment-btn" onclick="setSeg('pews_cv', '1', this); calcPEWS();">Pale / CRT 3s</button><button type="button" class="segment-btn" onclick="setSeg('pews_cv', '2', this); calcPEWS();">Grey / CRT 4s</button><button type="button" class="segment-btn btn-red" style="grid-column: span 3;" onclick="setSeg('pews_cv', '3', this); calcPEWS();">Mottled/Cyanosed / CRT >5s</button></div><input type="hidden" id="pews_cv" value="0">
+          <div style="font-size:11px; margin-top:8px; font-weight:bold;">Respiratory:</div><div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('pews_resp', '0', this); calcPEWS();">Normal WOB</button><button type="button" class="segment-btn" onclick="setSeg('pews_resp', '1', this); calcPEWS();">Mild WOB</button><button type="button" class="segment-btn" onclick="setSeg('pews_resp', '2', this); calcPEWS();">Mod WOB / O2 req</button><button type="button" class="segment-btn btn-red" style="grid-column: span 3;" onclick="setSeg('pews_resp', '3', this); calcPEWS();">Sev WOB / Grunting / Apnoea</button></div><input type="hidden" id="pews_resp" value="0">
+          <div id="pews_badge_norm" style="text-align:center; font-weight:800; font-size:18px; padding:10px; margin-top:10px; border-radius:8px; background:#f1f5f9;">PEWS Score: <span id="final_pews_disp">0</span></div><input type="hidden" id="final_pews" value="0">
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Recorded Vitals
+        <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:12px; margin-top:10px;">
+            <div class="vital-input-card"><label>BP (SYS/DIA)</label><div style="display:flex; gap:4px;"><input type="number" id="p_sys_bp" placeholder="SYS" class="news-input" oninput="colorPaedsVitals()"><input type="number" id="p_dia_bp" placeholder="DIA" class="news-input" oninput="colorPaedsVitals()"></div></div>
+            <div class="vital-input-card"><label>HR</label><input type="number" id="p_hr_val" placeholder="---" class="news-input" oninput="colorPaedsVitals()"></div>
+            <div class="vital-input-card"><label>RR</label><input type="number" id="p_rr_val" placeholder="---" class="news-input" oninput="colorPaedsVitals()"></div>
+            <div class="vital-input-card"><label>SpO2 %</label><input type="number" id="p_spo2_val" placeholder="---" class="news-input" oninput="colorPaedsVitals()"></div>
+            <div class="vital-input-card"><label>TEMP</label><input type="number" id="p_temp_val" step="0.1" placeholder="---" class="news-input" oninput="colorPaedsVitals()"></div>
+            <div class="vital-input-card"><label>GLUCOSE</label><input type="number" id="p_bm_val" step="0.1" placeholder="---" class="news-input" oninput="colorPaedsVitals()"></div>
+        </div>
+        <button type="button" class="calc-btn" onclick="snapshotVitals()" style="background:var(--acc-grad-1);">📸 Snapshot Vitals Set (Saves & Clears Boxes)</button>
+        <textarea id="p_vitals_log" readonly style="font-family:monospace; font-size:11px; height:80px; margin-top:10px; width:100%;" placeholder="Snapshots save here..."></textarea>
+      </div>
+    </div>
+
+    <!-- 7. GIGU -->
+    <button class="accordion" id="gigu_acc">🍕 Tummy & Toilet</button>
+    <div class="panel" id="gigu_pan">
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="gigu_dysp" onchange="toggleMenu('gigu_dysp_n', this.checked)"> Dyspepsia / Indigestion?
+          <div id="gigu_dysp_n" class="nested"><input type="text" id="gigu_dysp_det" placeholder="Related to meals? Relieved by antacids?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Diarrhoea / Constipation?
+          <div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('bowel_habit', 'Normal', this); toggleMenu('bowel_habit_n', false)">Normal</button><button type="button" class="segment-btn" onclick="setSeg('bowel_habit', 'Diarrhoea', this); toggleMenu('bowel_habit_n', true)">Diarrhoea</button><button type="button" class="segment-btn" onclick="setSeg('bowel_habit', 'Constipation', this); toggleMenu('bowel_habit_n', true)">Constipation</button></div>
+          <input type="hidden" id="bowel_habit" value="Normal">
+          <div id="bowel_habit_n" class="nested"><input type="text" id="bowel_habit_det" placeholder="Frequency, consistency, duration?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> PR Bleeding / Melena?
+          <div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('pr_bleed', 'No', this); toggleMenu('pr_bleed_n', false); calculateDDx();">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('pr_bleed', 'Fresh Blood', this); toggleMenu('pr_bleed_n', true); calculateDDx();">Fresh Blood</button><button type="button" class="segment-btn btn-red" onclick="setSeg('pr_bleed', 'Melena (Black/Tarry)', this); toggleMenu('pr_bleed_n', true); calculateDDx();">Melena</button></div>
+          <input type="hidden" id="pr_bleed" value="No">
+          <div id="pr_bleed_n" class="nested"><input type="text" id="pr_bleed_det" placeholder="Estimated volume, mixed with stool?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="gigu_dist" onchange="toggleMenu('gigu_dist_n', this.checked)"> Abdominal Distension?
+          <div id="gigu_dist_n" class="nested"><input type="text" id="gigu_dist_det" placeholder="Soft/rigid? Tender?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="gigu_flank" onchange="toggleMenu('gigu_flank_n', this.checked)"> Flank / Renal Angle Pain?
+          <div id="gigu_flank_n" class="nested"><input type="text" id="gigu_flank_det" placeholder="Unilateral/Bilateral? Radiating to groin?"></div>
+      </div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Tummy Ache / Pain?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('abdo_p', 'No', this); toggleMenu('abdo_n', false)">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('abdo_p', 'Yes', this); toggleMenu('abdo_n', true)">Yes</button></div><input type="hidden" id="abdo_p" value="No">
+        <div id="abdo_n" class="nested">
+          <h4 style="margin-top:0;">Fluid SOCRATES</h4>
+          <input type="text" id="soc_a_s" placeholder="Site (Where is it?)"><input type="text" id="soc_a_o" placeholder="Onset Time (When did it start?)">
+          <div style="margin-top:10px; font-size:11px; font-weight:bold;">Character:</div>
+          <div class="segmented-control grid-3"><button type="button" class="segment-btn" onclick="setSeg('soc_a_c', 'Cramping', this)">Cramping</button><button type="button" class="segment-btn" onclick="setSeg('soc_a_c', 'Sharp', this)">Sharp</button><button type="button" class="segment-btn" onclick="setSeg('soc_a_c', 'Ache', this)">Ache</button></div><input type="hidden" id="soc_a_c" value="">
+          <input type="text" id="soc_a_r" placeholder="Radiation (Does it move?)">
+          <div style="margin-top:10px; font-size:11px; font-weight:bold;">Associated Symptoms:</div>
+          <div class="segmented-control grid-3"><button type="button" class="segment-btn" onclick="setSeg('soc_a_a', 'Nausea/Vomiting', this)">Nausea/Vomit</button><button type="button" class="segment-btn" onclick="setSeg('soc_a_a', 'Diarrhoea', this)">Diarrhoea</button><button type="button" class="segment-btn" onclick="setSeg('soc_a_a', 'Fever', this)">Fever</button><button type="button" class="segment-btn" onclick="setSeg('soc_a_a', 'Urinary Sx', this)">Urinary Sx</button><button type="button" class="segment-btn active" onclick="setSeg('soc_a_a', 'None', this)">None</button></div><input type="hidden" id="soc_a_a" value="None">
+          <div style="margin-top:10px; font-size:11px; font-weight:bold;">Time Course:</div>
+          <div class="segmented-control"><button type="button" class="segment-btn" onclick="setSeg('soc_a_t', 'Constant', this)">Constant</button><button type="button" class="segment-btn" onclick="setSeg('soc_a_t', 'Intermittent', this)">Intermittent</button></div><input type="hidden" id="soc_a_t" value="">
+          <input type="text" id="soc_a_e" placeholder="Exacerbating (What makes it worse?)">
+          <div class="adult-only">
+              <div style="margin-top:10px; font-size:11px; font-weight:bold;">Severity (0-10):</div>
+              <div class="segmented-control" style="gap:2px;"><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '0', this)">0</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '1', this)">1</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '2', this)">2</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '3', this)">3</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '4', this)">4</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '5', this)">5</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '6', this)">6</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '7', this)">7</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '8', this)">8</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '9', this)">9</button><button type="button" class="pain-btn" onclick="setPain('soc_a_sev', '10', this)">10</button></div><input type="hidden" id="soc_a_sev" value="">
+          </div>
+          <div class="adult-only" style="margin-top:15px; background:var(--input-bg); border:1px dashed var(--acc-grad-1); border-radius:8px; padding:12px;">
+              <h4 style="margin-top:0; color:var(--acc-grad-1); display:flex; align-items:center; gap:6px;">🩺 Abdo IAPP Exam Guide</h4>
+              <div style="font-size:11px; margin-bottom:8px; line-height:1.4;"><i>Note: Auscultate BEFORE palpating.</i><br><b style="color:var(--acc-grad-1);">I</b>nspection: Distension, scars, hernias.<br><b style="color:var(--acc-grad-1);">A</b>uscultation: Bowel sounds.<br><b style="color:var(--acc-grad-1);">P</b>ercussion: Tympany vs Dullness.<br><b style="color:var(--acc-grad-1);">P</b>alpation: Feel 9 regions. Note guarding, rigidity, rebound.</div>
+              <input type="text" id="abdo_iapp_notes" placeholder="Exam Findings (e.g., Rigidity in RLQ)">
+          </div>
+        </div>
+      </div>
+
+      <div class="question paeds-only" style="display:none;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Paediatric Pain Scale (FLACC)?
+        <div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('flacc_a_val', '0', this)">0 (No Pain)</button><button type="button" class="segment-btn" style="background:#f59e0b; color:white;" onclick="setSeg('flacc_a_val', '1-3', this)">1-3 (Mild)</button><button type="button" class="segment-btn" style="background:#ea580c; color:white;" onclick="setSeg('flacc_a_val', '4-6', this)">4-6 (Mod)</button><button type="button" class="segment-btn btn-red" style="grid-column: span 3;" onclick="setSeg('flacc_a_val', '7-10', this)">7-10 (Severe)</button></div><input type="hidden" id="flacc_a_val" value="0">
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Bowel Sounds
+        <div class="segmented-control grid-3"><button type="button" class="segment-btn" onclick="setSeg('bs_val', 'Good', this); document.getElementById('bs_where').style.display='none'">Good</button><button type="button" class="segment-btn" onclick="setSeg('bs_val', 'Reduced', this); document.getElementById('bs_where').style.display='block'">Reduced</button><button type="button" class="segment-btn" onclick="setSeg('bs_val', 'None', this); document.getElementById('bs_where').style.display='block'">None</button></div><input type="hidden" id="bs_val" value=""><input type="text" id="bs_where" placeholder="Where? (e.g. Lower right quadrant)" style="display:none; margin-top:8px;">
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Urination Issues
+        <div style="margin-top:10px;">Pain when urinating?</div><div class="segmented-control"><button class="segment-btn active" onclick="setSeg('ur_pain','No',this); toggleMenu('ur_pain_n', false)">No</button><button class="segment-btn" onclick="setSeg('ur_pain','Yes',this); toggleMenu('ur_pain_n', true)">Yes</button></div><input type="hidden" id="ur_pain" value="No"> <div id="ur_pain_n" style="display:none; margin-top:5px;"><input type="text" id="ur_pain_start" placeholder="When did it start?"></div>
+        <div style="margin-top:10px;">Blood in urine?</div><div class="segmented-control"><button class="segment-btn active" onclick="setSeg('ur_blood','No',this); toggleMenu('ur_blood_n', false)">No</button><button class="segment-btn btn-red" onclick="setSeg('ur_blood','Yes',this); toggleMenu('ur_blood_n', true)">Yes</button></div><input type="hidden" id="ur_blood" value="No"> <div id="ur_blood_n" style="display:none; margin-top:5px;"><input type="number" id="ur_blood_times" placeholder="How many times?"></div>
+        <div style="margin-top:10px;">Unable to urinate?</div><div class="segmented-control"><button class="segment-btn active" onclick="setSeg('ur_ret','No',this); toggleMenu('ur_ret_n', false)">No</button><button class="segment-btn btn-red" onclick="setSeg('ur_ret','Yes',this); toggleMenu('ur_ret_n', true)">Yes</button></div><input type="hidden" id="ur_ret" value="No"> <div id="ur_ret_n" style="display:none; margin-top:5px;"><input type="text" id="ur_ret_time" placeholder="How long for?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Other Urinary Symptoms:
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px; font-size:12px;"><label><input type="checkbox" id="ur_freq"> Frequency / Urgency</label><label><input type="checkbox" id="ur_olig"> Oliguria (Reduced output)</label><label><input type="checkbox" id="ur_inc"> Incontinence (New)</label><label><input type="checkbox" id="ur_froth"> Foamy / Frothy Urine</label></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_gigu_val', 'No', this); toggleMenu('det_gigu_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_gigu_val', 'Yes', this); toggleMenu('det_gigu_n', true)">Yes</button></div><input type="hidden" id="det_gigu_val" value="No">
+        <div id="det_gigu_n" class="nested"><textarea id="det_gigu_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- 8. MSK -->
+    <button class="accordion" id="msk_acc">🦴 Bones & Muscles</button>
+    <div class="panel" id="msk_pan">
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="msk_joint" onchange="toggleMenu('msk_joint_n', this.checked)"> Joint Pain / Swelling / Redness?
+          <div id="msk_joint_n" class="nested"><input type="text" id="msk_joint_det" placeholder="Which joint? Hot to touch? Injury vs illness?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="msk_cramps" onchange="toggleMenu('msk_cramps_n', this.checked)"> Muscle Cramps or Spasms?
+          <div id="msk_cramps_n" class="nested"><input type="text" id="msk_cramps_det" placeholder="Location, duration, triggers?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="msk_rom" onchange="toggleMenu('msk_rom_n', this.checked)"> Reduced Range of Motion (ROM)?
+          <div id="msk_rom_n" class="nested"><input type="text" id="msk_rom_det" placeholder="Which limb/joint? Due to pain or mechanical block?"></div>
+      </div>
+      <div id="trauma_bones_section" style="display:none; border:1px solid #fca5a5; background:#fef2f2; padding:10px; border-radius:8px; margin-bottom:15px;">
+          <h4 style="color:#ef4444; margin-top:0;">Fall / Trauma Specifics</h4>
+          <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="limb_p" onchange="toggleMenu('limb_p_n', this.checked)"> Limb pain
+             <div id="limb_p_n" class="nested" style="margin-bottom:10px;"><input type="text" id="limb_p_det" placeholder="Location, obvious deformity?"></div>
+          </div>
+          <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="cspine_p" onchange="toggleMenu('cspine_p_n', this.checked)"> C-Spine tenderness
+             <div id="cspine_p_n" class="nested" style="margin-bottom:10px;"><input type="text" id="cspine_p_det" placeholder="Midline vs paraspinal? Nexus cleared?"></div>
+          </div>
+          <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rib_p" onchange="toggleMenu('rib_p_n', this.checked)"> Rib pain
+             <div id="rib_p_n" class="nested" style="margin-bottom:10px;"><input type="text" id="rib_p_det" placeholder="Location, flail segment, pain on inspiration?"></div>
+          </div>
+          <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="deformity_p" onchange="toggleMenu('deformity_p_n', this.checked)"> Obvious deformity
+             <div id="deformity_p_n" class="nested" style="margin-bottom:10px;"><input type="text" id="deformity_p_det" placeholder="Where? Open/Closed? Distal pulse/sensation?"></div>
+          </div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Back Pain?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('back_p', 'No', this); toggleMenu('back_n', false)">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('back_p', 'Yes', this); toggleMenu('back_n', true)">Yes</button></div><input type="hidden" id="back_p" value="No">
+        <div id="back_n" class="nested">
+          <h4 style="margin-top:0;">Fluid SOCRATES</h4>
+          <input type="text" id="back_where" placeholder="Where in the back?"><input type="text" id="soc_m_o" placeholder="Onset Time (When did it start?)">
+          <div style="margin-top:10px; font-size:11px; font-weight:bold;">Character:</div>
+          <div class="segmented-control grid-3"><button type="button" class="segment-btn" onclick="setSeg('soc_m_c', 'Spasm', this)">Spasm</button><button type="button" class="segment-btn" onclick="setSeg('soc_m_c', 'Sharp', this)">Sharp</button><button type="button" class="segment-btn" onclick="setSeg('soc_m_c', 'Ache', this)">Ache</button></div><input type="hidden" id="soc_m_c" value="">
+          <input type="text" id="soc_m_r" placeholder="Radiation (Does it move?)"><input type="text" id="soc_m_a" placeholder="Associated symptoms (e.g. numbness, saddle anesthesia, incontinence)">
+          <div style="margin-top:10px; font-size:11px; font-weight:bold;">Time Course:</div>
+          <div class="segmented-control"><button type="button" class="segment-btn" onclick="setSeg('soc_m_t', 'Constant', this)">Constant</button><button type="button" class="segment-btn" onclick="setSeg('soc_m_t', 'Intermittent', this)">Intermittent</button></div><input type="hidden" id="soc_m_t" value="">
+          <input type="text" id="soc_m_e" placeholder="Exacerbating (What makes it worse?)">
+          <div class="adult-only">
+              <div style="margin-top:10px; font-size:11px; font-weight:bold;">Severity (0-10):</div>
+              <div class="segmented-control" style="gap:2px;"><button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '0', this)">0</button><button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '1', this)">1</button><button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '2', this)">2</button><button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '3', this)">3</button><button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '4', this)">4</button><button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '5', this)">5</button><button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '6', this)">6</button><button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '7', this)">7</button><button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '8', this)">8</button><button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '9', this)">9</button><button type="button" class="pain-btn" onclick="setPain('soc_m_sev', '10', this)">10</button></div><input type="hidden" id="soc_m_sev" value="">
+          </div>
+        </div>
+      </div>
+      <div class="question paeds-only" style="display:none;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Paediatric Pain Scale (FLACC)?
+        <div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('flacc_m_val', '0', this)">0 (No Pain)</button><button type="button" class="segment-btn" style="background:#f59e0b; color:white;" onclick="setSeg('flacc_m_val', '1-3', this)">1-3 (Mild)</button><button type="button" class="segment-btn" style="background:#ea580c; color:white;" onclick="setSeg('flacc_m_val', '4-6', this)">4-6 (Mod)</button><button type="button" class="segment-btn btn-red" style="grid-column: span 3;" onclick="setSeg('flacc_m_val', '7-10', this)">7-10 (Severe)</button></div><input type="hidden" id="flacc_m_val" value="0">
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Trouble Walking?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('walk_p', 'No', this); toggleMenu('walk_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('walk_p', 'Yes', this); toggleMenu('walk_n', true)">Yes</button></div><input type="hidden" id="walk_p" value="No">
+        <div id="walk_n" class="nested"><input type="text" id="walk_long" placeholder="How long for? Reason (e.g. pain, weakness)?"><div style="background:#fff1f2; color:#be123c; padding:10px; border-radius:8px; margin-top:8px; font-size:12px; font-weight:bold;">⚠️ Consider FAST test to rule out stroke!</div></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_msk_val', 'No', this); toggleMenu('det_msk_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_msk_val', 'Yes', this); toggleMenu('det_msk_n', true)">Yes</button></div><input type="hidden" id="det_msk_val" value="No">
+        <div id="det_msk_n" class="nested"><textarea id="det_msk_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- 9. MATERNITY -->
+    <button class="accordion adult-only" id="maternity_acc" style="display:none;">🤰 Maternity / Obstetrics</button>
+    <div class="panel adult-only" id="maternity_pan">
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Gravida/Para: <div style="display:flex; gap:10px;"><input type="number" id="mat_gravida" placeholder="Gravida (G)"><input type="number" id="mat_para" placeholder="Para (P)"></div></div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Gestation (Weeks+Days): <input type="text" id="mat_gestation" placeholder="e.g. 38+2"></div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_contractions" onchange="toggleMenu('mat_con_n', this.checked)"> Contractions present?
+         <div id="mat_con_n" class="nested"><input type="text" id="mat_con_freq" placeholder="Frequency / Duration"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_waters" onchange="toggleMenu('mat_wat_n', this.checked)"> Waters broken?
+         <div id="mat_wat_n" class="nested"><input type="text" id="mat_wat_col" placeholder="Colour (Clear, Meconium, Blood)"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_bleed" onchange="toggleMenu('mat_bleed_n', this.checked)"> Bleeding / Show present?
+         <div id="mat_bleed_n" class="nested"><input type="text" id="mat_bleed_det" placeholder="Estimated volume, fresh/old blood?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_move" onchange="toggleMenu('mat_move_n', this.checked)"> Fetal movements normal?
+         <div id="mat_move_n" class="nested"><input type="text" id="mat_move_det" placeholder="Details (reduced/absent, how long?)"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="mat_red_flags" onchange="toggleMenu('mat_rf_n', this.checked)"> Obstetric Red Flags (Pre-Eclampsia/Ectopic/Prolapse)?
+         <div id="mat_rf_n" class="nested"><input type="text" id="mat_rf_det" placeholder="Details"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_mat_val', 'No', this); toggleMenu('det_mat_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_mat_val', 'Yes', this); toggleMenu('det_mat_n', true)">Yes</button></div>
+        <input type="hidden" id="det_mat_val" value="No">
+        <div id="det_mat_n" class="nested"><textarea id="det_mat_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- 10. TRAUMA -->
+    <button class="accordion" id="trauma_acc" style="display:none;">💥 Trauma / RTC Details</button>
+    <div class="panel" id="trauma_pan">
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_mtc" onchange="toggleMenu('trauma_mtc_n', this.checked); calculateDDx();"> MTC Step 3 Trigger?
+         <div id="trauma_mtc_n" class="nested"><input type="text" id="trauma_mtc_det" placeholder="Which trigger? (e.g. >55y, anticoagulated)"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_red" onchange="toggleMenu('trauma_red_n', this.checked); calculateDDx();"> RED Discriminator?
+         <div id="trauma_red_n" class="nested"><input type="text" id="trauma_red_det" placeholder="Which trigger? (e.g. severe pain, LOC)"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_amber" onchange="toggleMenu('trauma_amber_n', this.checked); calculateDDx();"> AMBER Discriminator?
+         <div id="trauma_amber_n" class="nested"><input type="text" id="trauma_amber_det" placeholder="Which trigger? (e.g. unable to bear weight)"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Vehicle Damage: <textarea id="rtc_veh_cond" rows="2" placeholder="Frontal, side impact, rollover, airbags deployed?"></textarea></div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Speed / Position: <div style="display:flex; gap:10px;"><input type="text" id="rtc_speed" placeholder="Speed"><input type="text" id="rtc_pos" placeholder="Position (e.g. driver)"></div></div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rtc_seatbelt" onchange="toggleMenu('rtc_seatbelt_n', this.checked)"> Wearing Seatbelt?
+         <div id="rtc_seatbelt_n" class="nested"><input type="text" id="rtc_seatbelt_det" placeholder="Seatbelt mark present?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rtc_bullseye" onchange="toggleMenu('rtc_bullseye_n', this.checked)"> Bullseye to Windscreen?
+         <div id="rtc_bullseye_n" class="nested"><input type="text" id="rtc_bullseye_det" placeholder="Head strike confirmed?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="rtc_extricated" onchange="toggleMenu('rtc_ext_n', this.checked)"> Extricated from vehicle?
+         <div id="rtc_ext_n" class="nested"><input type="text" id="rtc_ext_how" placeholder="By who/how? (Self, LFB roof removal, etc)"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_trauma_val', 'No', this); toggleMenu('det_trauma_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_trauma_val', 'Yes', this); toggleMenu('det_trauma_n', true)">Yes</button></div>
+        <input type="hidden" id="det_trauma_val" value="No">
+        <div id="det_trauma_n" class="nested"><textarea id="det_trauma_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- 11. FALLS -->
+    <button class="accordion" id="fall_acc" style="display:none;">📉 Falls Assessment</button>
+    <div class="panel" id="fall_pan">
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_65" onchange="toggleMenu('fall_65_n', this.checked); calculateDDx();"> Patient 65+ Years Old?
+         <div id="fall_65_n" class="nested"><input type="text" id="fall_65_det" placeholder="Further details..."></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_lie" onchange="toggleMenu('fall_lie_n', this.checked); calculateDDx();"> Long lie (> 1 hour)?
+         <div id="fall_lie_n" class="nested"><input type="text" id="fall_lie_det" placeholder="Estimated duration on floor?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_cog" onchange="toggleMenu('fall_cog_n', this.checked); calculateDDx();"> Change in cognition / new confusion?
+         <div id="fall_cog_n" class="nested"><input type="text" id="fall_cog_det" placeholder="Collateral history confirmed?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_inj" onchange="toggleMenu('fall_inj_n', this.checked); calculateDDx();"> Minor injuries (friction, cuts)?
+         <div id="fall_inj_n" class="nested"><input type="text" id="fall_inj_det" placeholder="Location/Type? Need closing/dressing?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_hypo" onchange="toggleMenu('fall_hypo_n', this.checked); calculateDDx();"> Unexplained postural hypotension?
+         <div id="fall_hypo_n" class="nested"><input type="text" id="fall_hypo_det" placeholder="Lying/Standing BP readings?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_hist" onchange="toggleMenu('fall_hist_n', this.checked); calculateDDx();"> 2+ falls in last 7 days?
+         <div id="fall_hist_n" class="nested"><input type="text" id="fall_hist_det" placeholder="Any pattern to the falls?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_anticoag" onchange="toggleMenu('fall_anticoag_n', this.checked); calculateDDx();"> On Anticoagulant / Antiplatelet?
+         <div id="fall_anticoag_n" class="nested"><input type="text" id="fall_anticoag_det" placeholder="Which medication? Head strike?"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_fall_val', 'No', this); toggleMenu('det_fall_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_fall_val', 'Yes', this); toggleMenu('det_fall_n', true)">Yes</button></div>
+        <input type="hidden" id="det_fall_val" value="No">
+        <div id="det_fall_n" class="nested"><textarea id="det_fall_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- 12. MENTAL HEALTH -->
+    <button class="accordion" id="mh_acc" style="display:none;">💭 Mental Health</button>
+    <div class="panel" id="mh_pan">
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Known to MH services? <input type="text" id="mh_team" placeholder="Team/Borough" style="margin-top:5px;"></div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Thoughts of self-harm/suicide? <input type="text" id="mh_self_det" placeholder="Intent, plan, means? Past attempts?" style="margin-top:5px;"></div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Risk of harm to others? <input type="text" id="mh_others_det" placeholder="Details of threats, target identified?" style="margin-top:5px;"></div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Hallucinations/delusions? <input type="text" id="mh_halluc_det" placeholder="Auditory/Visual? Command hallucinations?" style="margin-top:5px;"></div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Intoxication / Overdose? 
+          <input type="text" id="mh_alc_det" placeholder="Alcohol details (Amount/Type)..." style="margin-top:5px;"><input type="text" id="mh_drugs_det" placeholder="Drugs/Meds Overdose details (Amount/Time)..." style="margin-top:5px;"><input type="text" id="toxbase_advice" placeholder="Toxbase Advice..." style="margin-top:5px;">
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_mh_val', 'No', this); toggleMenu('det_mh_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_mh_val', 'Yes', this); toggleMenu('det_mh_n', true)">Yes</button></div>
+        <input type="hidden" id="det_mh_val" value="No">
+        <div id="det_mh_n" class="nested"><textarea id="det_mh_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- 13. MEDS & SOCIAL -->
+    <button class="accordion" id="meds_social_acc">💊 Meds & Social</button>
+    <div class="panel" id="meds_social_pan">
+      <div style="background:#e0f2fe; border:1px solid #bae6fd; padding:10px; border-radius:8px; margin-bottom:15px;">
+        <h4 style="color:#0369a1; margin-top:0; margin-bottom:5px;">🔍 Offline Med Lookup (Internal Use)</h4>
+        <div style="font-size:11px; opacity:0.8; margin-bottom:8px; color:var(--text-color);">Does NOT copy to ePCR.</div>
+        <input type="text" id="med_lookup" placeholder="Type a medication name..." oninput="lookupMed()" style="background:white; color:black;">
+        <div id="med_lookup_out" style="display:none; margin-top:8px; font-size:12px; background:white; color:black; padding:8px; border-radius:6px; border:1px solid #bae6fd;"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Medications Given?
+         <div class="segmented-control grid-2" style="margin-bottom:10px;"><button type="button" class="segment-btn" onclick="quickMed('Aspirin 300mg')">Aspirin 300mg</button><button type="button" class="segment-btn" onclick="quickMed('Paracetamol 1g')">Paracetamol 1g</button><button type="button" class="segment-btn" onclick="quickMed('Ibuprofen 400mg')">Ibuprofen 400mg</button><button type="button" class="segment-btn" onclick="quickMed('Ondansetron 4mg')">Ondansetron 4mg</button><button type="button" class="segment-btn" onclick="quickMed('Entonox')">Entonox</button><button type="button" class="segment-btn" onclick="quickMed('Salbutamol 5mg')">Salbutamol 5mg</button></div>
+         <input type="text" id="other_med" placeholder="Other med & dose..."><button type="button" class="calc-btn" onclick="quickMed(document.getElementById('other_med').value); document.getElementById('other_med').value='';" style="background:#64748b;">Add Other Med</button>
+         <textarea id="meds_log" rows="3" style="margin-top:10px;" placeholder="Medication log will appear here..."></textarea>
+      </div>
+
+      <h4 class="adult-only" style="margin-top:20px;">Social History</h4>
+      <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Clinical Frailty Scale (CFS)
+         <div class="segmented-control grid-3"><button type="button" class="segment-btn" onclick="setSeg('cfs_val', '1', this)">1-Fit</button><button type="button" class="segment-btn" onclick="setSeg('cfs_val', '2', this)">2-Well</button><button type="button" class="segment-btn" onclick="setSeg('cfs_val', '3', this)">3-Manag</button><button type="button" class="segment-btn" onclick="setSeg('cfs_val', '4', this)">4-Vuln</button><button type="button" class="segment-btn" onclick="setSeg('cfs_val', '5', this)">5-Mild</button><button type="button" class="segment-btn" onclick="setSeg('cfs_val', '6', this)">6-Mod</button><button type="button" class="segment-btn" onclick="setSeg('cfs_val', '7', this)">7-Sev</button><button type="button" class="segment-btn" onclick="setSeg('cfs_val', '8', this)">8-V.Sev</button><button type="button" class="segment-btn" onclick="setSeg('cfs_val', '9', this)">9-Term</button></div><input type="hidden" id="cfs_val" value="">
+      </div>
+      <div class="question paeds-only" style="display:none; background:#fff1f2; border:1px solid #fecdd3; padding:10px; border-radius:8px;">
+          <span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <b>Paediatric Safeguarding Checks</b>
+          <input type="text" id="paeds_accompanied" placeholder="Who is accompanying the child? (Name/Relation)" style="margin-top:8px;">
+          <div style="margin-top:10px; font-size:11px; font-weight:bold;">Does the adult have Parental Responsibility (PR)?</div>
+          <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('paeds_pr', 'Yes', this)">Yes</button><button type="button" class="segment-btn btn-red" onclick="setSeg('paeds_pr', 'No', this)">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('paeds_pr', 'Unsure', this)">Unsure</button></div><input type="hidden" id="paeds_pr" value="Yes">
+      </div>
+      <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Home Circumstances: 
+         <select id="soc_home"><option value="">-- Select --</option><option value="Stable House">Stable House</option><option value="Nursing Home">Nursing Home</option><option value="Warden Assisted Flat">Warden Assisted Flat</option><option value="Other">Other</option></select>
+      </div>
+      <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Support Services: 
+         <select id="soc_support"><option value="">-- Select --</option><option value="None">None</option><option value="Careline">Careline</option><option value="District Nurse">District Nurse</option><option value="Home Care">Home Care</option><option value="Palliative">Palliative</option></select>
+      </div>
+      <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Level of Support: 
+         <select id="soc_level"><option value="">-- Select --</option><option value="Independent">Independent</option><option value="Family/Friend">Family/Friend</option><option value="Carers x1 a day">Carers x1 a day</option><option value="Carers x2 a day">Carers x2 a day</option><option value="Carers x3 a day">Carers x3 a day</option><option value="Carers x4 a day">Carers x4 a day</option><option value="24 hr care">24 hr care</option></select>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_medsoc_val', 'No', this); toggleMenu('det_medsoc_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_medsoc_val', 'Yes', this); toggleMenu('det_medsoc_n', true)">Yes</button></div><input type="hidden" id="det_medsoc_val" value="No">
+        <div id="det_medsoc_n" class="nested"><textarea id="det_medsoc_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- 14. PLAN -->
+    <button class="accordion" id="plan_acc">🗺️ Plan & Handover</button>
+    <div class="panel" id="plan_pan">
+      <div class="question" style="background:#fff1f2; border:1px solid #fecdd3; padding:10px; border-radius:8px;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> 🚩 Safeguarding / Vulnerability Concerns?
+         <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('safeguarding_flag', 'No', this); toggleMenu('sg_n', false)">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('safeguarding_flag', 'Yes', this); toggleMenu('sg_n', true)">Yes</button></div><input type="hidden" id="safeguarding_flag" value="No">
+         <div id="sg_n" class="nested"><textarea id="sg_details" rows="3" placeholder="Objective details of concern..."></textarea></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Conveyance Plan
+         <div style="margin-top:10px;"><button type="button" class="calc-btn" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); margin-bottom:10px;" onclick="runDecisionSupport()">🧠 Run Clinical Decision Support Tool</button><div id="decision_support_out" style="display:none; margin-bottom:15px; padding:12px; border-radius:8px;"></div></div>
+         <div class="segmented-control"><button type="button" class="segment-btn" onclick="setSeg('plan_val', 'Convey', this); toggleMenu('convey_div', true); toggleMenu('non_convey_div', false)">Convey to Hosp</button><button type="button" class="segment-btn" onclick="setSeg('plan_val', 'Discharge', this); toggleMenu('convey_div', false); toggleMenu('non_convey_div', true)">Discharge / Refer</button></div><input type="hidden" id="plan_val" value="">
+         <div id="convey_div" style="display:none; margin-top:10px;">
+             <select id="hosp_dest" onchange="toggleMenu('hosp_dest_other', this.value === 'Other')"><option value="">-- Select Hospital --</option><option value="St Thomas'">St Thomas'</option><option value="King's College">King's College</option><option value="UCLH">UCLH</option><option value="Royal London">Royal London</option><option value="Other">Other</option></select>
+             <input type="text" id="hosp_dest_other" placeholder="Specify Hospital..." style="display:none; margin-top:8px;">
+             <div class="segmented-control" style="margin-top:10px;"><button type="button" class="segment-btn active" onclick="setSeg('journey_type', 'Routine', this)">Routine</button><button type="button" class="segment-btn btn-red" onclick="setSeg('journey_type', 'Blue Call', this)">Blue Call</button></div><input type="hidden" id="journey_type" value="Routine">
+             <select id="moved_to_amb" style="margin-top:10px;"><option value="">-- Moved to Ambulance via --</option><option value="Walked (No assist)">Walked (No assist)</option><option value="Walked (Assist)">Walked (Assist)</option><option value="Carry chair">Carry chair</option><option value="Stretcher">Stretcher</option><option value="Carried" class="paeds-only" style="display:none;">Carried (Paeds)</option></select>
+         </div>
+         <div id="non_convey_div" style="display:none; margin-top:10px;"><input type="text" id="discharge_notes" placeholder="Referred to? (e.g. GP, UCR, Self-Care)"></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_plan_val', 'No', this); toggleMenu('det_plan_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_plan_val', 'Yes', this); toggleMenu('det_plan_n', true)">Yes</button></div><input type="hidden" id="det_plan_val" value="No">
+        <div id="det_plan_n" class="nested"><textarea id="det_plan_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- 15. ADVICE -->
+    <button class="accordion" id="advice_acc">📄 Advice & Refusal</button>
+    <div class="panel" id="advice_pan">
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Worsening Care Advice Given?
+         <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('wca_given', 'No', this); toggleMenu('wca_text_div', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('wca_given', 'Yes', this); toggleMenu('wca_text_div', true)">Yes</button></div><input type="hidden" id="wca_given" value="No">
+         <div id="wca_text_div" style="display:none; margin-top:10px;"><textarea id="wca_text" rows="4">Advised patient/family to call 999 immediately if symptoms worsen, including severe difficulty breathing, new chest pain, collapse, or loss of consciousness. Call 111 or GP if symptoms persist but are not immediately life-threatening.</textarea></div>
+      </div>
+      <div class="question adult-only" style="background:#fff1f2; border:1px solid #fecdd3; padding:10px; border-radius:8px;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Patient Consents to Clinical Plan?
+         <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('consent_plan', 'Yes', this); toggleMenu('mca_tool', false)">Yes</button><button type="button" class="segment-btn btn-red" onclick="setSeg('consent_plan', 'No', this); toggleMenu('mca_tool', true)">No (Refusing)</button></div><input type="hidden" id="consent_plan" value="Yes">
+         <div id="mca_tool" class="nested">
+            <h4 style="color:#d32f2f; margin-top:0;">Mental Capacity Act Assessment</h4>
+            <div style="font-weight:bold; margin-top:10px; font-size:12px;">1. Has the patient been given sufficient information about the decision in a way appropriate to them?</div><div class="segmented-control"><button class="segment-btn" onclick="setSeg('mca_1','Yes',this)">Yes</button><button class="segment-btn" onclick="setSeg('mca_1','No',this)">No</button></div><input type="hidden" id="mca_1" value="">
+            <div style="font-weight:bold; margin-top:10px; font-size:12px;">2. Is the patient able to understand the information they have been given?</div><div class="segmented-control"><button class="segment-btn" onclick="setSeg('mca_2','Yes',this)">Yes</button><button class="segment-btn" onclick="setSeg('mca_2','No',this)">No</button></div><input type="hidden" id="mca_2" value="">
+            <div style="font-weight:bold; margin-top:10px; font-size:12px;">3. Have you been able to have a rational conversation with the patient about the pros and cons of what is proposed?</div><div class="segmented-control"><button class="segment-btn" onclick="setSeg('mca_3','Yes',this)">Yes</button><button class="segment-btn" onclick="setSeg('mca_3','No',this)">No</button></div><input type="hidden" id="mca_3" value="">
+            <div style="font-weight:bold; margin-top:10px; font-size:12px;">4. Do you think the patient can retain information for long enough to make the decision?</div><div class="segmented-control"><button class="segment-btn" onclick="setSeg('mca_4','Yes',this)">Yes</button><button class="segment-btn" onclick="setSeg('mca_4','No',this)">No</button></div><input type="hidden" id="mca_4" value="">
+            <div style="font-weight:bold; margin-top:10px; font-size:12px;">5. Is the patient able to explain their decision using their own words?</div><div class="segmented-control"><button class="segment-btn" onclick="setSeg('mca_5','Yes',this)">Yes</button><button class="segment-btn" onclick="setSeg('mca_5','No',this)">No</button></div><input type="hidden" id="mca_5" value="">
+            <textarea id="refusal_reason" rows="3" style="margin-top:15px;" placeholder="Reason for refusal & details of advice given..."></textarea>
+         </div>
+      </div>
+      <div class="question paeds-only" style="display:none; background:#fff1f2; border:1px solid #fecdd3; padding:10px; border-radius:8px;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Parent/Guardian Consents to Plan?
+         <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('paeds_consent_plan', 'Yes', this); toggleMenu('paeds_refusal_n', false)">Yes</button><button type="button" class="segment-btn btn-red" onclick="setSeg('paeds_consent_plan', 'No', this); toggleMenu('paeds_refusal_n', true)">No (Refusing)</button></div><input type="hidden" id="paeds_consent_plan" value="Yes">
+         <div id="paeds_refusal_n" class="nested"><div style="font-weight:bold; color:#d32f2f; margin-bottom:8px; font-size:12px;">⚠️ Note: If refusal is contrary to child's best interests, consider Gillick Competence or Police/Safeguarding.</div><textarea id="paeds_refusal_reason" rows="3" placeholder="Reason for refusal, details of advice, and escalation steps taken..."></textarea></div>
+      </div>
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_adv_val', 'No', this); toggleMenu('det_adv_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_adv_val', 'Yes', this); toggleMenu('det_adv_n', true)">Yes</button></div><input type="hidden" id="det_adv_val" value="No">
+        <div id="det_adv_n" class="nested"><textarea id="det_adv_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <button class="submit-btn" id="generate_btn" onclick="generateOutput()">GENERATE ePCR COPY</button>
+    <button class="calc-btn" id="not_found_btn" style="background:#64748b;" onclick="generateNotFound()">🚫 PATIENT NOT FOUND (Copy Notes)</button>
+    <button class="calc-btn" style="background:transparent; color:#ef4444; border:2px solid #ef4444;" onclick="resetForm()">RESET FORM (Clear Data)</button>
+
+  </div>
+
+  <div class="ddx-hud" id="ddx_hud">
+    <div class="ddx-icon" id="ddx_icon">💡</div>
+    <div class="ddx-content">
+      <div class="ddx-title" id="ddx_title">Clinical Insights</div>
+      <div class="ddx-text" id="ddx_text" style="font-size:11px; opacity:0.9;">DDx: Awaiting assessment...</div>
+    </div>
+  </div>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    const medContraindications = {
+        "Aspirin": "⚠️ Active GI bleeding or bleeding disorders.\n⚠️ Known bleeding ulcer.\n⚠️ Children under 16 years old.\n⚠️ Severe hepatic impairment.",
+        "Paracetamol": "⚠️ Known allergy/hypersensitivity.\n⚠️ Extreme caution in severe hepatic impairment.",
+        "Ibuprofen": "⚠️ Active GI bleeding or peptic ulcer.\n⚠️ 3rd Trimester of pregnancy.\n⚠️ Severe heart, renal, or liver failure.\n⚠️ History of NSAID-induced asthma.",
+        "Ondansetron": "⚠️ Prolonged QT syndrome.\n⚠️ Known hypersensitivity.",
+        "Entonox": "⚠️ Suspected pneumothorax or maxillo-facial injuries.\n⚠️ Severe head injury with impaired consciousness.\n⚠️ Suspected bowel obstruction.\n⚠️ Decompression sickness (diving within 48h).",
+        "Salbutamol": "⚠️ Known hypersensitivity.\n⚠️ Caution in severe tachycardia or thyrotoxicosis."
+    };
+
+    var pendingMedToGive = "";
+    function quickMed(med) {
+        if(!med) return;
+        var matchedKey = Object.keys(medContraindications).find(k => med.toLowerCase().includes(k.toLowerCase()));
+        if(matchedKey) {
+            pendingMedToGive = med;
+            var warningText = "<b style='font-size:16px;'>" + med + "</b><br><br><span style='color:#ef4444; font-weight:600;'>" + medContraindications[matchedKey].replace(/\n/g, '<br>') + "</span><br><br><b>Are you sure you want to administer?</b>";
+            document.getElementById('med_modal_text').innerHTML = warningText;
+            document.getElementById('med_safety_modal').style.display = 'flex';
+            haptic('heavy');
+        } else { executeMed(med); }
+    }
+
+    function closeMedModal() { document.getElementById('med_safety_modal').style.display = 'none'; pendingMedToGive = ""; haptic('light'); }
+    function confirmMed() { executeMed(pendingMedToGive); closeMedModal(); }
+
+    function executeMed(med) {
+        var d = new Date(); var time = ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+        var ta = document.getElementById('meds_log'); ta.value += (ta.value ? "\n" : "") + "[" + time + "] " + med; haptic('light');
+    }
+
+    function colorPaedsVitals() {
+        var age = parseInt(document.getElementById('pt_age').value) || 0;
+        var hrEl = document.getElementById('p_hr_val'), rrEl = document.getElementById('p_rr_val');
+        var sysEl = document.getElementById('p_sys_bp'), diaEl = document.getElementById('p_dia_bp');
+        var spo2El = document.getElementById('p_spo2_val'), tempEl = document.getElementById('p_temp_val'), bmEl = document.getElementById('p_bm_val');
+        var hr = parseInt(hrEl ? hrEl.value : NaN), rr = parseInt(rrEl ? rrEl.value : NaN), sys = parseInt(sysEl ? sysEl.value : NaN);
+        var dia = parseInt(diaEl ? diaEl.value : NaN), spo2 = parseInt(spo2El ? spo2El.value : NaN);
+        var temp = parseFloat(tempEl ? tempEl.value : NaN), bm = parseFloat(bmEl ? bmEl.value : NaN);
+        var minHr, maxHr, minRr, maxRr, minSys, maxSys;
+        
+        if (age < 1) { minHr=110; maxHr=160; minRr=30; maxRr=40; minSys=70; maxSys=90; }
+        else if (age < 2) { minHr=100; maxHr=150; minRr=25; maxRr=35; minSys=80; maxSys=95; }
+        else if (age < 5) { minHr=95; maxHr=140; minRr=25; maxRr=30; minSys=80; maxSys=100; }
+        else if (age < 12) { minHr=80; maxHr=120; minRr=20; maxRr=25; minSys=90; maxSys=110; }
+        else { minHr=60; maxHr=100; minRr=15; maxRr=20; minSys=100; maxSys=120; }
+        
+        function applyColor(el, val, min, max) { if(!el) return; el.classList.remove('vital-normal', 'vital-abnormal'); if(!isNaN(val)) { if(val >= min && val <= max) el.classList.add('vital-normal'); else el.classList.add('vital-abnormal'); } }
+        applyColor(hrEl, hr, minHr, maxHr); applyColor(rrEl, rr, minRr, maxRr); applyColor(sysEl, sys, minSys, maxSys);
+        applyColor(diaEl, dia, 50, 90); applyColor(spo2El, spo2, 94, 100); applyColor(tempEl, temp, 36.1, 37.9); applyColor(bmEl, bm, 4.0, 11.0);
+    }
+
+    const medDictionary = {
+        "apixaban": "Anticoagulant", "rivaroxaban": "Anticoagulant", "edoxaban": "Anticoagulant", "warfarin": "Anticoagulant",
+        "clopidogrel": "Antiplatelet", "ticagrelor": "Antiplatelet", "ramipril": "ACE Inhibitor (BP/HF)", "lisinopril": "ACE Inhibitor",
+        "amlodipine": "Calcium Channel Blocker", "bisoprolol": "Beta Blocker", "atenolol": "Beta Blocker",
+        "furosemide": "Loop Diuretic", "bumetanide": "Loop Diuretic", "spironolactone": "Potassium-sparing Diuretic",
+        "metformin": "Type 2 Diabetes", "gliclazide": "Type 2 Diabetes", "insulin": "Diabetes Hormone", "omeprazole": "PPI (Acid reflux)",
+        "lansoprazole": "PPI (Acid reflux)", "levothyroxine": "Thyroid Hormone", "atorvastatin": "Statin", "simvastatin": "Statin",
+        "sertraline": "SSRI Antidepressant", "citalopram": "SSRI", "fluoxetine": "SSRI", "amitriptyline": "TCA (Nerve pain/Depression)",
+        "mirtazapine": "Antidepressant", "gabapentin": "Anticonvulsant", "pregabalin": "Anticonvulsant", "salbutamol": "SABA Inhaler",
+        "tiotropium": "LAMA Inhaler", "montelukast": "Leukotriene receptor antagonist", "allopurinol": "Gout prevention", "tramadol": "Opioid Analgesic",
+        "co-codamol": "Analgesic compound", "morphine": "Opioid Analgesic", "levetiracetam": "Anticonvulsant (Keppra)", "sodium valproate": "Anticonvulsant",
+        "carbamazepine": "Anticonvulsant", "methotrexate": "Immunosuppressant", "prednisolone": "Corticosteroid", "dexamethasone": "Corticosteroid",
+        "digoxin": "Cardiac Glycoside (AFib)", "diltiazem": "Calcium Channel Blocker", "quetiapine": "Antipsychotic", "olanzapine": "Antipsychotic",
+        "lorazepam": "Benzodiazepine", "diazepam": "Benzodiazepine", "naproxen": "NSAID", "ibuprofen": "NSAID", "paracetamol": "Analgesic",
+        "macrogol": "Laxative", "senna": "Laxative", "lactulose": "Laxative", "ondansetron": "Antiemetic", "cyclizine": "Antiemetic", "metoclopramide": "Antiemetic"
+    };
+
+    function lookupMed() {
+        var input = document.getElementById('med_lookup').value.toLowerCase().trim();
+        var out = document.getElementById('med_lookup_out');
+        if(input.length < 3) { out.innerHTML = ""; out.style.display = 'none'; return; }
+        var found = [];
+        for(var key in medDictionary) { if(key.includes(input)) { found.push("<b style='color:#0369a1;'>" + key.charAt(0).toUpperCase() + key.slice(1) + "</b>: " + medDictionary[key]); } }
+        if(found.length > 0) { out.innerHTML = found.join("<br><br>"); out.style.display = 'block'; } 
+        else { out.innerHTML = "<i style='color:#ef4444;'>No common match found for '" + input + "' in offline dictionary.</i>"; out.style.display = 'block'; }
+    }
+
+    function haptic(type) { try { if(window.navigator && window.navigator.vibrate) { if(type === 'light') window.navigator.vibrate(10); else if(type === 'heavy') window.navigator.vibrate([200, 100, 200]); } } catch(e) {} }
+
+    function evalEcg() {
+        var rate = document.getElementById('ecg_rate').value; var rhythm = document.getElementById('ecg_rhythm').value; var p = document.getElementById('ecg_p').value; var pr = document.getElementById('ecg_pr').value; var qrs = document.getElementById('ecg_qrs').value; 
+        var diag = "Sinus Rhythm", prefix = "";
+
+        if (rate === 'Brady') prefix = "Sinus Bradycardia"; else if (rate === 'Tachy') prefix = "Sinus Tachycardia"; else prefix = "Sinus Rhythm";
+
+        if (p === 'Absent' && rhythm === 'Irregular' && qrs === 'Narrow') { diag = "Atrial Fibrillation (AFib)"; if (rate === 'Tachy' || rate === 'Extreme') diag += " with Rapid Ventricular Response (RVR)"; } 
+        else if (p === 'Absent' && rhythm === 'Regular' && rate === 'Extreme' && qrs === 'Narrow') { diag = "SVT (Supraventricular Tachycardia)"; } 
+        else if (qrs === 'Broad') {
+            if (rate === 'Extreme' || rate === 'Tachy') { diag = "Ventricular Tachycardia (VT) or SVT with aberrant conduction"; } 
+            else if (rate === 'Brady' && p === 'Absent') { diag = "Ventricular Escape Rhythm"; } 
+            else { diag = prefix + " with Bundle Branch Block (Check V1/V6 for LBBB/RBBB)"; }
+        } else if (p === 'Multiple') {
+            if (pr === '3rd_Degree') diag = "3rd Degree (Complete) Heart Block 🚨";
+            else if (rhythm === 'Regular') diag = "Atrial Flutter (with block)"; else diag = "Atrial Fibrillation / Flutter";
+        } else if (p === 'Normal') {
+            diag = prefix;
+            if (pr === '1st_Degree') diag += " with 1st Degree AV Block"; else if (pr === 'Mobitz1') diag += " with 2nd Deg AV Block (Mobitz I / Wenckebach)"; else if (pr === 'Mobitz2') diag += " with 2nd Deg AV Block (Mobitz II) 🚨"; else if (pr === '3rd_Degree') diag = "3rd Degree (Complete) Heart Block 🚨"; else if (rhythm === 'Irregular') diag = "Possible Ectopics (PAC/PVC) or Sinus Arrhythmia";
+        } else { diag = "Indeterminate Rhythm - " + prefix + " variants"; }
+
+        document.getElementById('ecg_eval_out').innerText = "Suggestion: " + diag;
+        calculateDDx(); 
+    }
+
+    function evalStemi() {
+        var leads = { v1: document.getElementById('lead_v1').checked, v2: document.getElementById('lead_v2').checked, v3: document.getElementById('lead_v3').checked, v4: document.getElementById('lead_v4').checked, v5: document.getElementById('lead_v5').checked, v6: document.getElementById('lead_v6').checked, i: document.getElementById('lead_i').checked, ii: document.getElementById('lead_ii').checked, iii: document.getElementById('lead_iii').checked, avr: document.getElementById('lead_avr').checked, avl: document.getElementById('lead_avl').checked, avf: document.getElementById('lead_avf').checked };
+
+        var inf = leads.ii || leads.iii || leads.avf; var sep = leads.v1 || leads.v2; var ant = leads.v3 || leads.v4; var lat = leads.v5 || leads.v6 || leads.i || leads.avl;
+        var summary = [], regions = [];
+
+        if (sep && ant && lat) { summary.push("Extensive Anterior (V1-V6, I, aVL)"); regions.push("Extensive Anterior"); } 
+        else if (sep && ant) { summary.push("Anteroseptal (V1-V4)"); regions.push("Anteroseptal"); if (lat) { summary.push("+ Lateral"); regions.push("Lateral"); } } 
+        else if (ant && lat) { summary.push("Anterolateral (V3-V6, I, aVL)"); regions.push("Anterolateral"); if (sep) { summary.push("+ Septal"); regions.push("Septal"); } } 
+        else {
+            if (ant) { summary.push("Anterior (V3-V4)"); regions.push("Anterior"); }
+            if (sep) { summary.push("Septal (V1-V2)"); regions.push("Septal"); }
+            if (lat) { summary.push("Lateral (V5-V6, I, aVL)"); regions.push("Lateral"); }
+        }
+        if (inf) { summary.push("Inferior (II, III, aVF)"); regions.push("Inferior"); }
+        if (leads.avr) { summary.push("aVR (Consider Left Main / Triple Vessel)"); regions.push("aVR"); }
+
+        var out = document.getElementById('stemi_location_out'); var textEl = document.getElementById('stemi_loc_text');
+        if (summary.length > 0) { out.style.display = 'block'; textEl.innerHTML = summary.join("<br>+ "); out.dataset.short = regions.join(" & ") + " STEMI"; } 
+        else { out.style.display = 'none'; out.dataset.short = ""; }
+        calculateDDx();
+    }
+
+    document.addEventListener('input', calculateDDx);
+    document.addEventListener('change', calculateDDx);
+    document.addEventListener('click', function(e) { if(e.target.tagName === 'BUTTON') calculateDDx(); });
+
+    function setSeg(hiddenId, valNum, btn) { haptic('light'); var hidden = document.getElementById(hiddenId); if(hidden) hidden.value = valNum; var btns = btn.parentNode.querySelectorAll('.segment-btn'); btns.forEach(function(b) { b.classList.remove('active'); }); btn.classList.add('active'); }
+
+    function setPain(hiddenId, valNum, btn) {
+        haptic('light'); var hidden = document.getElementById(hiddenId); if(hidden) hidden.value = valNum;
+        var btns = btn.parentNode.querySelectorAll('.pain-btn'); btns.forEach(function(b) { b.classList.remove('active'); b.style.background = 'transparent'; b.style.color = 'var(--text-color)'; });
+        btn.classList.add('active');
+        var v = parseInt(valNum); var bg = '#10b981'; 
+        if(v >= 1 && v <= 3) bg = '#84cc16'; else if(v >= 4 && v <= 6) bg = '#f59e0b'; else if(v >= 7 && v <= 8) bg = '#ea580c'; else if(v >= 9 && v <= 10) bg = '#ef4444'; 
+        btn.style.background = bg; btn.style.color = 'white'; calculateDDx();
+    }
+
+    function toggleMenu(id, show) { haptic('light'); var el = document.getElementById(id); if(el) el.style.display = show ? 'block' : 'none'; }
+    function toggleOmit(btn) { haptic('light'); var q = btn.closest('.question'); if(q) q.classList.toggle('omitted'); }
+    function isOmitted(id) { var el = document.getElementById(id); if(!el) return true; var q = el.closest('.question'); return q && q.classList.contains('omitted'); }
+    function val(id) { if(isOmitted(id)) return null; var el = document.getElementById(id); if(!el) return null; if(el.type === 'checkbox') return el.checked; return el.value; }
+    function togglePrivacy() { var ps = document.getElementById('privacy_shield'); if(ps) ps.style.display = (ps.style.display === 'flex') ? 'none' : 'flex'; }
+    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+
+    var isAlerting = false;
+    function checkPulseAlert() {
+        var cp = val('cp_val') === 'Yes';
+        var isNews = false; var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
+        
+        if (isPaeds) { var pews = document.getElementById('final_pews'); if (pews && parseInt(pews.value) >= 4) isNews = true; } 
+        else {
+            var news = document.getElementById('final_news2');
+            if (news && parseInt(news.value) >= 5) isNews = true;
+            else { var logText = document.getElementById('vitals_log') ? document.getElementById('vitals_log').value : ""; if (logText) { var nMatch = logText.match(/NEWS:(\d+)/g); if(nMatch && parseInt(nMatch[nMatch.length-1].replace('NEWS:','')) >= 5) isNews = true; } }
+        }
+
+        var isSepsis = val('sus_sepsis');
+        var isAllerg = val('sus_allerg');
+        var isSobAtRest = (val('sob_val') === 'Yes' && (val('sob_when') === 'At Rest' || val('sob_when') === 'Both' || val('sob_when') === 'Feeding/Crying'));
+        
+        var notAlert = (val('alert_val') === 'No');
+        if (!notAlert && !isPaeds) { var logText = document.getElementById('vitals_log') ? document.getElementById('vitals_log').value : ""; if (logText) { var aMatch = logText.match(/ACVPU:([ACVPU])/g); if(aMatch && aMatch[aMatch.length-1].replace('ACVPU:','') !== 'A') notAlert = true; } }
+
+        var isDib = (val('dib_val') === 'Yes'); var speakNo = (val('speak_full_val') === 'No');
+        var shouldAlert = (cp || isNews || isSepsis || isAllerg || isSobAtRest || notAlert || isDib || speakNo);
+        
+        if(shouldAlert) { document.body.classList.add('alert-pulse'); if(!isAlerting) { haptic('heavy'); isAlerting = true; } } 
+        else { document.body.classList.remove('alert-pulse'); isAlerting = false; }
+    }
+
+    var acc = document.getElementsByClassName("accordion");
+    for (var i = 0; i < acc.length; i++) { acc[i].onclick = function() { haptic('light'); this.classList.toggle("active"); var panel = this.nextElementSibling; panel.style.display = (panel.style.display === "block") ? "none" : "block"; } }
+
+    function autoGCS() {
+        var eBtn = document.getElementById('btn_g_e_4'), vBtn = document.getElementById('btn_g_v_5'), vBtnP = document.getElementById('btn_g_v_5_p'), mBtn = document.getElementById('btn_g_m_6');
+        if(eBtn) setGCS('g_e', 4, eBtn);
+        var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
+        if(isPaeds && vBtnP) { setGCS('g_v', 5, vBtnP); } else if(vBtn) { setGCS('g_v', 5, vBtn); }
+        if(mBtn) setGCS('g_m', 6, mBtn);
+    }
+
+    function handleAgeInput() {
+        var age = parseInt(document.getElementById('pt_age').value), c = document.getElementById('wetfag_container'), mainContainer = document.getElementById('main_form_container');
+        if(isNaN(age)) { c.style.display = 'none'; mainContainer.classList.remove('paeds-mode-active'); calculateDDx(); return; }
+        c.style.display = 'block'; var grid = document.getElementById('wetfag_grid');
+        
+        if(age < 18) {
+            mainContainer.classList.add('paeds-mode-active'); grid.style.display = 'grid'; document.getElementById('wf_title').innerText = "🧸 Paediatric Guidelines & Vitals";
+            var w = age < 1 ? 5 : (age + 4) * 2;
+            document.getElementById('wf_w').innerText = w + " kg"; document.getElementById('wf_e').innerText = (w * 4) + " J"; document.getElementById('wf_t').innerText = (age / 4 + 4).toFixed(1); document.getElementById('wf_f').innerText = (w * 10) + "ml"; document.getElementById('wf_a').innerText = (w * 0.1).toFixed(1) + "ml (1:10k)"; document.getElementById('wf_g').innerText = (w * 2) + "ml (10%)";
+            if (age < 1) { document.getElementById('wf_hr').innerText = "110-160"; document.getElementById('wf_rr').innerText = "30-40"; document.getElementById('wf_bp').innerText = "70-90"; } else if (age < 2) { document.getElementById('wf_hr').innerText = "100-150"; document.getElementById('wf_rr').innerText = "25-35"; document.getElementById('wf_bp').innerText = "80-95"; } else if (age < 5) { document.getElementById('wf_hr').innerText = "95-140"; document.getElementById('wf_rr').innerText = "25-30"; document.getElementById('wf_bp').innerText = "80-100"; } else if (age < 12) { document.getElementById('wf_hr').innerText = "80-120"; document.getElementById('wf_rr').innerText = "20-25"; document.getElementById('wf_bp').innerText = "90-110"; } else { document.getElementById('wf_hr').innerText = "60-100"; document.getElementById('wf_rr').innerText = "15-20"; document.getElementById('wf_bp').innerText = "100-120"; }
+        } else {
+            mainContainer.classList.remove('paeds-mode-active'); grid.style.display = 'none'; document.getElementById('wf_title').innerText = "📊 Adult Normal Vitals (JRCALC)"; document.getElementById('wf_hr').innerText = "51-90"; document.getElementById('wf_rr').innerText = "12-20"; document.getElementById('wf_bp').innerText = "111-219";
+        }
+        calculateDDx(); if(typeof colorPaedsVitals === 'function') colorPaedsVitals();
+    }
+
+    function setGCS(id, valNum, btn) {
+        setSeg(id, valNum, btn);
+        var e = parseInt(document.getElementById('g_e').value) || 0; var v = parseInt(document.getElementById('g_v').value) || 0; var m = parseInt(document.getElementById('g_m').value) || 0;
+        document.getElementById('gcs_disp').innerText = (e+v+m); document.getElementById('manual_gcs').value = (e+v+m);
+    }
+
+    function calcPEWS() {
+        var beh = parseInt(document.getElementById('pews_beh').value) || 0; var cv = parseInt(document.getElementById('pews_cv').value) || 0; var resp = parseInt(document.getElementById('pews_resp').value) || 0; var score = beh + cv + resp;
+        document.getElementById('final_pews').value = score; var disp = document.getElementById('final_pews_disp');
+        if(disp) { disp.innerText = score; if(score >= 4 || beh===3 || cv===3 || resp===3) { disp.parentNode.style.background = '#fef2f2'; disp.parentNode.style.color = '#ef4444'; } else if(score >= 2) { disp.parentNode.style.background = '#fffbeb'; disp.parentNode.style.color = '#d97706'; } else { disp.parentNode.style.background = 'var(--input-bg)'; disp.parentNode.style.color = 'var(--text-color)'; } }
+        checkPulseAlert();
+    }
+
+    function calcNEWS2() {
+        var sys = parseInt(document.getElementById('sys_bp').value) || 0; var dia = parseInt(document.getElementById('dia_bp').value) || 0; var hr = parseInt(document.getElementById('hr_val_news').value) || 0; var rr = parseInt(document.getElementById('rr_val_news').value) || 0; var spo2 = parseInt(document.getElementById('spo2_val_news').value) || 0; var temp = parseFloat(document.getElementById('temp_val').value) || 0; var bm = parseFloat(document.getElementById('bm_val').value) || 0; var acvpu = document.getElementById('acvpu').value; var on_o2 = document.getElementById('on_o2').checked; var copd = document.getElementById('copd_scale').checked;
+        var inputs = [document.getElementById('sys_bp'), document.getElementById('dia_bp'), document.getElementById('hr_val_news'), document.getElementById('rr_val_news'), document.getElementById('spo2_val_news'), document.getElementById('temp_val'), document.getElementById('bm_val')];
+        
+        inputs.forEach(function(i) { if(i) { i.classList.remove('vital-normal', 'vital-abnormal'); }});
+        function color(el, v, min, max) { if(el && v) { if(v>=min && v<=max) el.classList.add('vital-normal'); else el.classList.add('vital-abnormal'); } }
+        color(inputs[0], sys, 111, 219); color(inputs[1], dia, 60, 90); color(inputs[2], hr, 51, 90); color(inputs[3], rr, 12, 20); color(inputs[5], temp, 36.1, 38.0); color(inputs[6], bm, 4.0, 11.0);
+        
+        if(spo2>0) { var sEl = document.getElementById('spo2_val_news'); if(!copd) { if(spo2>=94) sEl.classList.add('vital-normal'); else sEl.classList.add('vital-abnormal'); } else { if(spo2>=88 && spo2<=92) sEl.classList.add('vital-normal'); else sEl.classList.add('vital-abnormal'); } }
+        
+        var score = 0;
+        if(rr>0) { if(rr<=8) score+=3; else if(rr>=9&&rr<=11) score+=1; else if(rr>=21&&rr<=24) score+=2; else if(rr>=25) score+=3; }
+        if(sys>0) { if(sys<=90) score+=3; else if(sys>=91&&sys<=100) score+=2; else if(sys>=101&&sys<=110) score+=1; else if(sys>=220) score+=3; }
+        if(hr>0) { if(hr<=40) score+=3; else if(hr>=41&&hr<=50) score+=1; else if(hr>=91&&hr<=110) score+=1; else if(hr>=111&&hr<=130) score+=2; else if(hr>=131) score+=3; }
+        if(temp>0) { if(temp<=35.0) score+=3; else if(temp>=35.1&&temp<=36.0) score+=1; else if(temp>=38.1&&temp<=39.0) score+=1; else if(temp>=39.1) score+=2; }
+        if(acvpu !== 'A') score+=3; if(on_o2) score+=2;
+        if(spo2>0) { if(!copd) { if(spo2<=91) score+=3; else if(spo2>=92&&spo2<=93) score+=2; else if(spo2>=94&&spo2<=95) score+=1; } else { if(spo2<=83) score+=3; else if(spo2>=84&&spo2<=85) score+=2; else if(spo2>=86&&spo2<=87) score+=1; else if(on_o2&&spo2>=93&&spo2<=94) score+=1; else if(on_o2&&spo2>=95&&spo2<=96) score+=2; else if(on_o2&&spo2>=97) score+=3; } }
+
+        document.getElementById('final_news2').value = score; var disp = document.getElementById('final_news2_disp');
+        if(disp) { disp.innerText = score; if(score >= 5) { disp.parentNode.style.background = '#fef2f2'; disp.parentNode.style.color = '#ef4444'; } else if(score >= 3) { disp.parentNode.style.background = '#fffbeb'; disp.parentNode.style.color = '#d97706'; } else { disp.parentNode.style.background = 'var(--input-bg)'; disp.parentNode.style.color = 'var(--text-color)'; } }
+        checkPulseAlert();
+    }
+
+    function snapshotVitals() {
+        var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
+        if (isPaeds) {
+            calcPEWS();
+            var sys = document.getElementById('p_sys_bp') ? document.getElementById('p_sys_bp').value || '-' : '-'; var dia = document.getElementById('p_dia_bp') ? document.getElementById('p_dia_bp').value || '-' : '-'; var hr = document.getElementById('p_hr_val').value || '-'; var rr = document.getElementById('p_rr_val').value || '-'; var spo2 = document.getElementById('p_spo2_val').value || '-'; var t = document.getElementById('p_temp_val').value || '-'; var bm = document.getElementById('p_bm_val').value || '-'; var score = document.getElementById('final_pews').value;
+            if (sys==='-' && hr==='-' && rr==='-' && spo2==='-') return;
+            var d = new Date(); var time = ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+            var log = time+" | BP:"+sys+"/"+dia+" HR:"+hr+" RR:"+rr+" SpO2:"+spo2+"% T:"+t+" BM:"+bm+" PEWS:"+score;
+            var ta = document.getElementById('p_vitals_log'); if(ta) ta.value += (ta.value ? "\n" : "") + log;
+            var inputs = document.querySelectorAll('#pews_pan input[type="number"]'); inputs.forEach(function(i) { i.value = ''; i.classList.remove('vital-normal', 'vital-abnormal'); });
+            checkPulseAlert(); calculateDDx(); return;
+        }
+
+        calcNEWS2();
+        var sys = document.getElementById('sys_bp').value || '-'; var dia = document.getElementById('dia_bp').value || '-'; var hr = document.getElementById('hr_val_news').value || '-'; var rr = document.getElementById('rr_val_news').value || '-'; var spo2 = document.getElementById('spo2_val_news').value || '-'; var t = document.getElementById('temp_val').value || '-'; var bm = document.getElementById('bm_val').value || '-'; var o2 = document.getElementById('on_o2').checked ? 'Y' : 'N'; var score = document.getElementById('final_news2').value; var acvpu = document.getElementById('acvpu').value;
+        if (sys==='-' && hr==='-' && rr==='-' && spo2==='-') return;
+        var d = new Date(); var time = ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+        var log = time+" | BP:"+sys+"/"+dia+" HR:"+hr+" RR:"+rr+" SpO2:"+spo2+"%(O2:"+o2+") T:"+t+" BM:"+bm+" ACVPU:"+acvpu+" NEWS:"+score;
+        var ta = document.getElementById('vitals_log'); ta.value += (ta.value ? "\n" : "") + log;
+        var inputs = document.querySelectorAll('#news_pan input[type="number"]'); inputs.forEach(function(i) { i.value = ''; i.classList.remove('vital-normal', 'vital-abnormal'); });
+        document.getElementById('on_o2').checked = false; document.getElementById('copd_scale').checked = false;
+        var btnA = document.querySelector('button[onclick*="\'acvpu\', \'A\'"]'); if(btnA) setSeg('acvpu', 'A', btnA);
+        checkPulseAlert(); calculateDDx();
+    }
+
+    function calculateDDx() {
+      var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
+      var ddx = []; 
+      var cp = val('cp_val')==='Yes'; var sob = val('sob_val')==='Yes'; var fast = val('fast_val')==='Yes'; var f_w = val('f_w')!=='Normal'; var l_w = val('l_w')!=='Normal'; var s_w = val('s_w')!=='Normal'; var sepsis = val('sus_sepsis'); var allerg = val('sus_allerg'); var abdo = val('abdo_p')==='Yes'; var vomit = val('nausea_val')==='Vomiting'; var back = val('back_p')==='Yes'; var dizzy = val('dizzy'); var sync = val('sync'); var notAlert = val('alert_val') === 'No'; var sobAtRest = val('sob_when') === 'At Rest' || val('sob_when') === 'Both' || val('sob_when') === 'Feeding/Crying'; var speakNo = val('speak_full_val') === 'No'; var neuro_seiz = val('seizure'); var headInj = val('neuro_head'); var menin = val('neuro_meningism'); var pulseQ = val('pulse_qual'); var ortho = val('ortho_val'); var prBleed = val('pr_bleed');
+      
+      var bm = 0, t = 0;
+      if(isPaeds) { bm = parseFloat(document.getElementById('p_bm_val').value); t = parseFloat(document.getElementById('p_temp_val').value); } else { bm = parseFloat(document.getElementById('bm_val').value); t = parseFloat(document.getElementById('temp_val').value); }
+
+      var currentNews = parseInt(document.getElementById('final_news2').value) || 0; var currentPews = parseInt(document.getElementById('final_pews').value) || 0;
+
+      if(!isPaeds) {
+          var logText = document.getElementById('vitals_log') ? document.getElementById('vitals_log').value : "";
+          if(logText) {
+              if(!bm || isNaN(bm)) { var bMatch = logText.match(/BM:([\d\.]+)/g); if(bMatch) bm = parseFloat(bMatch[bMatch.length-1].replace('BM:','')); }
+              if(!t || isNaN(t)) { var tMatch = logText.match(/T:([\d\.]+)/g); if(tMatch) t = parseFloat(tMatch[tMatch.length-1].replace('T:','')); }
+              var nMatch = logText.match(/NEWS:(\d+)/g); if(nMatch) { var lastNews = parseInt(nMatch[nMatch.length-1].replace('NEWS:','')); if(lastNews > currentNews) currentNews = lastNews; }
+              var aMatch = logText.match(/ACVPU:([ACVPU])/g); if(aMatch) { var lastA = aMatch[aMatch.length-1].replace('ACVPU:',''); if(lastA !== 'A') notAlert = true; }
+          }
+      }
+      bm = bm || 0; t = t || 0;
+
+      if (allerg && sob) ddx.push("ANAPHYLAXIS");
+      if (sepsis) ddx.push("Sepsis / Severe Infection");
+      if (fast && (f_w || l_w || s_w)) { ddx.push("Stroke / TIA"); ddx.push("Hypoglycaemia"); ddx.push("Bell's Palsy"); }
+      if (cp) { ddx.push("ACS / MI"); ddx.push("PE"); ddx.push("GORD / MSK"); }
+      if (sob && !allerg) { ddx.push(isPaeds ? "Bronchiolitis / Asthma" : "Asthma/COPD Exacerbation"); ddx.push("Chest Infection"); ddx.push("Pulmonary Oedema"); }
+      if (sob && sobAtRest) { ddx.push(isPaeds ? "Severe Bronchiolitis" : "PE"); ddx.push("Pulmonary Oedema"); }
+      if (abdo) { ddx.push(isPaeds ? "Mesenteric Adenitis / Intussusception" : "Appendicitis"); ddx.push("Biliary Colic"); ddx.push("Gastroenteritis"); ddx.push(isPaeds ? "UTI" : "AAA"); }
+      if (back) { ddx.push("Sciatica / Spasm"); ddx.push("Renal Colic"); ddx.push("AAA (if older)"); }
+      if (neuro_seiz) { ddx.push(isPaeds ? "Febrile Convulsion" : "Epilepsy"); ddx.push("Head Injury"); }
+      if (dizzy || sync) { ddx.push("Arrhythmia"); ddx.push("Postural Hypotension"); ddx.push("Vasovagal"); }
+      if (bm > 0 && bm < 4.0) ddx.push("HYPOGLYCAEMIA");
+      if (bm > 15.0) ddx.push("Hyperglycaemia");
+      if (notAlert) ddx.push("Altered Mental Status / Hypoxia");
+      if (ortho !== 'No' && ortho !== null) ddx.push("Heart Failure / Fluid Overload");
+      if (pulseQ === 'Irregular') ddx.push("Arrhythmia (e.g. AFib)");
+      if (headInj) ddx.push("Head Injury / Concussion");
+      if (prBleed === 'Fresh Blood' || prBleed === 'Melena (Black/Tarry)') ddx.push("GI Bleed");
+      if (menin) ddx.push("Meningitis / SAH");
+
+      var uniqueDdx = []; for(var j=0; j<ddx.length; j++) { if(uniqueDdx.indexOf(ddx[j]) === -1) uniqueDdx.push(ddx[j]); }
+
+      var redFlags = [], amberFlags = [];
+      if(val('init_airway') === 'Compromised' || val('init_airway') === 'Obstructed') redFlags.push("Airway Compromise");
+      if(val('cp_val') === 'Yes') redFlags.push("Chest Pain");
+      
+      var st_elev = document.getElementById('st_elev') && document.getElementById('st_elev').checked;
+      if(st_elev) { var outStemi = document.getElementById('stemi_location_out'); var outShort = outStemi ? outStemi.dataset.short : ""; redFlags.push(outShort ? "Suspected " + outShort : "ST Elevation Noted"); }
+      var ecg_pr_val = document.getElementById('ecg_pr') ? document.getElementById('ecg_pr').value : '';
+      if(ecg_pr_val === 'Mobitz2' || ecg_pr_val === '3rd_Degree') redFlags.push("High-Grade AV Block (Mobitz II / 3rd Degree)");
+      if (menin) redFlags.push("Meningism Signs (Neck Stiffness / Photophobia)");
+      if (prBleed === 'Fresh Blood' || prBleed === 'Melena (Black/Tarry)') redFlags.push("GI Bleeding");
+      if (pulseQ === 'Weak / Thready') redFlags.push("Poor Perfusion / Shock");
+      
+      if(isPaeds) {
+          if(currentPews >= 4) redFlags.push("PEWS >= 4");
+          if(val('pat_app') === 'Abnormal') redFlags.push("PAT: Abnormal Appearance");
+          if(val('pat_wob') === 'Increased/Abnormal') redFlags.push("PAT: Abnormal WOB");
+          if(val('pat_circ') === 'Pale/Mottled/Cyanosed') redFlags.push("PAT: Abnormal Circulation");
+          if(document.getElementById('pwob_grunting') && document.getElementById('pwob_grunting').checked) redFlags.push("Grunting");
+          if(document.getElementById('pwob_recess') && document.getElementById('pwob_recess').checked) redFlags.push("Recession");
+          if(val('paeds_pr') === 'No' || val('paeds_pr') === 'Unsure') amberFlags.push("Safeguarding / PR Check required");
+      } else { if(currentNews >= 5) redFlags.push("NEWS2 >= 5"); }
+      
+      if(sepsis) redFlags.push("Sepsis");
+      if(notAlert) redFlags.push("Reduced Level of Consciousness (" + (val('vpu_level')||"Not Alert") + ")");
+      if(sob && sobAtRest) redFlags.push("Shortness of Breath at Rest");
+      if(speakNo) redFlags.push("Unable to Speak in Full Sentences");
+      
+      var pScore = 0;
+      if(isPaeds) { var f_c = val('flacc_c_val'); var f_a = val('flacc_a_val'); var f_m = val('flacc_m_val'); if(f_c === '7-10' || f_a === '7-10' || f_m === '7-10') pScore = 8; } else { pScore = parseInt(val('soc_c_sev')) || parseInt(val('soc_a_sev')) || parseInt(val('soc_m_sev')) || 0; }
+      if(pScore >= 7) redFlags.push("Severe Pain");
+      
+      if(fast && (f_w || l_w || s_w)) redFlags.push("FAST Positive");
+      if(allerg && sob) redFlags.push("Anaphylaxis");
+      if(val('headache')) amberFlags.push("Headache");
+      if(val('vomit_blood') === 'Yes') amberFlags.push("Vomit Blood");
+      if(val('ur_ret') === 'Yes') amberFlags.push("Urine Retention");
+      if(val('walk_p') === 'Yes') amberFlags.push("Can't Walk");
+      if(t > 0 && (t <= 35 || t >= 40)) amberFlags.push("Temp Extreme"); else if(t >= 38.5) amberFlags.push("High Temp");
+
+      var c = document.getElementById('complaint').value;
+      if(c === 'fall' && val('fall_65')) {
+           if(val('fall_lie')) amberFlags.push("Long lie");
+           if(val('fall_cog')) amberFlags.push("Confusion");
+           if(val('fall_inj')) amberFlags.push("Minor inj");
+           if(val('fall_hypo')) amberFlags.push("Postural Hypo");
+           if(val('fall_hist')) amberFlags.push("Recurrent Falls");
+      }
+
+      if(c === 'maternity' && val('mat_red_flags')) redFlags.push("Obstetric Alert");
+      if(val('trauma_mtc')) redFlags.push("MTC");
+      if(val('trauma_red')) redFlags.push("Trauma Red");
+      if(val('trauma_amber')) amberFlags.push("Trauma Amber");
+
+      var hud = document.getElementById('ddx_hud'), title = document.getElementById('ddx_title'), text = document.getElementById('ddx_text'), icon = document.getElementById('ddx_icon');
+      if (hud && text && icon && title) {
+        if (uniqueDdx.length > 0 || redFlags.length > 0 || amberFlags.length > 0 || val('arrival_notes')) {
+          hud.classList.add('visible'); text.innerText = uniqueDdx.length > 0 ? "DDx: " + uniqueDdx.join(" • ") : "DDx: Undifferentiated";
+          hud.classList.remove('alert-red', 'alert-amber', 'alert-green', 'alert-blue', 'alert-mode');
+          if (redFlags.length > 0) { hud.classList.add('alert-red'); icon.innerText = "🚨"; title.innerText = "PATHWAY: CONVEY (RED FLAGS)"; } else if (amberFlags.length > 0) { hud.classList.add('alert-amber'); icon.innerText = "🔸"; title.innerText = "PATHWAY: REFER / DISCUSS (AMBER)"; } else { hud.classList.add('alert-green'); icon.innerText = "✅"; title.innerText = "PATHWAY: DISCHARGE POTENTIAL"; }
+        } else { hud.classList.remove('visible'); }
+      }
+      
+      var out = document.getElementById('decision_support_out');
+      if(out) {
+          var html = "", bg = "", border = "", color = "";
+          if(redFlags.length > 0) { html = "<h4 style='color:#ef4444; margin-top:0;'>🚨 CONVEY (Meets Red Criteria)</h4><ul style='margin:5px 0; padding-left:20px;'><li>" + redFlags.join("</li><li>") + "</li></ul><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Stabilise and immediately transfer to ED/Specialist Unit.</p>"; bg = '#fef2f2'; border = '2px solid #ef4444'; color = '#7f1d1d'; } else if (amberFlags.length > 0) { html = "<h4 style='color:#d97706; margin-top:0;'>🔸 REFER / DISCUSS (Meets Amber Criteria)</h4><ul style='margin:5px 0; padding-left:20px;'><li>" + amberFlags.join("</li><li>") + "</li></ul><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Refer into/discuss with UCR, Acute Frailty, 111*5 or ACP.</p>"; bg = '#fffbeb'; border = '2px solid #f59e0b'; color = '#92400e'; } else { html = "<h4 style='color:#10b981; margin-top:0;'>✅ DISCHARGE POTENTIAL</h4><p style='font-size:12px; margin:5px 0;'>No explicit RED or AMBER Pathfinder/Decision Tool flags triggered based on current inputs.</p><p style='font-size:11px; font-weight:bold; margin-bottom:0;'>Action: Consider discharge if safe. Provide WCA.</p>"; bg = '#f0fdf4'; border = '2px solid #10b981'; color = '#14532d'; }
+          out.dataset.html = html; out.dataset.bg = bg; out.dataset.border = border; out.dataset.color = color;
+          if (out.style.display === 'block') { out.innerHTML = html; out.style.background = bg; out.style.border = border; out.style.color = color; }
+      }
+      setTimeout(checkPulseAlert, 50);
+    }
+
+    function runDecisionSupport() {
+        calculateDDx(); var out = document.getElementById('decision_support_out');
+        if(out) {
+            out.innerHTML = out.dataset.html || "<h4 style='color:#10b981; margin-top:0;'>✅ DISCHARGE POTENTIAL</h4><p style='font-size:12px; margin:5px 0;'>No explicit RED or AMBER flags triggered based on current inputs.</p>";
+            out.style.background = out.dataset.bg || '#f0fdf4'; out.style.border = out.dataset.border || '2px solid #10b981'; out.style.color = out.dataset.color || '#14532d'; out.style.display = 'block'; out.scrollIntoView({behavior: "smooth", block: "center"});
+            out.style.transform = 'scale(1.02)'; out.style.transition = 'transform 0.2s'; setTimeout(function() { out.style.transform = 'scale(1)'; }, 200);
+        }
+    }
+
+    function resetForm() { if(confirm("Are you sure you want to clear all data?")) { localStorage.removeItem('ePCR_draft'); location.reload(); } }
+
+    function generateNotFound() {
+        var e = "--- ePCR: PATIENT NOT FOUND ---\nAge: " + (document.getElementById('pt_age').value || "Unknown") + " | Gender: " + document.getElementById('pt_gender').value + "\n--------------------------------------------------\n\n[Arrival & Scene Notes]\n" + (document.getElementById('arrival_notes').value || "Area searched, no patient located.") + "\n\nOUTCOME:\nPatient not found on scene. Area thoroughly searched. Updated dispatch and CAD closed.\n";
+        var ta = document.createElement("textarea"); ta.value = e; ta.style.position = "fixed"; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); var btn = document.getElementById('not_found_btn'); if(btn) { var oldText = btn.innerText; var oldBg = btn.style.background; btn.innerText = "COMPLETE ✅"; btn.style.background = "#3b82f6"; btn.style.color = "white"; setTimeout(function(){ btn.innerText = oldText; btn.style.background = oldBg; }, 3000); } } catch(err) { } document.body.removeChild(ta);
+    }
+
+    function generateOutput() {
+        var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
+        var e = "";
+        function buildSec(title, lines) { var valid = lines.filter(function(l) { return l && l !== ""; }); if (valid.length > 0) e += "[" + title + "]\n" + valid.join("\n\n") + "\n\n"; }
+
+        var pri = [];
+        if(isPaeds && !isOmitted('pat_app')) { pri.push("Paediatric Assessment Triangle (PAT):\nAppearance: " + val('pat_app') + " | WOB: " + val('pat_wob') + " | Circulation: " + val('pat_circ')); }
+        if(!isOmitted('arrival_notes')) pri.push("Arrival:\n" + (val('arrival_notes') || "None recorded."));
+        if(!isOmitted('pt_history')) pri.push("History:\n" + (val('pt_history') || "None recorded."));
+
+        var gen = [];
+        if(!isOmitted('gen_fever')) gen.push(val('gen_fever') ? "• Fever/Chills noted (" + val('gen_fever_det') + ")" : "• No fever, rigors, or night sweats.");
+        if(!isOmitted('gen_fatigue')) gen.push(val('gen_fatigue') ? "• Fatigue/Weight Loss noted (" + val('gen_fatigue_det') + ")" : "• No fatigue, malaise, or unintended weight loss.");
+        if(!isOmitted('gen_diab')) gen.push(val('gen_diab') ? "• Polyuria/Polydipsia noted (" + val('gen_diab_det') + ")" : "• No polyuria, polydipsia, or polyphagia.");
+        if(!isOmitted('gen_skin')) gen.push(val('gen_skin') ? "• Rash/Skin changes noted (" + val('gen_skin_det') + ")" : "• Skin: No rash, itching, bruising, or wounds. No pallor, jaundice, or cyanosis.");
+        if(gen.length > 0) pri.push("General / Constitutional:\n" + gen.join("\n"));
+
+        if(!isOmitted('init_airway')) { var awStr = "Airway:\n" + val('init_airway'); if(val('init_airway') !== 'Self maintained') awStr += " (Intervention: " + val('airway_int') + ")"; pri.push(awStr); }
+        if(!isOmitted('manual_gcs')) pri.push("GCS:\n" + val('manual_gcs') + " (E" + val('g_e') + " V" + val('g_v') + " M" + val('g_m') + ")");
+        if(!isOmitted('alert_val')) { if(val('alert_val')==='Yes') pri.push("Alert (A on ACVPU):\nYes"); else pri.push("Alert (A on ACVPU):\nNo (" + (val('vpu_level')||"Unspecified") + ")"); }
+        if(!isOmitted('sus_sepsis')) pri.push(val('sus_sepsis') ? "• Suspected Sepsis / Infection\n  Details: " + val('sus_sepsis_det') : "• No suspected sepsis");
+        if(!isOmitted('sus_allerg')) pri.push(val('sus_allerg') ? "• Suspected Anaphylaxis\n  Details: " + val('sus_allerg_det') : "• No suspected anaphylaxis");
+        if(val('det_init_val') === 'Yes') pri.push("Further Details:\n" + (val('det_init_txt') || "None recorded."));
+        buildSec("Primary Survey", pri);
+
+        var resp = [];
+        if(!isOmitted('sob_val')) {
+            if(val('sob_val') === 'Yes') { var sbStr = "• SOB: Yes\n  Normal? " + val('sob_norm'); if(val('sob_norm')==='Yes') sbStr += " (Base: "+val('sob_type')+")"; else sbStr += " (Onset: "+val('sob_start_time')+")"; var sxHx = val('sob_hx'); if(sxHx && sxHx !== 'None / Normal') sbStr += "\n  History: " + sxHx; sbStr += "\n  Occurs: " + val('sob_when'); resp.push(sbStr); } else { resp.push("• No shortness of breath (No SOB)"); }
+        }
+        if(!isOmitted('ortho_val')) { if(val('ortho_val') !== 'No') resp.push("• Breathing position: " + val('ortho_val') + " noted."); else resp.push("• No orthopnoea or PND."); }
+        if(!isOmitted('dib_val') && !isPaeds) { if(val('dib_val') === 'Yes') resp.push("• DIB: Yes (" + val('dib_onset') + ", " + val('dib_when') + ")"); else resp.push("• No difficulty breathing (No DIB)"); }
+        if(isPaeds && (!isOmitted('pwob_grunting') || !isOmitted('pwob_flaring') || !isOmitted('pwob_tug') || !isOmitted('pwob_recess'))) { var pwobs = []; if(document.getElementById('pwob_grunting').checked) pwobs.push("Grunting"); if(document.getElementById('pwob_flaring').checked) pwobs.push("Nasal Flaring"); if(document.getElementById('pwob_tug').checked) pwobs.push("Tracheal Tug"); if(document.getElementById('pwob_recess').checked) pwobs.push("Recession"); if(pwobs.length > 0) resp.push("• Paediatric Work of Breathing Signs:\n  " + pwobs.join(", ")); else resp.push("• No Paediatric WOB signs noted"); }
+        if(!isOmitted('speak_full_val')) { resp.push("• Speaks in full sentences: " + val('speak_full_val')); }
+        if(!isOmitted('cough_val')) { if(val('cough_val') === 'Yes') resp.push("• Cough: Yes\n  Phlegm: " + val('phlegm_val') + (val('phlegm_val')==='Yes' ? " (Colour: "+val('phlegm_color')+" | Blood: "+val('phlegm_blood')+")" : "")); else resp.push("• No cough. No sputum production. No haemoptysis."); }
+        if(!isOmitted('rr_norm')) { var rr_n = val('rr_norm'); resp.push(rr_n ? "• Resp Rate Noted: " + rr_n : "• Resp rate within normal limits. No tachypnoea."); }
+        if(!isOmitted('resp_ippa_notes') && val('resp_ippa_notes')) resp.push("• IPPA Chest Exam Findings:\n  " + val('resp_ippa_notes'));
+        if(!isOmitted('air_entry')) { resp.push("• Lung Sounds: " + val('air_entry')); if(val('air_entry') === 'Air entry equal bilaterally') resp.push("• Air entry equal bilaterally. No wheeze, stridor, or crackles. No chest tightness."); }
+        if(val('det_resp_val') === 'Yes') resp.push("Further Details:\n" + (val('det_resp_txt') || "None recorded."));
+        buildSec("Respiratory", resp);
+
+        var card = [];
+        if(!isOmitted('cp_val')) { if(val('cp_val') === 'Yes') { var cpStr = "• Chest Pain: Yes\n  SOCRATES:\n    S: " + (val('soc_c_s')||"-") + "\n    O: " + (val('soc_c_o')||"-") + "\n    C: " + (val('soc_c_c')||"-") + "\n    R: " + (val('soc_c_r')||"-") + "\n    A: " + (val('soc_c_a')||"-") + "\n    T: " + (val('soc_c_t')||"-") + "\n    E: " + (val('soc_c_e')||"-"); if(!isPaeds) cpStr += "\n    S: " + (val('soc_c_sev')||"-"); if(val('asa_given')==='Yes') cpStr += "\n  Aspirin Given: Yes at " + val('asa_time'); card.push(cpStr); } else card.push("• No chest pain or pressure. No chest tightness."); }
+        if(isPaeds && val('cp_val') === 'Yes' && !isOmitted('flacc_c_val')) card.push("• Paediatric Pain (FLACC): " + val('flacc_c_val'));
+        if(!isOmitted('card_ippa_notes') && val('card_ippa_notes')) card.push("• Cardiac Exam Findings:\n  " + val('card_ippa_notes'));
+        if(!isOmitted('pulse_qual')) { if(val('pulse_qual') === 'Regular & Strong') card.push("• Pulse is regular and strong."); else card.push("• Pulse quality: " + val('pulse_qual')); }
+        if(!isOmitted('palps')) card.push(document.getElementById('palps').checked ? "• Palpitations noted (" + val('palps_det') + ")" : "• No palpitations");
+        if(!isOmitted('sync')) card.push(document.getElementById('sync').checked ? "• Syncope noted (" + val('sync_det') + ")" : "• No syncope or presyncope");
+        if(!isOmitted('dizzy') && !isPaeds) card.push(document.getElementById('dizzy').checked ? "• Dizziness noted (" + val('dizzy_det') + ")" : "• No dizziness, lightheadedness, or orthostatic symptoms");
+        if(!isOmitted('oedema') && !isPaeds) card.push(document.getElementById('oedema').checked ? "• Peripheral Oedema noted (" + val('oedema_det') + ")" : "• No peripheral oedema");
+        if(!isOmitted('claudication') && !isPaeds) card.push(document.getElementById('claudication').checked ? "• Claudication noted (" + val('claudication_det') + ")" : "• No claudication");
+        if(!isOmitted('skin_cond')) card.push("• Perfusion: Skin is " + val('skin_cond') + " | CRT: " + val('crt_val') + " (Normal < 2s). No cyanosis.");
+        if(!isOmitted('ecg_perf')) {
+            if(val('ecg_perf')==='Yes') {
+                var ecg = "• ECG Performed: Yes\n  Findings: " + val('ecg_desc') + "\n  ST Elev: " + (document.getElementById('st_elev').checked?"Yes":"No");
+                if(document.getElementById('st_elev').checked) { var leads = []; ['v1','v2','v3','v4','v5','v6','i','ii','iii','avr','avl','avf'].forEach(function(l) { if(document.getElementById('lead_'+l).checked) leads.push(l.toUpperCase()); }); if(leads.length > 0) ecg += "\n  Leads: " + leads.join(", "); if(document.getElementById('stemi_location_out').dataset.short) ecg += "\n  Suspected: " + document.getElementById('stemi_location_out').dataset.short; }
+                card.push(ecg);
+            } else card.push("• 12-Lead ECG not performed. No acute changes noted on monitoring.");
+        }
+        if(val('det_card_val') === 'Yes') card.push("Further Details:\n" + (val('det_card_txt') || "None recorded."));
+        buildSec("Cardiovascular", card);
+
+        var neuro = [];
+        if(!isOmitted('neuro_loc')) neuro.push(document.getElementById('neuro_loc').checked ? "• Loss of Consciousness prior to arrival: Yes (" + val('neuro_loc_det') + ")" : "• No LOC reported");
+        if(!isOmitted('neuro_head')) neuro.push(document.getElementById('neuro_head').checked ? "• Head Injury: Yes (" + val('neuro_head_det') + ")" : "• No obvious head injuries");
+        if(!isOmitted('neuro_meningism')) neuro.push(document.getElementById('neuro_meningism').checked ? "• Neck Stiffness / Photophobia: Yes (" + val('neuro_men_det') + ")" : "• No neck stiffness or photophobia");
+        if(!isOmitted('neuro_vis')) neuro.push(document.getElementById('neuro_vis').checked ? "• Visual Disturbances: Yes (" + val('neuro_vis_det') + ")" : "• No visual disturbances");
+        if(!isOmitted('neuro_numb')) neuro.push(document.getElementById('neuro_numb').checked ? "• Numbness / Weakness: Yes (" + val('neuro_numb_det') + ")" : "• No weakness or numbness/tingling");
+        if(!isOmitted('neuro_ataxia')) neuro.push(document.getElementById('neuro_ataxia').checked ? "• Ataxia: Yes (" + val('neuro_ataxia_det') + ")" : "• No ataxia");
+        if(!isOmitted('fast_val')) {
+            if(val('fast_val')==='Yes') { var fst = "• FAST Check:\n  Face: " + val('f_w') + "\n  Arm: " + val('l_w') + "\n  Speech: " + val('s_w'); if(val('f_w') !== 'Normal' || val('l_w') !== 'Normal' || val('s_w') !== 'Normal') fst += "\n  Onset: " + val('fast_time'); fst += "\n  Mimic Exclusion: " + (val('fast_mimics')||"-"); neuro.push(fst); }
+            else neuro.push("• FAST Stroke Check not indicated. No facial droop, slurred speech, or aphasia.");
+        }
+        if(!isOmitted('pupils_checked')) {
+            if(document.getElementById('pupils_checked').checked) { var pupStr = "• Pupils: " + val('pupil_size'); if (val('pupil_size') === 'Unequal') pupStr += " (" + val('pupil_unequal_det') + ")"; pupStr += " | " + val('pupil_react'); if (val('pupil_react') !== 'Both React (PEARL)') pupStr += " (" + val('pupil_react_det') + ")"; neuro.push(pupStr); } 
+            else { neuro.push("• Pupils not formally checked. No gross abnormalities."); }
+        }
+        if(!isOmitted('nausea_val')) { if(val('nausea_val') !== 'No') neuro.push("• Nausea/Vomiting: " + val('nausea_val') + "\n  Start: " + val('vomit_start') + "\n  Times: " + val('vomit_times') + "\n  Blood: " + val('vomit_blood')); else neuro.push("• No nausea or vomiting"); }
+        if(!isOmitted('headache')) neuro.push(document.getElementById('headache').checked ? "• Headache noted (" + val('headache_det') + ")" : "• No headache");
+        if(!isOmitted('seizure')) neuro.push(document.getElementById('seizure').checked ? "• Seizure noted (" + val('seizure_det') + ")" : "• No seizures or post-ictal symptoms");
+        if(!isOmitted('confusion')) neuro.push(document.getElementById('confusion').checked ? "• Confusion noted (" + val('confusion_det') + ")" : "• No confusion or altered behaviour");
+        if(val('det_neuro_val') === 'Yes') neuro.push("Further Details:\n" + (val('det_neuro_txt') || "None recorded."));
+        buildSec("Neurological", neuro);
+
+        var gigu = [];
+        if(!isOmitted('gigu_dysp')) gigu.push(document.getElementById('gigu_dysp').checked ? "• Dyspepsia noted (" + val('gigu_dysp_det') + ")" : "• No dyspepsia");
+        if(!isOmitted('bowel_habit')) gigu.push(val('bowel_habit') === 'Normal' ? "• No diarrhoea or constipation" : "• Bowel Habit: " + val('bowel_habit') + " (" + val('bowel_habit_det') + ")");
+        if(!isOmitted('pr_bleed')) gigu.push(val('pr_bleed') === 'No' ? "• No melena, haematochezia, or PR bleeding" : "• PR Bleeding: " + val('pr_bleed') + " (" + val('pr_bleed_det') + ")");
+        if(!isOmitted('gigu_dist')) gigu.push(document.getElementById('gigu_dist').checked ? "• Abdominal distension noted (" + val('gigu_dist_det') + ")" : "• No abdominal distension");
+        if(!isOmitted('gigu_flank')) gigu.push(document.getElementById('gigu_flank').checked ? "• Flank pain noted (" + val('gigu_flank_det') + ")" : "• No flank pain");
+
+        if(!isOmitted('abdo_p')) {
+            if(val('abdo_p')==='Yes') { var abdStr = "• Abdo Pain: Yes\n  SOCRATES:\n    S: " + (val('soc_a_s')||"-") + "\n    O: " + (val('soc_a_o')||"-") + "\n    C: " + (val('soc_a_c')||"-") + "\n    R: " + (val('soc_a_r')||"-") + "\n    A: " + (val('soc_a_a')||"-") + "\n    T: " + (val('soc_a_t')||"-") + "\n    E: " + (val('soc_a_e')||"-"); if(!isPaeds) abdStr += "\n    S: " + (val('soc_a_sev')||"-"); gigu.push(abdStr); }
+            else gigu.push("• No abdominal pain");
+        }
+        if(isPaeds && val('abdo_p') === 'Yes' && !isOmitted('flacc_a_val')) gigu.push("• Paediatric Pain (FLACC): " + val('flacc_a_val'));
+        if(!isOmitted('abdo_iapp_notes') && val('abdo_iapp_notes')) gigu.push("• IAPP Exam Findings:\n  " + val('abdo_iapp_notes'));
+        if(!isOmitted('bs_val')) { if(val('bs_val')) gigu.push("• Bowel Sounds: " + val('bs_val') + " " + (val('bs_where')||"")); else gigu.push("• Bowel sounds normal if auscultated."); }
+        
+        var urStr = [];
+        if(!isOmitted('ur_pain')) { if(val('ur_pain')==='Yes') urStr.push("Dysuria (Start: " + val('ur_pain_start') + ")"); else urStr.push("No dysuria"); }
+        if(!isOmitted('ur_blood')) { if(val('ur_blood')==='Yes') urStr.push("Haematuria x" + val('ur_blood_times')); else urStr.push("No haematuria"); }
+        if(!isOmitted('ur_ret')) { if(val('ur_ret')==='Yes') urStr.push("Retention (" + val('ur_ret_time') + ")"); else urStr.push("No retention"); }
+        if(document.getElementById('ur_freq') && document.getElementById('ur_freq').checked) urStr.push("Frequency/Urgency"); else urStr.push("No frequency/urgency");
+        if(document.getElementById('ur_olig') && document.getElementById('ur_olig').checked) urStr.push("Oliguria"); else urStr.push("No oliguria");
+        if(document.getElementById('ur_inc') && document.getElementById('ur_inc').checked) urStr.push("Incontinence"); else urStr.push("No incontinence");
+        if(document.getElementById('ur_froth') && document.getElementById('ur_froth').checked) urStr.push("Foamy/Frothy urine"); else urStr.push("No foamy/frothy urine");
+        if(urStr.length > 0) gigu.push("• Urinary Findings:\n  " + urStr.join("\n  "));
+
+        if(val('det_gigu_val') === 'Yes') gigu.push("Further Details:\n" + (val('det_gigu_txt') || "None recorded."));
+        buildSec("Gastrointestinal & Urinary", gigu);
+
+        var msk = [];
+        if(!isOmitted('msk_joint')) msk.push(document.getElementById('msk_joint').checked ? "• Joint pain/swelling: Yes (" + val('msk_joint_det') + ")" : "• No joint pain, swelling, or redness");
+        if(!isOmitted('msk_cramps')) msk.push(document.getElementById('msk_cramps').checked ? "• Muscle cramps: Yes (" + val('msk_cramps_det') + ")" : "• No muscle cramps or spasms");
+        if(!isOmitted('msk_rom')) msk.push(document.getElementById('msk_rom').checked ? "• Reduced ROM: Yes (" + val('msk_rom_det') + ")" : "• No reduced ROM");
+
+        if(document.getElementById('complaint').value === 'fall' || document.getElementById('complaint').value === 'trauma') {
+            if(!isOmitted('limb_p')) msk.push(document.getElementById('limb_p').checked ? "• Limb Pain noted (" + val('limb_p_det') + ")" : "• No limb pain");
+            if(!isOmitted('cspine_p')) msk.push(document.getElementById('cspine_p').checked ? "• C-Spine tenderness noted (" + val('cspine_p_det') + ")" : "• No C-Spine tenderness");
+            if(!isOmitted('rib_p')) msk.push(document.getElementById('rib_p').checked ? "• Rib pain noted (" + val('rib_p_det') + ")" : "• No rib pain");
+            if(!isOmitted('deformity_p')) msk.push(document.getElementById('deformity_p').checked ? "• Obvious deformity noted (" + val('deformity_p_det') + ")" : "• No deformity");
+        } else { msk.push("• No limb pain. No deformity."); }
+
+        if(!isOmitted('back_p')) {
+            if(val('back_p')==='Yes') { var bkStr = "• Back Pain: Yes (" + val('back_where') + ")\n  SOCRATES:\n    S: " + (val('soc_m_s')||"-") + "\n    O: " + (val('soc_m_o')||"-") + "\n    C: " + (val('soc_m_c')||"-") + "\n    R: " + (val('soc_m_r')||"-") + "\n    A: " + (val('soc_m_a')||"-") + "\n    T: " + (val('soc_m_t')||"-") + "\n    E: " + (val('soc_m_e')||"-"); if(!isPaeds) bkStr += "\n    S: " + (val('soc_m_sev')||"-"); msk.push(bkStr); }
+            else msk.push("• No back pain");
+        }
+        if(isPaeds && (val('back_p')==='Yes' || document.getElementById('limb_p').checked) && !isOmitted('flacc_m_val')) { msk.push("• Paeds Pain (FLACC): " + val('flacc_m_val')); }
+        if(!isOmitted('walk_p')) { if(val('walk_p')==='Yes') msk.push("• Trouble walking for: " + val('walk_long')); else msk.push("• No gait disturbance. Normal walking."); }
+        if(val('det_msk_val') === 'Yes') msk.push("Further Details:\n" + (val('det_msk_txt') || "None recorded."));
+        buildSec("Musculoskeletal", msk);
+
+        if(!isPaeds && document.getElementById('complaint').value === 'maternity') {
+            var mat = [];
+            if(!isOmitted('mat_gravida')) mat.push("• Gravida: " + val('mat_gravida') + " | Para: " + val('mat_para'));
+            if(!isOmitted('mat_gestation')) mat.push("• Gestation: " + val('mat_gestation'));
+            if(!isOmitted('mat_contractions')) mat.push(document.getElementById('mat_contractions').checked ? "• Contractions: Yes (" + val('mat_con_freq') + ")" : "• No contractions");
+            if(!isOmitted('mat_waters')) mat.push(document.getElementById('mat_waters').checked ? "• Waters: Broken (" + val('mat_wat_col') + ")" : "• Waters intact");
+            if(!isOmitted('mat_bleed')) mat.push(document.getElementById('mat_bleed').checked ? "• Bleeding/Show: Yes (" + val('mat_bleed_det') + ")" : "• No bleeding or show");
+            if(!isOmitted('mat_move')) mat.push(document.getElementById('mat_move').checked ? "• Fetal movements: Normal" : "• Fetal movements: Abnormal/Reduced (" + val('mat_move_det') + ")");
+            if(!isOmitted('mat_red_flags')) mat.push(document.getElementById('mat_red_flags').checked ? "• Red Flags: Yes (" + val('mat_rf_det') + ")" : "• No obstetric red flags");
+            if(val('det_mat_val') === 'Yes') mat.push("Further Details:\n" + (val('det_mat_txt') || "None recorded."));
+            buildSec("Maternity", mat);
+        }
+
+        if(document.getElementById('complaint').value === 'trauma') {
+            var tra = [];
+            if(!isOmitted('trauma_mtc')) tra.push(document.getElementById('trauma_mtc').checked ? "• MTC Step 3 Trigger Met (" + val('trauma_mtc_det') + ")" : "• MTC Step 3 Trigger NOT Met");
+            if(!isOmitted('trauma_red')) tra.push(document.getElementById('trauma_red').checked ? "• RED Discriminator Met (" + val('trauma_red_det') + ")" : "• RED Discriminator NOT Met");
+            if(!isOmitted('trauma_amber')) tra.push(document.getElementById('trauma_amber').checked ? "• AMBER Discriminator Met (" + val('trauma_amber_det') + ")" : "• AMBER Discriminator NOT Met");
+            if(!isOmitted('rtc_veh_cond')) tra.push("• Vehicle Damage: " + val('rtc_veh_cond'));
+            if(!isOmitted('rtc_speed')) tra.push("• Speed: " + val('rtc_speed') + " | Pos: " + val('rtc_pos'));
+            if(!isOmitted('rtc_seatbelt')) tra.push(document.getElementById('rtc_seatbelt').checked ? "• Seatbelt: Worn" : "• Seatbelt: Not worn / Unrestrained (" + val('rtc_seatbelt_det') + ")");
+            if(!isOmitted('rtc_bullseye')) tra.push(document.getElementById('rtc_bullseye').checked ? "• Bullseye to windscreen: Yes (" + val('rtc_bullseye_det') + ")" : "• No bullseye to windscreen");
+            if(!isOmitted('rtc_extricated')) tra.push(document.getElementById('rtc_extricated').checked ? "• Extricated: Yes (" + val('rtc_ext_how') + ")" : "• Not extricated from vehicle");
+            if(val('det_trauma_val') === 'Yes') tra.push("Further Details:\n" + (val('det_trauma_txt') || "None recorded."));
+            buildSec("Trauma", tra);
+        }
+
+        if(document.getElementById('complaint').value === 'fall') {
+            var fal = [];
+            if(!isOmitted('fall_65')) fal.push(document.getElementById('fall_65').checked ? "• Patient 65+: Yes (" + val('fall_65_det') + ")" : "• Patient under 65");
+            if(!isOmitted('fall_lie')) fal.push(document.getElementById('fall_lie').checked ? "• Long lie (>1hr): Yes (" + val('fall_lie_det') + ")" : "• No long lie (>1hr)");
+            if(!isOmitted('fall_cog')) fal.push(document.getElementById('fall_cog').checked ? "• New confusion: Yes (" + val('fall_cog_det') + ")" : "• No new confusion");
+            if(!isOmitted('fall_inj')) fal.push(document.getElementById('fall_inj').checked ? "• Minor injuries: Yes (" + val('fall_inj_det') + ")" : "• No minor injuries");
+            if(!isOmitted('fall_hypo')) fal.push(document.getElementById('fall_hypo').checked ? "• Postural hypotension: Yes (" + val('fall_hypo_det') + ")" : "• No postural hypotension");
+            if(!isOmitted('fall_hist')) fal.push(document.getElementById('fall_hist').checked ? "• 2+ falls in 7 days: Yes (" + val('fall_hist_det') + ")" : "• No history of 2+ falls in 7 days");
+            if(!isOmitted('fall_anticoag')) fal.push(document.getElementById('fall_anticoag').checked ? "• On anticoagulants: Yes (" + val('fall_anticoag_det') + ")" : "• Not on anticoagulants");
+            if(val('det_fall_val') === 'Yes') fal.push("Further Details:\n" + (val('det_fall_txt') || "None recorded."));
+            buildSec("Falls", fal);
+        }
+
+        if(document.getElementById('complaint').value === 'mental') {
+            var mh = [];
+            if(!isOmitted('mh_team')) mh.push("• Known to MH: " + (val('mh_team') || "No"));
+            if(!isOmitted('mh_self_det')) mh.push("• Self harm/suicide thoughts: " + (val('mh_self_det') || "No"));
+            if(!isOmitted('mh_others_det')) mh.push("• Risk to others: " + (val('mh_others_det') || "No"));
+            if(!isOmitted('mh_halluc_det')) mh.push("• Hallucinations/Delusions: " + (val('mh_halluc_det') || "No"));
+            if(!isOmitted('mh_alc_det') || !isOmitted('mh_drugs_det')) { mh.push("• Intox/OD: Alc(" + (val('mh_alc_det')||"None") + ") Drugs(" + (val('mh_drugs_det')||"None") + ")\n  Toxbase: " + val('toxbase_advice')); }
+            if(val('det_mh_val') === 'Yes') mh.push("Further Details:\n" + (val('det_mh_txt') || "None recorded."));
+            buildSec("Mental Health / Tox", mh);
+        }
+
+        var soc = [];
+        if(isPaeds && !isOmitted('paeds_pr')) { soc.push("• Paeds Safeguarding:\n  Accompanied by: " + (val('paeds_accompanied')||"Not specified") + "\n  Parental Responsibility? " + val('paeds_pr')); }
+        if(!isPaeds && !isOmitted('cfs_val')) soc.push("• Frailty (CFS): " + val('cfs_val'));
+        if(!isPaeds && !isOmitted('soc_home')) soc.push("• Home: " + val('soc_home'));
+        if(!isPaeds && !isOmitted('soc_support')) soc.push("• Support: " + val('soc_support'));
+        if(!isPaeds && !isOmitted('soc_level')) soc.push("• Level of Care: " + val('soc_level'));
+        if(val('det_medsoc_val') === 'Yes') soc.push("Further Details:\n" + (val('det_medsoc_txt') || "None recorded."));
+        buildSec("Meds & Social", soc);
+
+        var vm = [];
+        if(isPaeds) {
+            var p_log = document.getElementById('p_vitals_log') ? document.getElementById('p_vitals_log').value : '';
+            var phr = document.getElementById('p_hr_val').value || '', prr = document.getElementById('p_rr_val').value || '', pspo2 = document.getElementById('p_spo2_val').value || '';
+            var ptemp = document.getElementById('p_temp_val').value || '', pbm = document.getElementById('p_bm_val').value || '', psys = document.getElementById('p_sys_bp').value || '', pdia = document.getElementById('p_dia_bp').value || '';
+            var hasVitals = p_log !== '' || phr !== '' || prr !== '' || pspo2 !== '' || ptemp !== '' || pbm !== '' || psys !== '' || pdia !== '';
+            if(!isOmitted('p_vitals_log') && hasVitals) {
+                var pews = document.getElementById('final_pews').value;
+                vm.push("• Current PEWS Score: " + pews + "\n  (Behaviour: " + val('pews_beh') + ", CV: " + val('pews_cv') + ", Resp: " + val('pews_resp') + ")");
+                if(p_log) { vm.push("Vitals Log:\n" + p_log); } else { vm.push("• Recorded Vitals: BP:"+(psys||'-')+"/"+(pdia||'-')+" HR:"+(phr||'-')+" RR:"+(prr||'-')+" SpO2:"+(pspo2||'-')+"% T:"+(ptemp||'-')+" BM:"+(pbm||'-')); }
+            }
+        } else {
+            var vlog = document.getElementById('vitals_log') ? document.getElementById('vitals_log').value : '';
+            var sys = document.getElementById('sys_bp').value || '', dia = document.getElementById('dia_bp').value || '', hr = document.getElementById('hr_val_news').value || '';
+            var rr = document.getElementById('rr_val_news').value || '', spo2 = document.getElementById('spo2_val_news').value || '', t = document.getElementById('temp_val').value || '', bm = document.getElementById('bm_val').value || '';
+            var hasVitals = vlog !== '' || sys !== '' || dia !== '' || hr !== '' || rr !== '' || spo2 !== '' || t !== '' || bm !== '';
+            if(!isOmitted('vitals_log') && hasVitals) { 
+                if(vlog) { vm.push("Vitals Log:\n" + vlog); } else { var n_score = document.getElementById('final_news2').value, n_acvpu = document.getElementById('acvpu').value; vm.push("• Recorded Vitals: BP:"+(sys||'-')+"/"+(dia||'-')+" HR:"+(hr||'-')+" RR:"+(rr||'-')+" SpO2:"+(spo2||'-')+"% T:"+(t||'-')+" BM:"+(bm||'-')+" ACVPU:"+n_acvpu+" NEWS:"+n_score); }
+            }
+        }
+
+        if(!isOmitted('meds_log')) { var mlog = document.getElementById('meds_log').value; if(mlog) vm.push("Medications Administered:\n" + mlog); }
+        if(val('det_news_val') === 'Yes' && !isPaeds) vm.push("Further Details:\n" + (val('det_news_txt') || "None recorded."));
+        buildSec("Vitals Trend & Meds", vm);
+
+        var plan = [];
+        if(!isOmitted('safeguarding_flag')) { if(val('safeguarding_flag')==='Yes') plan.push("🚩 SAFEGUARDING CONCERNS:\n" + val('sg_details')); else plan.push("• No safeguarding concerns"); }
+        if(!isOmitted('plan_val')) {
+            if(val('plan_val')==='Convey') {
+                var dest = val('hosp_dest'); if(dest === 'Other') dest = val('hosp_dest_other') || 'Other';
+                plan.push("Convey to: " + dest + " (" + val('journey_type') + ")");
+                if(val('moved_to_amb')) plan.push("Moved via: " + val('moved_to_amb'));
+            } else if (val('plan_val')==='Discharge') plan.push("Discharge/Refer: " + val('discharge_notes'));
+        }
+        if(val('det_plan_val') === 'Yes') plan.push("Further Details:\n" + (val('det_plan_txt') || "None recorded."));
+        buildSec("Plan", plan);
+
+        var adv = [];
+        if(!isOmitted('wca_given') && val('wca_given')==='Yes') { adv.push("• Worsening Care Advice Given:\n" + val('wca_text')); }
+        
+        if(!isPaeds && !isOmitted('consent_plan')) {
+            if(val('consent_plan')==='Yes') { adv.push("• Patient consents to the clinical plan."); } 
+            else if(val('consent_plan')==='No') {
+                var mcaStr = "• Patient REFUSING Clinical Plan\n  MCA Assessment:\n";
+                mcaStr += "  - Given sufficient info appropriately? " + (val('mca_1')||"Not answered") + "\n";
+                mcaStr += "  - Able to understand info? " + (val('mca_2')||"Not answered") + "\n";
+                mcaStr += "  - Rational conversation on pros/cons? " + (val('mca_3')||"Not answered") + "\n";
+                mcaStr += "  - Can retain info long enough? " + (val('mca_4')||"Not answered") + "\n";
+                mcaStr += "  - Can explain decision in own words? " + (val('mca_5')||"Not answered") + "\n";
+                if(val('mca_1')==='Yes' && val('mca_2')==='Yes' && val('mca_3')==='Yes' && val('mca_4')==='Yes' && val('mca_5')==='Yes') { mcaStr += "\n  OUTCOME: The patient has full capacity at this time to make this decision.\n"; } else { mcaStr += "\n  OUTCOME: Patient may lack full capacity for this specific decision. Act in best interests / seek senior advice.\n"; }
+                mcaStr += "  Details & Reason: " + (val('refusal_reason')||"None provided."); adv.push(mcaStr);
+            }
+        }
+        
+        if(isPaeds && !isOmitted('paeds_consent_plan')) {
+            if(val('paeds_consent_plan') === 'Yes') { adv.push("• Parent/Guardian consents to the clinical plan."); } 
+            else if(val('paeds_consent_plan') === 'No') { adv.push("• Parent/Guardian REFUSING Clinical Plan\n  Reason & Escalation: " + (val('paeds_refusal_reason') || "None recorded.")); }
+        }
+
+        if(val('det_advice_val') === 'Yes') adv.push("Further Details:\n" + (val('det_advice_txt') || "None recorded."));
+        buildSec("Advice & Refusal (Consent / MCA)", adv);
+
+        var ta = document.createElement("textarea"); ta.value = e; ta.style.position = "fixed"; document.body.appendChild(ta); ta.select(); 
+        try { 
+            document.execCommand('copy'); 
+            var btn = document.getElementById('generate_btn');
+            if(btn) { var oldText = btn.innerText; var oldBg = btn.style.background; btn.innerText = "COMPLETE ✅"; btn.style.background = "#3b82f6"; btn.style.color = "white"; setTimeout(function(){ btn.innerText = oldText; btn.style.background = oldBg; }, 3000); }
+        } catch(err) { } document.body.removeChild(ta);
+    }
+  </script>
+</body>
+</html>

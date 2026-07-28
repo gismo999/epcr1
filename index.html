@@ -12,17 +12,14 @@
     :root {
       --bg-color: #f8fafc; --text-color: #0f172a; --panel-bg: #ffffff; --input-bg: #f1f5f9;
       --border-color: #e2e8f0; --nested-bg: #f8fafc; 
-      --acc-grad-1: #065f46; 
-      --acc-grad-2: #1e3a8a; 
+      --acc-grad-1: #065f46; --acc-grad-2: #1e3a8a; 
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04); --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
       --radius-sm: 12px; --radius-md: 20px; --radius-pill: 9999px;
     }
-    
     body.dark-mode {
       --bg-color: #020617; --text-color: #f8fafc; --panel-bg: #0f172a; --input-bg: #1e293b;
       --border-color: #334155; --nested-bg: #0b1120; 
-      --acc-grad-1: #059669; 
-      --acc-grad-2: #2563eb;
+      --acc-grad-1: #059669; --acc-grad-2: #2563eb;
     }
 
     body { font-family: 'Inter', sans-serif; padding: 16px; padding-bottom: 120px; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.4s, color 0.4s; }
@@ -30,7 +27,6 @@
     h4 { margin: 16px 0 10px 0; color: var(--acc-grad-1); font-size: 13px; font-weight: 800; text-transform: uppercase; }
     
     .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    
     .paeds-only { display: none !important; }
     .paeds-mode-active .paeds-only { display: block !important; }
     .paeds-mode-active .adult-only { display: none !important; }
@@ -56,7 +52,6 @@
     .segment-btn { flex: 1; padding: 12px 8px; border: none; background: transparent; color: var(--text-color); font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 8px; transition: 0.3s; text-align: center; }
     .segment-btn.active { background: var(--acc-grad-1); color: white; box-shadow: var(--shadow-sm); }
     body.dark-mode .segment-btn.active { background: var(--acc-grad-2); }
-    
     .segment-btn.btn-red { color: #ef4444; }
     .segment-btn.btn-red.active { background: #ef4444 !important; color: white !important; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3) !important; }
     body.dark-mode .segment-btn.btn-red { color: #fca5a5; }
@@ -136,8 +131,7 @@
     
     <div style="display:flex; gap:10px; margin-bottom:10px; align-items:flex-end;">
       <div style="flex:1;"><label style="font-size:11px; font-weight:bold;">Age:</label><input type="number" id="pt_age" placeholder="Yrs" oninput="handleAgeInput()"></div>
-      <div style="flex:2;">
-        <label style="font-size:11px; font-weight:bold;">Gender:</label>
+      <div style="flex:2;"><label style="font-size:11px; font-weight:bold;">Gender:</label>
         <div class="segmented-control">
           <button type="button" class="segment-btn active" onclick="setSeg('pt_gender', 'Unspecified', this)">?</button>
           <button type="button" class="segment-btn" onclick="setSeg('pt_gender', 'Male', this)">M</button>
@@ -152,7 +146,7 @@
       <div id="wetfag_grid" style="font-size:13px; display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom: 10px;">
         <div><b>Weight:</b> <span id="wf_w">--</span></div>
         <div><b>Energy:</b> <span id="wf_e">--</span></div>
-        <div><b>Tube Size:</b> <span id="wf_t">--</span></div>
+        <div><b>Tube:</b> <span id="wf_t">--</span></div>
         <div><b>Fluids:</b> <span id="wf_f">--</span></div>
         <div><b>Adrenaline:</b> <span id="wf_a">--</span></div>
         <div><b>Glucose:</b> <span id="wf_g">--</span></div>
@@ -181,6 +175,7 @@
     <!-- 1. INITIAL IMPRESSION -->
     <button class="accordion active" id="init_acc">⭕ Initial Impression & General</button>
     <div class="panel" id="init_pan" style="display:block;">
+      
       <div class="question paeds-only" style="background:#fefce8; border:1px solid #fde047; padding:10px; border-radius:8px;">
           <span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <b>Paediatric Assessment Triangle (PAT)</b>
           <div style="font-size:11px; margin-top:8px; font-weight:bold;">Appearance:</div>
@@ -194,6 +189,7 @@
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Arrived on scene: <textarea id="arrival_notes" rows="2" placeholder="Where found, positioning, immediate visual cues..."></textarea></div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Patient History: <textarea id="pt_history" rows="2" placeholder="Presenting complaint, history of presenting complaint..."></textarea></div>
       
+      <!-- GENERAL / CONSTITUTIONAL -->
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="gen_fever" onchange="toggleMenu('gen_fever_n', this.checked)"> Fever / Chills / Night Sweats?
           <div id="gen_fever_n" class="nested"><input type="text" id="gen_fever_det" placeholder="Duration, rigors present?"></div>
       </div>
@@ -208,86 +204,221 @@
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Airway: 
-        <div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('init_airway', 'Self maintained', this); toggleMenu('airway_interv_n', false);">Self Maintained</button><button type="button" class="segment-btn btn-red" onclick="setSeg('init_airway', 'Compromised', this); toggleMenu('airway_interv_n', true); calculateDDx();">Compromised</button><button type="button" class="segment-btn btn-red" onclick="setSeg('init_airway', 'Obstructed', this); toggleMenu('airway_interv_n', true); calculateDDx();">Obstructed</button></div>
+        <div class="segmented-control grid-3">
+          <button type="button" class="segment-btn active" onclick="setSeg('init_airway', 'Self maintained', this); toggleMenu('airway_interv_n', false);">Self Maintained</button>
+          <button type="button" class="segment-btn btn-red" onclick="setSeg('init_airway', 'Compromised', this); toggleMenu('airway_interv_n', true); calculateDDx();">Compromised</button>
+          <button type="button" class="segment-btn btn-red" onclick="setSeg('init_airway', 'Obstructed', this); toggleMenu('airway_interv_n', true); calculateDDx();">Obstructed</button>
+        </div>
         <input type="hidden" id="init_airway" value="Self maintained">
         <div id="airway_interv_n" class="nested">
           <div style="font-weight:bold; font-size:11px; margin-bottom:5px;">Airway Intervention Required?</div>
-          <div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('airway_int', 'None', this)">None</button><button type="button" class="segment-btn" onclick="setSeg('airway_int', 'Postural/Positioning', this)">Positioning</button><button type="button" class="segment-btn" onclick="setSeg('airway_int', 'Suction', this)">Suction</button><button type="button" class="segment-btn" onclick="setSeg('airway_int', 'OPA/NPA', this)">OPA / NPA</button><button type="button" class="segment-btn" onclick="setSeg('airway_int', 'iGel', this)">iGel</button><button type="button" class="segment-btn" onclick="setSeg('airway_int', 'Intubation', this)">Intubation</button></div>
+          <div class="segmented-control grid-3">
+             <button type="button" class="segment-btn active" onclick="setSeg('airway_int', 'None', this)">None</button>
+             <button type="button" class="segment-btn" onclick="setSeg('airway_int', 'Positioning', this)">Positioning</button>
+             <button type="button" class="segment-btn" onclick="setSeg('airway_int', 'Suction', this)">Suction</button>
+             <button type="button" class="segment-btn" onclick="setSeg('airway_int', 'OPA/NPA', this)">OPA / NPA</button>
+             <button type="button" class="segment-btn" onclick="setSeg('airway_int', 'iGel', this)">iGel</button>
+             <button type="button" class="segment-btn" onclick="setSeg('airway_int', 'Intubation', this)">Intubation</button>
+          </div>
           <input type="hidden" id="airway_int" value="None">
         </div>
       </div>
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> GCS Calculator: 
-        <h4 style="margin:5px 0;">Eyes</h4><div class="segmented-control grid-4"><button type="button" id="btn_g_e_4" class="segment-btn active" onclick="setGCS('g_e', 4, this)">4-Spont</button><button type="button" class="segment-btn" onclick="setGCS('g_e', 3, this)">3-Sound</button><button type="button" class="segment-btn" onclick="setGCS('g_e', 2, this)">2-Pain</button><button type="button" class="segment-btn" onclick="setGCS('g_e', 1, this)">1-None</button></div>
-        <h4 style="margin:5px 0;">Voice</h4><div class="segmented-control adult-only"><button type="button" id="btn_g_v_5" class="segment-btn active" onclick="setGCS('g_v', 5, this)">5-Orient</button><button type="button" class="segment-btn" onclick="setGCS('g_v', 4, this)">4-Conf</button><button type="button" class="segment-btn" onclick="setGCS('g_v', 3, this)">3-Inapp</button><button type="button" class="segment-btn" onclick="setGCS('g_v', 2, this)">2-Sound</button><button type="button" class="segment-btn" onclick="setGCS('g_v', 1, this)">1-None</button></div>
-        <div class="segmented-control paeds-only" style="display:none;"><button type="button" id="btn_g_v_5_p" class="segment-btn active" onclick="setGCS('g_v', 5, this)">5-Smiles/Coos</button><button type="button" class="segment-btn" onclick="setGCS('g_v', 4, this)">4-Cries Cons</button><button type="button" class="segment-btn" onclick="setGCS('g_v', 3, this)">3-Cries Irrit</button><button type="button" class="segment-btn" onclick="setGCS('g_v', 2, this)">2-Moans</button><button type="button" class="segment-btn" onclick="setGCS('g_v', 1, this)">1-None</button></div>
-        <h4 style="margin:5px 0;">Motor</h4><div class="segmented-control grid-3"><button type="button" id="btn_g_m_6" class="segment-btn active" onclick="setGCS('g_m', 6, this)">6-Obeys/Spont</button><button type="button" class="segment-btn" onclick="setGCS('g_m', 5, this)">5-Loc</button><button type="button" class="segment-btn" onclick="setGCS('g_m', 4, this)">4-Withd</button><button type="button" class="segment-btn" onclick="setGCS('g_m', 3, this)">3-Flex</button><button type="button" class="segment-btn" onclick="setGCS('g_m', 2, this)">2-Ext</button><button type="button" class="segment-btn" onclick="setGCS('g_m', 1, this)">1-None</button></div>
-        <div style="font-weight:bold; color:var(--acc-grad-1); margin-top:10px;">Total GCS: <span id="gcs_disp">15</span></div><input type="hidden" id="g_e" value="4"><input type="hidden" id="g_v" value="5"><input type="hidden" id="g_m" value="6"><input type="hidden" id="manual_gcs" value="15">
+        <h4 style="margin:5px 0;">Eyes</h4>
+        <div class="segmented-control grid-4">
+          <button type="button" id="btn_g_e_4" class="segment-btn active" onclick="setGCS('g_e', 4, this)">4-Spont</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_e', 3, this)">3-Sound</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_e', 2, this)">2-Pain</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_e', 1, this)">1-None</button>
+        </div>
+        
+        <h4 style="margin:5px 0;">Voice</h4>
+        <div class="segmented-control adult-only">
+          <button type="button" id="btn_g_v_5" class="segment-btn active" onclick="setGCS('g_v', 5, this)">5-Orient</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_v', 4, this)">4-Conf</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_v', 3, this)">3-Inapp</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_v', 2, this)">2-Sound</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_v', 1, this)">1-None</button>
+        </div>
+        <div class="segmented-control paeds-only" style="display:none;">
+          <button type="button" id="btn_g_v_5_p" class="segment-btn active" onclick="setGCS('g_v', 5, this)">5-Smiles/Coos</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_v', 4, this)">4-Cries Cons</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_v', 3, this)">3-Cries Irrit</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_v', 2, this)">2-Moans</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_v', 1, this)">1-None</button>
+        </div>
+
+        <h4 style="margin:5px 0;">Motor</h4>
+        <div class="segmented-control grid-3">
+          <button type="button" id="btn_g_m_6" class="segment-btn active" onclick="setGCS('g_m', 6, this)">6-Obeys/Spont</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_m', 5, this)">5-Loc</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_m', 4, this)">4-Withd</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_m', 3, this)">3-Flex</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_m', 2, this)">2-Ext</button>
+          <button type="button" class="segment-btn" onclick="setGCS('g_m', 1, this)">1-None</button>
+        </div>
+        <div style="font-weight:bold; color:var(--acc-grad-1); margin-top:10px;">Total GCS: <span id="gcs_disp">15</span></div>
+        <input type="hidden" id="g_e" value="4"><input type="hidden" id="g_v" value="5"><input type="hidden" id="g_m" value="6"><input type="hidden" id="manual_gcs" value="15">
       </div>
       
       <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Alert (A on ACVPU)?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('alert_val', 'Yes', this); toggleMenu('vpu_n', false); autoGCS(); calculateDDx();">Yes</button><button type="button" class="segment-btn btn-red" onclick="setSeg('alert_val', 'No', this); toggleMenu('vpu_n', true); calculateDDx();">No</button></div><input type="hidden" id="alert_val" value="Yes">
-        <div id="vpu_n" class="nested">Select Level:<div class="segmented-control grid-4"><button type="button" class="segment-btn" onclick="setSeg('vpu_level', 'New Confusion', this); calculateDDx();">New Conf</button><button type="button" class="segment-btn" onclick="setSeg('vpu_level', 'Voice', this); calculateDDx();">Voice</button><button type="button" class="segment-btn" onclick="setSeg('vpu_level', 'Pain', this); calculateDDx();">Pain</button><button type="button" class="segment-btn" onclick="setSeg('vpu_level', 'Unresponsive', this); calculateDDx();">Unresp</button></div><input type="hidden" id="vpu_level" value=""></div>
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('alert_val', 'Yes', this); toggleMenu('vpu_n', false); autoGCS(); calculateDDx();">Yes</button>
+          <button type="button" class="segment-btn btn-red" onclick="setSeg('alert_val', 'No', this); toggleMenu('vpu_n', true); calculateDDx();">No</button>
+        </div>
+        <input type="hidden" id="alert_val" value="Yes">
+        <div id="vpu_n" class="nested">
+          Select Level:
+          <div class="segmented-control grid-4">
+            <button type="button" class="segment-btn" onclick="setSeg('vpu_level', 'New Confusion', this); calculateDDx();">New Conf</button>
+            <button type="button" class="segment-btn" onclick="setSeg('vpu_level', 'Voice', this); calculateDDx();">Voice</button>
+            <button type="button" class="segment-btn" onclick="setSeg('vpu_level', 'Pain', this); calculateDDx();">Pain</button>
+            <button type="button" class="segment-btn" onclick="setSeg('vpu_level', 'Unresponsive', this); calculateDDx();">Unresp</button>
+          </div>
+          <input type="hidden" id="vpu_level" value="">
+        </div>
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_sepsis" onchange="toggleMenu('sus_sepsis_n', this.checked); calculateDDx();"> Suspected Sepsis / Infection?
         <div id="sus_sepsis_n" class="nested"><input type="text" id="sus_sepsis_det" placeholder="Source of infection?"></div>
       </div>
+      
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sus_allerg" onchange="toggleMenu('sus_allerg_n', this.checked); calculateDDx();"> Suspected Anaphylaxis?
         <div id="sus_allerg_n" class="nested"><input type="text" id="sus_allerg_det" placeholder="Suspected trigger?"></div>
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_init_val', 'No', this); toggleMenu('det_init_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_init_val', 'Yes', this); toggleMenu('det_init_n', true)">Yes</button></div>
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_init_val', 'No', this); toggleMenu('det_init_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_init_val', 'Yes', this); toggleMenu('det_init_n', true)">Yes</button>
+        </div>
         <input type="hidden" id="det_init_val" value="No">
-        <div id="det_init_n" class="nested"><textarea id="det_init_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+        <div id="det_init_n" class="nested">
+          <textarea id="det_init_txt" rows="3" placeholder="Add further clinical details here..."></textarea>
+        </div>
       </div>
     </div>
 
     <!-- 2. BREATHING -->
     <button class="accordion" id="resp_acc">🫁 Breathing</button>
     <div class="panel" id="resp_pan">
+      
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Shortness of Breath?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('sob_val', 'No', this); toggleMenu('sob_n', false); calculateDDx();">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('sob_val', 'Yes', this); toggleMenu('sob_n', true); calculateDDx();">Yes</button></div><input type="hidden" id="sob_val" value="No">
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('sob_val', 'No', this); toggleMenu('sob_n', false); calculateDDx();">No</button>
+          <button type="button" class="segment-btn btn-red" onclick="setSeg('sob_val', 'Yes', this); toggleMenu('sob_n', true); calculateDDx();">Yes</button>
+        </div>
+        <input type="hidden" id="sob_val" value="No">
         <div id="sob_n" class="nested">
-          Is this normal for them?<div class="segmented-control"><button type="button" class="segment-btn" onclick="setSeg('sob_norm', 'Yes', this); toggleMenu('sob_copd', true); toggleMenu('sob_onset', false)">Yes</button><button type="button" class="segment-btn" onclick="setSeg('sob_norm', 'No', this); toggleMenu('sob_copd', false); toggleMenu('sob_onset', true)">No</button></div><input type="hidden" id="sob_norm" value="">
+          Is this normal for them?
+          <div class="segmented-control">
+            <button type="button" class="segment-btn" onclick="setSeg('sob_norm', 'Yes', this); toggleMenu('sob_copd', true); toggleMenu('sob_onset', false)">Yes</button>
+            <button type="button" class="segment-btn" onclick="setSeg('sob_norm', 'No', this); toggleMenu('sob_copd', false); toggleMenu('sob_onset', true)">No</button>
+          </div>
+          <input type="hidden" id="sob_norm" value="">
+          
           <div id="sob_copd" style="display:none; margin-top:10px;">
             <div style="font-size:11px; font-weight:bold; margin-bottom:4px;">Do they have COPD or Asthma?</div>
-            <div class="segmented-control"><button type="button" class="segment-btn adult-only" onclick="setSeg('sob_type', 'COPD', this)">COPD</button><button type="button" class="segment-btn" onclick="setSeg('sob_type', 'Asthma', this)">Asthma</button><button type="button" class="segment-btn adult-only" onclick="setSeg('sob_type', 'Both', this)">Both</button><button type="button" class="segment-btn" onclick="setSeg('sob_type', 'Neither', this)">Neither</button></div><input type="hidden" id="sob_type" value="">
+            <div class="segmented-control">
+              <button type="button" class="segment-btn adult-only" onclick="setSeg('sob_type', 'COPD', this)">COPD</button>
+              <button type="button" class="segment-btn" onclick="setSeg('sob_type', 'Asthma', this)">Asthma</button>
+              <button type="button" class="segment-btn adult-only" onclick="setSeg('sob_type', 'Both', this)">Both</button>
+              <button type="button" class="segment-btn" onclick="setSeg('sob_type', 'Neither', this)">Neither</button>
+            </div>
+            <input type="hidden" id="sob_type" value="">
+            
             <div style="font-size:11px; font-weight:bold; margin-top:10px; margin-bottom:4px;">Recent Exacerbation History:</div>
-            <div class="segmented-control grid-2"><button type="button" class="segment-btn" onclick="setSeg('sob_hx', 'Recent Hosp Admission', this)">Recent Hosp Admit</button><button type="button" class="segment-btn" onclick="setSeg('sob_hx', 'Recent Steroids/Abx', this)">Recent Steroids</button><button type="button" class="segment-btn" onclick="setSeg('sob_hx', 'ICU Admission Hx', this)">Prior ICU Admit</button><button type="button" class="segment-btn active" onclick="setSeg('sob_hx', 'None / Normal', this)">None Applicable</button></div><input type="hidden" id="sob_hx" value="None / Normal">
+            <div class="segmented-control grid-2">
+                <button type="button" class="segment-btn" onclick="setSeg('sob_hx', 'Recent Hosp Admission', this)">Recent Hosp Admit</button>
+                <button type="button" class="segment-btn" onclick="setSeg('sob_hx', 'Recent Steroids/Abx', this)">Recent Steroids</button>
+                <button type="button" class="segment-btn" onclick="setSeg('sob_hx', 'ICU Admission Hx', this)">Prior ICU Admit</button>
+                <button type="button" class="segment-btn active" onclick="setSeg('sob_hx', 'None / Normal', this)">None Applicable</button>
+            </div>
+            <input type="hidden" id="sob_hx" value="None / Normal">
           </div>
-          <div id="sob_onset" style="display:none; margin-top:10px;"><div style="font-size:11px; font-weight:bold; margin-bottom:4px;">When did it start?</div><input type="text" id="sob_start_time" placeholder="Time / Duration"></div>
+          
+          <div id="sob_onset" style="display:none; margin-top:10px;">
+            <div style="font-size:11px; font-weight:bold; margin-bottom:4px;">When did it start?</div>
+            <input type="text" id="sob_start_time" placeholder="Time / Duration">
+          </div>
+          
           <div style="margin-top:10px; font-size:11px; font-weight:bold;">When does SOB occur?</div>
-          <div class="segmented-control"><button type="button" class="segment-btn adult-only" onclick="setSeg('sob_when', 'Walking', this); calculateDDx();">Walking</button><button type="button" class="segment-btn" onclick="setSeg('sob_when', 'At Rest', this); calculateDDx();">At Rest</button><button type="button" class="segment-btn adult-only" onclick="setSeg('sob_when', 'Both', this); calculateDDx();">Both</button><button type="button" class="segment-btn paeds-only" style="display:none;" onclick="setSeg('sob_when', 'Feeding/Crying', this); calculateDDx();">Feeding/Crying</button></div><input type="hidden" id="sob_when" value="">
+          <div class="segmented-control">
+            <button type="button" class="segment-btn adult-only" onclick="setSeg('sob_when', 'Walking', this); calculateDDx();">Walking</button>
+            <button type="button" class="segment-btn" onclick="setSeg('sob_when', 'At Rest', this); calculateDDx();">At Rest</button>
+            <button type="button" class="segment-btn adult-only" onclick="setSeg('sob_when', 'Both', this); calculateDDx();">Both</button>
+            <button type="button" class="segment-btn paeds-only" style="display:none;" onclick="setSeg('sob_when', 'Feeding/Crying', this); calculateDDx();">Feeding/Crying</button>
+          </div>
+          <input type="hidden" id="sob_when" value="">
         </div>
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Orthopnoea / PND (Breathless when lying flat)?
-        <div class="segmented-control grid-4"><button type="button" class="segment-btn active" onclick="setSeg('ortho_val', 'No', this); calculateDDx();">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('ortho_val', 'Orthopnoea', this); calculateDDx();">Orthopnoea</button><button type="button" class="segment-btn btn-red" onclick="setSeg('ortho_val', 'PND', this); calculateDDx();">PND</button><button type="button" class="segment-btn btn-red" onclick="setSeg('ortho_val', 'Both', this); calculateDDx();">Both</button></div><input type="hidden" id="ortho_val" value="No">
+        <div class="segmented-control grid-4">
+          <button type="button" class="segment-btn active" onclick="setSeg('ortho_val', 'No', this); calculateDDx();">No</button>
+          <button type="button" class="segment-btn btn-red" onclick="setSeg('ortho_val', 'Orthopnoea', this); calculateDDx();">Orthopnoea</button>
+          <button type="button" class="segment-btn btn-red" onclick="setSeg('ortho_val', 'PND', this); calculateDDx();">PND</button>
+          <button type="button" class="segment-btn btn-red" onclick="setSeg('ortho_val', 'Both', this); calculateDDx();">Both</button>
+        </div>
+        <input type="hidden" id="ortho_val" value="No">
       </div>
 
       <div class="question paeds-only" style="display:none;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Paediatric Work of Breathing?
-         <div class="segmented-control grid-2"><button type="button" class="segment-btn" onclick="document.getElementById('pwob_grunting').checked = !document.getElementById('pwob_grunting').checked; this.classList.toggle('btn-red'); calculateDDx();"><input type="checkbox" id="pwob_grunting" style="display:none;">Grunting</button><button type="button" class="segment-btn" onclick="document.getElementById('pwob_flaring').checked = !document.getElementById('pwob_flaring').checked; this.classList.toggle('btn-red');"><input type="checkbox" id="pwob_flaring" style="display:none;">Nasal Flaring</button><button type="button" class="segment-btn" onclick="document.getElementById('pwob_tug').checked = !document.getElementById('pwob_tug').checked; this.classList.toggle('btn-red');"><input type="checkbox" id="pwob_tug" style="display:none;">Tracheal Tug</button><button type="button" class="segment-btn" onclick="document.getElementById('pwob_recess').checked = !document.getElementById('pwob_recess').checked; this.classList.toggle('btn-red'); calculateDDx();"><input type="checkbox" id="pwob_recess" style="display:none;">Recession</button></div>
+         <div class="segmented-control grid-2">
+            <button type="button" class="segment-btn" onclick="document.getElementById('pwob_grunting').checked = !document.getElementById('pwob_grunting').checked; this.classList.toggle('btn-red'); calculateDDx();"><input type="checkbox" id="pwob_grunting" style="display:none;">Grunting</button>
+            <button type="button" class="segment-btn" onclick="document.getElementById('pwob_flaring').checked = !document.getElementById('pwob_flaring').checked; this.classList.toggle('btn-red');"><input type="checkbox" id="pwob_flaring" style="display:none;">Nasal Flaring</button>
+            <button type="button" class="segment-btn" onclick="document.getElementById('pwob_tug').checked = !document.getElementById('pwob_tug').checked; this.classList.toggle('btn-red');"><input type="checkbox" id="pwob_tug" style="display:none;">Tracheal Tug</button>
+            <button type="button" class="segment-btn" onclick="document.getElementById('pwob_recess').checked = !document.getElementById('pwob_recess').checked; this.classList.toggle('btn-red'); calculateDDx();"><input type="checkbox" id="pwob_recess" style="display:none;">Recession</button>
+         </div>
       </div>
 
       <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Difficulty in Breathing?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('dib_val', 'No', this); toggleMenu('dib_n', false); calculateDDx();">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('dib_val', 'Yes', this); toggleMenu('dib_n', true); calculateDDx();">Yes</button></div><input type="hidden" id="dib_val" value="No">
-        <div id="dib_n" class="nested"><div class="segmented-control"><button type="button" class="segment-btn" onclick="setSeg('dib_onset', 'Suddenly', this)">Suddenly</button><button type="button" class="segment-btn" onclick="setSeg('dib_onset', 'Gradually', this)">Gradually</button></div><input type="hidden" id="dib_onset" value=""></div>
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('dib_val', 'No', this); toggleMenu('dib_n', false); calculateDDx();">No</button>
+          <button type="button" class="segment-btn btn-red" onclick="setSeg('dib_val', 'Yes', this); toggleMenu('dib_n', true); calculateDDx();">Yes</button>
+        </div>
+        <input type="hidden" id="dib_val" value="No">
+        <div id="dib_n" class="nested">
+          <div class="segmented-control"><button type="button" class="segment-btn" onclick="setSeg('dib_onset', 'Suddenly', this)">Suddenly</button><button type="button" class="segment-btn" onclick="setSeg('dib_onset', 'Gradually', this)">Gradually</button></div>
+          <input type="hidden" id="dib_onset" value="">
+        </div>
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Able to speak in full sentences?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('speak_full_val', 'Yes', this); calculateDDx();">Yes</button><button type="button" class="segment-btn btn-red" onclick="setSeg('speak_full_val', 'No', this); calculateDDx();">No</button></div><input type="hidden" id="speak_full_val" value="Yes">
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('speak_full_val', 'Yes', this); calculateDDx();">Yes</button>
+          <button type="button" class="segment-btn btn-red" onclick="setSeg('speak_full_val', 'No', this); calculateDDx();">No</button>
+        </div>
+        <input type="hidden" id="speak_full_val" value="Yes">
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Recent Cough?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('cough_val', 'No', this); toggleMenu('cough_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('cough_val', 'Yes', this); toggleMenu('cough_n', true)">Yes</button></div><input type="hidden" id="cough_val" value="No">
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('cough_val', 'No', this); toggleMenu('cough_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('cough_val', 'Yes', this); toggleMenu('cough_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="cough_val" value="No">
         <div id="cough_n" class="nested">
-          <div class="segmented-control"><button type="button" class="segment-btn" onclick="setSeg('phlegm_val', 'No', this); toggleMenu('phlegm_details', false)">Dry Cough</button><button type="button" class="segment-btn" onclick="setSeg('phlegm_val', 'Yes', this); toggleMenu('phlegm_details', true)">Productive (Sputum)</button></div><input type="hidden" id="phlegm_val" value="">
+          <div class="segmented-control">
+            <button type="button" class="segment-btn" onclick="setSeg('phlegm_val', 'No', this); toggleMenu('phlegm_details', false)">Dry Cough</button>
+            <button type="button" class="segment-btn" onclick="setSeg('phlegm_val', 'Yes', this); toggleMenu('phlegm_details', true)">Productive (Sputum)</button>
+          </div>
+          <input type="hidden" id="phlegm_val" value="">
           <div id="phlegm_details" style="display:none; margin-top:10px;">
-            <div class="segmented-control grid-3"><button type="button" class="segment-btn" onclick="setSeg('phlegm_color', 'Clear', this)">Clear</button><button type="button" class="segment-btn" onclick="setSeg('phlegm_color', 'Yellow', this)">Yellow</button><button type="button" class="segment-btn" onclick="setSeg('phlegm_color', 'Green', this)">Green</button></div><input type="hidden" id="phlegm_color" value="">
+            <div class="segmented-control grid-3">
+              <button type="button" class="segment-btn" onclick="setSeg('phlegm_color', 'Clear', this)">Clear</button>
+              <button type="button" class="segment-btn" onclick="setSeg('phlegm_color', 'Yellow', this)">Yellow</button>
+              <button type="button" class="segment-btn" onclick="setSeg('phlegm_color', 'Green', this)">Green</button>
+            </div>
+            <input type="hidden" id="phlegm_color" value="">
+            
             <div style="margin-top:10px;">Haemoptysis (Blood in sputum)?</div>
-            <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('phlegm_blood', 'No', this)">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('phlegm_blood', 'Yes', this)">Yes</button></div><input type="hidden" id="phlegm_blood" value="No">
+            <div class="segmented-control">
+               <button type="button" class="segment-btn active" onclick="setSeg('phlegm_blood', 'No', this)">No</button>
+               <button type="button" class="segment-btn btn-red" onclick="setSeg('phlegm_blood', 'Yes', this)">Yes</button>
+            </div>
+            <input type="hidden" id="phlegm_blood" value="No">
           </div>
         </div>
       </div>
@@ -295,18 +426,34 @@
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Is the RespRate normal? <input type="text" id="rr_norm" placeholder="Notes (e.g. fast/shallow, tachypnoea)"></div>
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Lung Sounds:
-        <div class="segmented-control grid-2 paeds-grid"><button type="button" class="segment-btn active" onclick="setSeg('air_entry', 'Air entry equal bilaterally', this)">Equal Bilaterally</button><button type="button" class="segment-btn" onclick="setSeg('air_entry', 'Wheeze', this)">Wheeze</button><button type="button" class="segment-btn" onclick="setSeg('air_entry', 'Crackles', this)">Crackles</button><button type="button" class="segment-btn" onclick="setSeg('air_entry', 'Stridor', this)">Stridor</button><button type="button" class="segment-btn btn-red" onclick="setSeg('air_entry', 'Silent Chest', this)">Silent Chest</button></div><input type="hidden" id="air_entry" value="Air entry equal bilaterally">
+        <div class="segmented-control grid-2 paeds-grid">
+            <button type="button" class="segment-btn active" onclick="setSeg('air_entry', 'Air entry equal bilaterally', this)">Equal Bilaterally</button>
+            <button type="button" class="segment-btn" onclick="setSeg('air_entry', 'Wheeze', this)">Wheeze</button>
+            <button type="button" class="segment-btn" onclick="setSeg('air_entry', 'Crackles', this)">Crackles</button>
+            <button type="button" class="segment-btn" onclick="setSeg('air_entry', 'Stridor', this)">Stridor</button>
+            <button type="button" class="segment-btn btn-red" onclick="setSeg('air_entry', 'Silent Chest', this)">Silent Chest</button>
+        </div>
+        <input type="hidden" id="air_entry" value="Air entry equal bilaterally">
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> IPPA Chest Exam Notes:
           <div style="margin-top:5px; background:var(--input-bg); border:1px dashed var(--acc-grad-1); border-radius:8px; padding:10px;">
-              <div style="font-size:11px; margin-bottom:8px; line-height:1.4;"><b style="color:var(--acc-grad-1);">I</b>nspection: Symmetry, scars. <b style="color:var(--acc-grad-1);">P</b>alpation: Expansion, crepitus. <b style="color:var(--acc-grad-1);">P</b>ercussion: Resonance. <b style="color:var(--acc-grad-1);">A</b>uscultation: Air entry.</div>
+              <div style="font-size:11px; margin-bottom:8px; line-height:1.4;">
+                  <b style="color:var(--acc-grad-1);">I</b>nspection: Symmetry, scars, accessory muscle use.<br>
+                  <b style="color:var(--acc-grad-1);">P</b>alpation: Expansion, crepitus, tracheal deviation.<br>
+                  <b style="color:var(--acc-grad-1);">P</b>ercussion: Resonance (Dull=fluid, Hyper=air).<br>
+                  <b style="color:var(--acc-grad-1);">A</b>uscultation: Air entry and added sounds.
+              </div>
               <input type="text" id="resp_ippa_notes" placeholder="Exam Findings (e.g., Dull percussion R base)">
           </div>
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_resp_val', 'No', this); toggleMenu('det_resp_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_resp_val', 'Yes', this); toggleMenu('det_resp_n', true)">Yes</button></div><input type="hidden" id="det_resp_val" value="No">
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('det_resp_val', 'No', this); toggleMenu('det_resp_n', false)">No</button>
+          <button type="button" class="segment-btn" onclick="setSeg('det_resp_val', 'Yes', this); toggleMenu('det_resp_n', true)">Yes</button>
+        </div>
+        <input type="hidden" id="det_resp_val" value="No">
         <div id="det_resp_n" class="nested"><textarea id="det_resp_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
       </div>
     </div>
@@ -316,72 +463,146 @@
     <div class="panel" id="card_pan">
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Chest Pain or Heaviness?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('cp_val', 'No', this); toggleMenu('cp_n', false); calculateDDx();">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('cp_val', 'Yes', this); toggleMenu('cp_n', true); calculateDDx();">Yes</button></div><input type="hidden" id="cp_val" value="No">
+        <div class="segmented-control">
+          <button type="button" class="segment-btn active" onclick="setSeg('cp_val', 'No', this); toggleMenu('cp_n', false); calculateDDx();">No</button>
+          <button type="button" class="segment-btn btn-red" onclick="setSeg('cp_val', 'Yes', this); toggleMenu('cp_n', true); calculateDDx();">Yes</button>
+        </div>
+        <input type="hidden" id="cp_val" value="No">
         <div id="cp_n" class="nested">
           <h4 style="margin-top:0;">Fluid SOCRATES</h4>
-          <input type="text" id="soc_c_s" placeholder="Site (Where is it?)"><input type="text" id="soc_c_o" placeholder="Onset Time (When did it start?)">
+          <input type="text" id="soc_c_s" placeholder="Site (Where is it?)">
+          <input type="text" id="soc_c_o" placeholder="Onset Time (When did it start?)">
           <div style="margin-top:10px; font-size:11px; font-weight:bold;">Character:</div>
-          <div class="segmented-control grid-4"><button type="button" class="segment-btn" onclick="setSeg('soc_c_c', 'Ache', this)">Ache</button><button type="button" class="segment-btn" onclick="setSeg('soc_c_c', 'Sharp', this)">Sharp</button><button type="button" class="segment-btn" onclick="setSeg('soc_c_c', 'Pressure', this)">Press</button><button type="button" class="segment-btn" onclick="setSeg('soc_c_c', 'Tight', this)">Tight</button></div><input type="hidden" id="soc_c_c" value="">
+          <div class="segmented-control grid-4">
+            <button type="button" class="segment-btn" onclick="setSeg('soc_c_c', 'Ache', this)">Ache</button>
+            <button type="button" class="segment-btn" onclick="setSeg('soc_c_c', 'Sharp', this)">Sharp</button>
+            <button type="button" class="segment-btn" onclick="setSeg('soc_c_c', 'Pressure', this)">Press</button>
+            <button type="button" class="segment-btn" onclick="setSeg('soc_c_c', 'Tight', this)">Tight</button>
+          </div>
+          <input type="hidden" id="soc_c_c" value="">
           <input type="text" id="soc_c_r" placeholder="Radiation (Does it move?)">
+          
           <div style="margin-top:10px; font-size:11px; font-weight:bold;">Associated Symptoms:</div>
-          <div class="segmented-control grid-3"><button type="button" class="segment-btn" onclick="setSeg('soc_c_a', 'Nausea/Vomiting', this)">Nausea</button><button type="button" class="segment-btn" onclick="setSeg('soc_c_a', 'Sweating', this)">Sweating</button><button type="button" class="segment-btn" onclick="setSeg('soc_c_a', 'SOB', this)">SOB</button><button type="button" class="segment-btn" onclick="setSeg('soc_c_a', 'Dizziness', this)">Dizzy</button><button type="button" class="segment-btn" onclick="setSeg('soc_c_a', 'Palpitations', this)">Palps</button><button type="button" class="segment-btn active" onclick="setSeg('soc_c_a', 'None', this)">None</button></div><input type="hidden" id="soc_c_a" value="None">
+          <div class="segmented-control grid-3">
+             <button type="button" class="segment-btn" onclick="setSeg('soc_c_a', 'Nausea/Vomiting', this)">Nausea</button>
+             <button type="button" class="segment-btn" onclick="setSeg('soc_c_a', 'Sweating', this)">Sweating</button>
+             <button type="button" class="segment-btn" onclick="setSeg('soc_c_a', 'SOB', this)">SOB</button>
+             <button type="button" class="segment-btn" onclick="setSeg('soc_c_a', 'Dizziness', this)">Dizzy</button>
+             <button type="button" class="segment-btn" onclick="setSeg('soc_c_a', 'Palpitations', this)">Palps</button>
+             <button type="button" class="segment-btn active" onclick="setSeg('soc_c_a', 'None', this)">None</button>
+          </div>
+          <input type="hidden" id="soc_c_a" value="None">
+
           <div style="margin-top:10px; font-size:11px; font-weight:bold;">Time Course:</div>
-          <div class="segmented-control"><button type="button" class="segment-btn" onclick="setSeg('soc_c_t', 'Constant', this)">Constant</button><button type="button" class="segment-btn" onclick="setSeg('soc_c_t', 'Intermittent', this)">Intermittent</button></div><input type="hidden" id="soc_c_t" value="">
+          <div class="segmented-control">
+            <button type="button" class="segment-btn" onclick="setSeg('soc_c_t', 'Constant', this)">Constant</button>
+            <button type="button" class="segment-btn" onclick="setSeg('soc_c_t', 'Intermittent', this)">Intermittent</button>
+          </div>
+          <input type="hidden" id="soc_c_t" value="">
           <input type="text" id="soc_c_e" placeholder="Exacerbating (What makes it worse?)">
+          
           <div class="adult-only">
               <div style="margin-top:10px; font-size:11px; font-weight:bold;">Severity (0-10):</div>
-              <div class="segmented-control" style="gap:2px;"><button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '0', this)">0</button><button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '1', this)">1</button><button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '2', this)">2</button><button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '3', this)">3</button><button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '4', this)">4</button><button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '5', this)">5</button><button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '6', this)">6</button><button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '7', this)">7</button><button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '8', this)">8</button><button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '9', this)">9</button><button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '10', this)">10</button></div><input type="hidden" id="soc_c_sev" value="">
-              <div style="margin-top:15px; border-top:1px dashed var(--border-color); padding-top:10px;">Has Aspirin been given?
-                  <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('asa_given', 'No', this); toggleMenu('asa_time_div', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('asa_given', 'Yes', this); toggleMenu('asa_time_div', true)">Yes</button></div><input type="hidden" id="asa_given" value="No">
+              <div class="segmented-control" style="gap:2px;">
+                 <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '0', this)">0</button>
+                 <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '1', this)">1</button>
+                 <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '2', this)">2</button>
+                 <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '3', this)">3</button>
+                 <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '4', this)">4</button>
+                 <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '5', this)">5</button>
+                 <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '6', this)">6</button>
+                 <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '7', this)">7</button>
+                 <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '8', this)">8</button>
+                 <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '9', this)">9</button>
+                 <button type="button" class="pain-btn" onclick="setPain('soc_c_sev', '10', this)">10</button>
+              </div>
+              <input type="hidden" id="soc_c_sev" value="">
+              
+              <div style="margin-top:15px; border-top:1px dashed var(--border-color); padding-top:10px;">
+                  Has Aspirin been given?
+                  <div class="segmented-control">
+                      <button type="button" class="segment-btn active" onclick="setSeg('asa_given', 'No', this); toggleMenu('asa_time_div', false)">No</button>
+                      <button type="button" class="segment-btn" onclick="setSeg('asa_given', 'Yes', this); toggleMenu('asa_time_div', true)">Yes</button>
+                  </div>
+                  <input type="hidden" id="asa_given" value="No">
                   <div id="asa_time_div" style="display:none;"><input type="text" id="asa_time" placeholder="Time Aspirin Given"></div>
               </div>
           </div>
-
-          <!-- CARDIAC EXAM GUIDE -->
-          <div class="adult-only" style="margin-top:15px; background: var(--input-bg); border: 1px dashed var(--acc-grad-1); border-radius: 8px; padding: 12px;">
-              <h4 style="margin-top:0; color:var(--acc-grad-1); display:flex; align-items:center; gap:6px;">🩺 Cardiac Exam Guide</h4>
-              <div style="font-size:11px; margin-bottom:8px; line-height:1.4;">
-                  <b style="color:var(--acc-grad-1);">I</b>nspection: Scars (midline sternotomy), pacemaker bulges, visible heaves.<br>
-                  <b style="color:var(--acc-grad-1);">P</b>alpation: Apex beat (5th IC space, mid-clavicular line), heaves or thrills.<br>
-                  <b style="color:var(--acc-grad-1);">A</b>uscultation: Listen to 4 valves (Aortic, Pulmonary, Tricuspid, Mitral) for murmurs or rubs.
-              </div>
-              <input type="text" id="card_ippa_notes" placeholder="Exam Findings (e.g., Systolic murmur, displaced apex)">
-          </div>
-        </div>
+      </div>
       </div>
       
       <div class="question paeds-only" style="display:none;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Paediatric Pain Scale (FLACC)?
-        <div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('flacc_c_val', '0', this)">0 (No Pain)</button><button type="button" class="segment-btn" style="background:#f59e0b; color:white;" onclick="setSeg('flacc_c_val', '1-3', this)">1-3 (Mild)</button><button type="button" class="segment-btn" style="background:#ea580c; color:white;" onclick="setSeg('flacc_c_val', '4-6', this)">4-6 (Mod)</button><button type="button" class="segment-btn btn-red" style="grid-column: span 3;" onclick="setSeg('flacc_c_val', '7-10', this)">7-10 (Severe)</button></div><input type="hidden" id="flacc_c_val" value="0">
+        <div class="segmented-control grid-3">
+          <button type="button" class="segment-btn active" onclick="setSeg('flacc_c_val', '0', this)">0 (No Pain)</button>
+          <button type="button" class="segment-btn" style="background:#f59e0b; color:white;" onclick="setSeg('flacc_c_val', '1-3', this)">1-3 (Mild)</button>
+          <button type="button" class="segment-btn" style="background:#ea580c; color:white;" onclick="setSeg('flacc_c_val', '4-6', this)">4-6 (Mod)</button>
+          <button type="button" class="segment-btn btn-red" style="grid-column: span 3;" onclick="setSeg('flacc_c_val', '7-10', this)">7-10 (Severe)</button>
+        </div>
+        <input type="hidden" id="flacc_c_val" value="0">
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Pulse Quality:
-          <div class="segmented-control grid-2"><button type="button" class="segment-btn active" onclick="setSeg('pulse_qual', 'Regular & Strong', this)">Regular & Strong</button><button type="button" class="segment-btn btn-red" onclick="setSeg('pulse_qual', 'Irregular', this); calculateDDx();">Irregular</button><button type="button" class="segment-btn btn-red" onclick="setSeg('pulse_qual', 'Weak / Thready', this); calculateDDx();">Weak / Thready</button><button type="button" class="segment-btn btn-red" onclick="setSeg('pulse_qual', 'Bounding', this)">Bounding</button></div><input type="hidden" id="pulse_qual" value="Regular & Strong">
+          <div class="segmented-control grid-2">
+              <button type="button" class="segment-btn active" onclick="setSeg('pulse_qual', 'Regular & Strong', this)">Regular & Strong</button>
+              <button type="button" class="segment-btn btn-red" onclick="setSeg('pulse_qual', 'Irregular', this); calculateDDx();">Irregular</button>
+              <button type="button" class="segment-btn btn-red" onclick="setSeg('pulse_qual', 'Weak / Thready', this); calculateDDx();">Weak / Thready</button>
+              <button type="button" class="segment-btn btn-red" onclick="setSeg('pulse_qual', 'Bounding', this)">Bounding</button>
+          </div>
+          <input type="hidden" id="pulse_qual" value="Regular & Strong">
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="palps" onchange="toggleMenu('palps_n', this.checked)"> Racing or fluttering heart?
         <div id="palps_n" class="nested"><input type="text" id="palps_det" placeholder="Onset / Frequency..."></div>
       </div>
+      
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="sync" onchange="toggleMenu('sync_n', this.checked)"> Syncope / almost fainted?
         <div id="sync_n" class="nested"><input type="text" id="sync_det" placeholder="Before/During/After symptoms..."></div>
       </div>
+      
       <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="dizzy" onchange="toggleMenu('dizzy_n', this.checked)"> Dizziness / Orthostatic Symptoms?
         <div id="dizzy_n" class="nested"><input type="text" id="dizzy_det" placeholder="Postural? Room spinning?"></div>
       </div>
+      
       <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="oedema" onchange="toggleMenu('oedema_n', this.checked)"> Swollen legs/ankles?
         <div id="oedema_n" class="nested"><input type="text" id="oedema_det" placeholder="Pitting? Bilateral/Unilateral?"></div>
       </div>
+
       <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="claudication" onchange="toggleMenu('claudication_n', this.checked)"> Claudication (Leg pain when walking)?
           <div id="claudication_n" class="nested"><input type="text" id="claudication_det" placeholder="Distance before pain starts, bilateral/unilateral?"></div>
       </div>
 
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Skin / Perfusion?
-          <div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('skin_cond', 'Warm & Dry', this)">Warm/Dry</button><button type="button" class="segment-btn" onclick="setSeg('skin_cond', 'Pale', this)">Pale</button><button type="button" class="segment-btn" onclick="setSeg('skin_cond', 'Clammy / Sweaty', this)">Clammy</button><button type="button" class="segment-btn" onclick="setSeg('skin_cond', 'Flushed / Hot', this)">Flushed</button><button type="button" class="segment-btn btn-red" onclick="setSeg('skin_cond', 'Mottled', this)">Mottled</button><button type="button" class="segment-btn btn-red" onclick="setSeg('skin_cond', 'Jaundiced', this)">Jaundiced</button></div><input type="hidden" id="skin_cond" value="Warm & Dry">
-          <div style="margin-top:10px; font-weight:bold; font-size:11px;">Capillary Refill Time (CRT):</div><div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('crt_val', '< 2 seconds', this)">Under 2s</button><button type="button" class="segment-btn btn-red" onclick="setSeg('crt_val', '> 2 seconds', this); calculateDDx();">Over 2s</button></div><input type="hidden" id="crt_val" value="< 2 seconds">
+          <div class="segmented-control grid-3">
+            <button type="button" class="segment-btn active" onclick="setSeg('skin_cond', 'Warm & Dry', this)">Warm/Dry</button>
+            <button type="button" class="segment-btn" onclick="setSeg('skin_cond', 'Pale', this)">Pale</button>
+            <button type="button" class="segment-btn" onclick="setSeg('skin_cond', 'Clammy / Sweaty', this)">Clammy</button>
+            <button type="button" class="segment-btn" onclick="setSeg('skin_cond', 'Flushed / Hot', this)">Flushed</button>
+            <button type="button" class="segment-btn btn-red" onclick="setSeg('skin_cond', 'Mottled', this)">Mottled</button>
+            <button type="button" class="segment-btn btn-red" onclick="setSeg('skin_cond', 'Jaundiced', this)">Jaundiced</button>
+          </div>
+          <input type="hidden" id="skin_cond" value="Warm & Dry">
+          <div style="margin-top:10px; font-weight:bold; font-size:11px;">Capillary Refill Time (CRT):</div>
+          <div class="segmented-control">
+            <button type="button" class="segment-btn active" onclick="setSeg('crt_val', '< 2 seconds', this)">Under 2s</button>
+            <button type="button" class="segment-btn btn-red" onclick="setSeg('crt_val', '> 2 seconds', this); calculateDDx();">Over 2s</button>
+          </div>
+          <input type="hidden" id="crt_val" value="< 2 seconds">
+      </div>
+
+      <div class="question adult-only"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Cardiac Exam Notes:
+          <div style="margin-top:5px; background:var(--input-bg); border:1px dashed var(--acc-grad-1); border-radius:8px; padding:10px;">
+              <div style="font-size:11px; margin-bottom:8px; line-height:1.4;">
+                  <b style="color:var(--acc-grad-1);">I</b>nspect: Scars. <b style="color:var(--acc-grad-1);">P</b>alpate: Apex beat. <b style="color:var(--acc-grad-1);">A</b>uscultate: 4 valves (Aortic, Pulm, Tri, Mitral).
+              </div>
+              <input type="text" id="card_ippa_notes" placeholder="Exam Findings (e.g., Systolic murmur)">
+          </div>
       </div>
       
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Was a 12-Lead ECG performed?
-         <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('ecg_perf', 'No', this); toggleMenu('ecg_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('ecg_perf', 'Yes', this); toggleMenu('ecg_n', true)">Yes</button></div><input type="hidden" id="ecg_perf" value="No">
+         <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('ecg_perf', 'No', this); toggleMenu('ecg_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('ecg_perf', 'Yes', this); toggleMenu('ecg_n', true)">Yes</button></div>
+         <input type="hidden" id="ecg_perf" value="No">
          <div id="ecg_n" class="nested">
+             
              <div class="adult-only" style="margin-bottom:15px; background:linear-gradient(135deg, #1e293b, #0f172a); color:#f8fafc; padding:16px; border-radius:var(--radius-sm); border-left:4px solid #38bdf8; box-shadow:var(--shadow-sm);">
                 <h4 style="color:#38bdf8; margin-top:0; margin-bottom:10px;">10 Rules of a Normal ECG</h4>
                 <div style="font-size:11px; display:flex; flex-direction:column; gap:8px; line-height:1.4; opacity:0.95;">
@@ -398,32 +619,42 @@
                 </div>
              </div>
 
-             <div class="adult-only" style="margin-bottom:15px; background:var(--input-bg); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px;">
+             <!-- INTERACTIVE RHYTHM ASSISTANT -->
+             <div class="adult-only" style="margin-bottom:15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px;">
                 <h4 style="margin-top:0; color:var(--acc-grad-1); cursor:pointer;" onclick="toggleMenu('ecg_assistant_n', document.getElementById('ecg_assistant_n').style.display==='none')">📈 Interactive Rhythm Assistant (Tap to open)</h4>
                 <div id="ecg_assistant_n" style="display:none; margin-top:10px;">
                    <div style="font-size:11px; font-weight:bold;">1. Rate:</div><div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Count QRS complexes in a 10s strip x6.</div>
                    <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('ecg_rate','Normal',this); evalEcg();">50-100</button><button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_rate','Brady',this); evalEcg();"><50</button><button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_rate','Tachy',this); evalEcg();">101-150</button><button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_rate','Extreme',this); evalEcg();">>150</button></div><input type="hidden" id="ecg_rate" value="Normal">
+                   
                    <div style="font-size:11px; font-weight:bold; margin-top:10px;">2. Regularity:</div><div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Are R-R intervals equally spaced?</div>
                    <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('ecg_rhythm','Regular',this); evalEcg();">Regular</button><button type="button" class="segment-btn" onclick="setSeg('ecg_rhythm','Irregular',this); evalEcg();">Irregular</button></div><input type="hidden" id="ecg_rhythm" value="Regular">
+                   
                    <div style="font-size:11px; font-weight:bold; margin-top:10px;">3. P Waves:</div><div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Best seen in Lead II or V1.</div>
                    <div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('ecg_p','Normal',this); evalEcg();">Normal</button><button type="button" class="segment-btn" onclick="setSeg('ecg_p','Absent',this); evalEcg();">Absent/Fib</button><button type="button" class="segment-btn" onclick="setSeg('ecg_p','Multiple',this); evalEcg();">Multiple/Flutter</button></div><input type="hidden" id="ecg_p" value="Normal">
+                   
                    <div style="font-size:11px; font-weight:bold; margin-top:10px;">4. PR Interval / AV Blocks:</div><div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Start of P to start of QRS.</div>
                    <div class="segmented-control grid-2"><button type="button" class="segment-btn active" onclick="setSeg('ecg_pr','Normal',this); toggleMenu('av_block_guide', false); evalEcg();">Normal (3-5 sq)</button><button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_pr','1st_Degree',this); toggleMenu('av_block_guide', true); evalEcg();">1st Deg (>5 sq fixed)</button><button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_pr','Mobitz1',this); toggleMenu('av_block_guide', true); evalEcg();">Mobitz I (Lengthens)</button><button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_pr','Mobitz2',this); toggleMenu('av_block_guide', true); evalEcg();">Mobitz II (Drops)</button><button type="button" class="segment-btn btn-red" style="grid-column: span 2;" onclick="setSeg('ecg_pr','3rd_Degree',this); toggleMenu('av_block_guide', true); evalEcg();">3rd Degree Complete (Dissociated)</button></div><input type="hidden" id="ecg_pr" value="Normal">
                    <div id="av_block_guide" style="display:none; margin-top:8px; padding:12px; background:#fefce8; border:1px solid #fde047; border-radius:6px; font-size:12px; line-height:1.5;"><b style="color:#ca8a04;">AV Block Guide:</b><br>• <b style="color:#b45309;">1st Degree:</b> PR >5 small squares, but every P has a QRS.<br>• <b style="color:#b45309;">Mobitz I:</b> PR gets progressively longer until QRS dropped.<br>• <b style="color:#ef4444;">Mobitz II:</b> PR is constant, but QRS randomly drops. High risk.<br>• <b style="color:#ef4444;">3rd Degree:</b> P and QRS beat independently. P rate > QRS rate.</div>
+                   
                    <div style="font-size:11px; font-weight:bold; margin-top:10px;">5. QRS Width:</div><div style="font-size:10px; opacity:0.8; margin-bottom:4px;">Start of Q to end of S.</div>
                    <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('ecg_qrs','Narrow',this); toggleMenu('bbb_guide', false); evalEcg();">Narrow (&lt; 3 small sq)</button><button type="button" class="segment-btn btn-red" onclick="setSeg('ecg_qrs','Broad',this); toggleMenu('bbb_guide', true); evalEcg();">Broad (>= 3 small sq)</button></div><input type="hidden" id="ecg_qrs" value="Narrow">
                    <div id="bbb_guide" style="display:none; margin-top:8px; padding:12px; background:#e0f2fe; border:1px solid #bae6fd; border-radius:6px; font-size:12px; line-height:1.5;"><b style="color:#0369a1;">BBB Guide (Leads V1 & V6):</b><br>• <b style="color:#ef4444;">LBBB</b> (WiLLiaM): 'W' in V1, 'M' in V6. <i>New LBBB + CP = STEMI.</i><br>• <b style="color:#eab308;">RBBB</b> (MaRRoW): 'M' in V1, 'W' in V6.</div>
+                   
                    <div id="ecg_eval_out" style="margin-top:15px; padding:10px; background:#1e293b; color:#38bdf8; border-radius:8px; font-weight:bold; text-align:center; font-size:13px;">Suggestion: Sinus Rhythm</div>
-                   <button type="button" class="calc-btn" style="margin-top:10px; background:#334155; padding:12px;" onclick="document.getElementById('ecg_desc').value = document.getElementById('ecg_eval_out').innerText.replace('Suggestion: ', '');">Copy to Rhythm Findings Below</button>
+                   <button type="button" class="calc-btn" style="margin-top:10px; background:#334155; padding: 12px;" onclick="document.getElementById('ecg_desc').value = document.getElementById('ecg_eval_out').innerText.replace('Suggestion: ', '');">Copy to Rhythm Findings Below</button>
                 </div>
              </div>
 
              <input type="text" id="ecg_desc" placeholder="Rhythm / Findings...">
+             
+             <!-- ST ELEVATION LOCATOR -->
              <label style="margin-top:10px; display:block;"><input type="checkbox" id="st_elev" onchange="toggleMenu('st_elev_n', this.checked); evalStemi();"> ST Elevation noted?</label>
              <div id="st_elev_n" class="nested">
                  Which leads?
                  <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:5px; margin-top:8px; font-size:12px;">
-                    <label><input type="checkbox" id="lead_v1" onchange="evalStemi()"> V1</label><label><input type="checkbox" id="lead_v2" onchange="evalStemi()"> V2</label><label><input type="checkbox" id="lead_v3" onchange="evalStemi()"> V3</label><label><input type="checkbox" id="lead_v4" onchange="evalStemi()"> V4</label><label><input type="checkbox" id="lead_v5" onchange="evalStemi()"> V5</label><label><input type="checkbox" id="lead_v6" onchange="evalStemi()"> V6</label><label><input type="checkbox" id="lead_i" onchange="evalStemi()"> I</label><label><input type="checkbox" id="lead_ii" onchange="evalStemi()"> II</label><label><input type="checkbox" id="lead_iii" onchange="evalStemi()"> III</label><label><input type="checkbox" id="lead_avr" onchange="evalStemi()"> aVR</label><label><input type="checkbox" id="lead_avl" onchange="evalStemi()"> aVL</label><label><input type="checkbox" id="lead_avf" onchange="evalStemi()"> aVF</label>
+                    <label><input type="checkbox" id="lead_v1" onchange="evalStemi()"> V1</label><label><input type="checkbox" id="lead_v2" onchange="evalStemi()"> V2</label><label><input type="checkbox" id="lead_v3" onchange="evalStemi()"> V3</label><label><input type="checkbox" id="lead_v4" onchange="evalStemi()"> V4</label>
+                    <label><input type="checkbox" id="lead_v5" onchange="evalStemi()"> V5</label><label><input type="checkbox" id="lead_v6" onchange="evalStemi()"> V6</label><label><input type="checkbox" id="lead_i" onchange="evalStemi()"> I</label><label><input type="checkbox" id="lead_ii" onchange="evalStemi()"> II</label>
+                    <label><input type="checkbox" id="lead_iii" onchange="evalStemi()"> III</label><label><input type="checkbox" id="lead_avr" onchange="evalStemi()"> aVR</label><label><input type="checkbox" id="lead_avl" onchange="evalStemi()"> aVL</label><label><input type="checkbox" id="lead_avf" onchange="evalStemi()"> aVF</label>
                  </div>
                  <div id="stemi_location_out" style="display:none; margin-top:10px; padding:10px; background:#fef2f2; color:#ef4444; border:1px solid #fca5a5; border-radius:6px; font-weight:bold; font-size:12px; line-height:1.4;" data-short="">
                     🚨 STEMI Location Suggestion:<br><span id="stemi_loc_text"></span>
@@ -438,8 +669,7 @@
         <div id="det_card_n" class="nested"><textarea id="det_card_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
       </div>
     </div>
-
-    <!-- 4. NEURO -->
+<!-- 4. NEURO -->
     <button class="accordion" id="neuro_acc">🧠 Brain & Nerves</button>
     <div class="panel" id="neuro_pan">
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="neuro_loc" onchange="toggleMenu('neuro_loc_n', this.checked)"> Loss of Consciousness prior to arrival?
@@ -501,6 +731,7 @@
         <div id="det_neuro_n" class="nested"><textarea id="det_neuro_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
       </div>
     </div>
+
     <!-- 5. VITALS & NEWS2 -->
     <button class="accordion adult-only" id="news_acc" style="display:block;">📊 Vitals & NEWS2</button>
     <div class="panel adult-only" id="news_pan">
@@ -593,7 +824,7 @@
           <div class="adult-only" style="margin-top:15px; background:var(--input-bg); border:1px dashed var(--acc-grad-1); border-radius:8px; padding:12px;">
               <h4 style="margin-top:0; color:var(--acc-grad-1); display:flex; align-items:center; gap:6px;">🩺 Abdo IAPP Exam Guide</h4>
               <div style="font-size:11px; margin-bottom:8px; line-height:1.4;"><i>Note: Auscultate BEFORE palpating.</i><br><b style="color:var(--acc-grad-1);">I</b>nspection: Distension, scars, hernias.<br><b style="color:var(--acc-grad-1);">A</b>uscultation: Bowel sounds.<br><b style="color:var(--acc-grad-1);">P</b>ercussion: Tympany vs Dullness.<br><b style="color:var(--acc-grad-1);">P</b>alpation: Feel 9 regions. Note guarding, rigidity, rebound.</div>
-              <input type="text" id="abdo_iapp_notes" placeholder="Exam Findings (e.g., Rigidity in RLQ)">
+              <input type="text" id="abdo_iapp_notes" placeholder="Exam Findings (e.g., Rigidity in RLQ, dull percussion)">
           </div>
         </div>
       </div>
@@ -601,17 +832,22 @@
       <div class="question paeds-only" style="display:none;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Paediatric Pain Scale (FLACC)?
         <div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('flacc_a_val', '0', this)">0 (No Pain)</button><button type="button" class="segment-btn" style="background:#f59e0b; color:white;" onclick="setSeg('flacc_a_val', '1-3', this)">1-3 (Mild)</button><button type="button" class="segment-btn" style="background:#ea580c; color:white;" onclick="setSeg('flacc_a_val', '4-6', this)">4-6 (Mod)</button><button type="button" class="segment-btn btn-red" style="grid-column: span 3;" onclick="setSeg('flacc_a_val', '7-10', this)">7-10 (Severe)</button></div><input type="hidden" id="flacc_a_val" value="0">
       </div>
+      
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Bowel Sounds
-        <div class="segmented-control grid-3"><button type="button" class="segment-btn" onclick="setSeg('bs_val', 'Good', this); document.getElementById('bs_where').style.display='none'">Good</button><button type="button" class="segment-btn" onclick="setSeg('bs_val', 'Reduced', this); document.getElementById('bs_where').style.display='block'">Reduced</button><button type="button" class="segment-btn" onclick="setSeg('bs_val', 'None', this); document.getElementById('bs_where').style.display='block'">None</button></div><input type="hidden" id="bs_val" value=""><input type="text" id="bs_where" placeholder="Where? (e.g. Lower right quadrant)" style="display:none; margin-top:8px;">
+        <div class="segmented-control grid-3"><button type="button" class="segment-btn" onclick="setSeg('bs_val', 'Good', this); document.getElementById('bs_where').style.display='none'">Good</button><button type="button" class="segment-btn" onclick="setSeg('bs_val', 'Reduced', this); document.getElementById('bs_where').style.display='block'">Reduced</button><button type="button" class="segment-btn" onclick="setSeg('bs_val', 'None', this); document.getElementById('bs_where').style.display='block'">None</button></div>
+        <input type="hidden" id="bs_val" value=""><input type="text" id="bs_where" placeholder="Where? (e.g. Lower right quadrant)" style="display:none; margin-top:8px;">
       </div>
+
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Urination Issues
         <div style="margin-top:10px;">Pain when urinating?</div><div class="segmented-control"><button class="segment-btn active" onclick="setSeg('ur_pain','No',this); toggleMenu('ur_pain_n', false)">No</button><button class="segment-btn" onclick="setSeg('ur_pain','Yes',this); toggleMenu('ur_pain_n', true)">Yes</button></div><input type="hidden" id="ur_pain" value="No"> <div id="ur_pain_n" style="display:none; margin-top:5px;"><input type="text" id="ur_pain_start" placeholder="When did it start?"></div>
         <div style="margin-top:10px;">Blood in urine?</div><div class="segmented-control"><button class="segment-btn active" onclick="setSeg('ur_blood','No',this); toggleMenu('ur_blood_n', false)">No</button><button class="segment-btn btn-red" onclick="setSeg('ur_blood','Yes',this); toggleMenu('ur_blood_n', true)">Yes</button></div><input type="hidden" id="ur_blood" value="No"> <div id="ur_blood_n" style="display:none; margin-top:5px;"><input type="number" id="ur_blood_times" placeholder="How many times?"></div>
         <div style="margin-top:10px;">Unable to urinate?</div><div class="segmented-control"><button class="segment-btn active" onclick="setSeg('ur_ret','No',this); toggleMenu('ur_ret_n', false)">No</button><button class="segment-btn btn-red" onclick="setSeg('ur_ret','Yes',this); toggleMenu('ur_ret_n', true)">Yes</button></div><input type="hidden" id="ur_ret" value="No"> <div id="ur_ret_n" style="display:none; margin-top:5px;"><input type="text" id="ur_ret_time" placeholder="How long for?"></div>
       </div>
+      
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Other Urinary Symptoms:
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px; font-size:12px;"><label><input type="checkbox" id="ur_freq"> Frequency / Urgency</label><label><input type="checkbox" id="ur_olig"> Oliguria (Reduced output)</label><label><input type="checkbox" id="ur_inc"> Incontinence (New)</label><label><input type="checkbox" id="ur_froth"> Foamy / Frothy Urine</label></div>
       </div>
+
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
         <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_gigu_val', 'No', this); toggleMenu('det_gigu_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_gigu_val', 'Yes', this); toggleMenu('det_gigu_n', true)">Yes</button></div><input type="hidden" id="det_gigu_val" value="No">
         <div id="det_gigu_n" class="nested"><textarea id="det_gigu_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
@@ -630,6 +866,7 @@
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="msk_rom" onchange="toggleMenu('msk_rom_n', this.checked)"> Reduced Range of Motion (ROM)?
           <div id="msk_rom_n" class="nested"><input type="text" id="msk_rom_det" placeholder="Which limb/joint? Due to pain or mechanical block?"></div>
       </div>
+
       <div id="trauma_bones_section" style="display:none; border:1px solid #fca5a5; background:#fef2f2; padding:10px; border-radius:8px; margin-bottom:15px;">
           <h4 style="color:#ef4444; margin-top:0;">Fall / Trauma Specifics</h4>
           <div class="question" style="border:none; padding:0; margin:5px 0;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="limb_p" onchange="toggleMenu('limb_p_n', this.checked)"> Limb pain
@@ -645,8 +882,10 @@
              <div id="deformity_p_n" class="nested" style="margin-bottom:10px;"><input type="text" id="deformity_p_det" placeholder="Where? Open/Closed? Distal pulse/sensation?"></div>
           </div>
       </div>
+
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Back Pain?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('back_p', 'No', this); toggleMenu('back_n', false)">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('back_p', 'Yes', this); toggleMenu('back_n', true)">Yes</button></div><input type="hidden" id="back_p" value="No">
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('back_p', 'No', this); toggleMenu('back_n', false)">No</button><button type="button" class="segment-btn btn-red" onclick="setSeg('back_p', 'Yes', this); toggleMenu('back_n', true)">Yes</button></div>
+        <input type="hidden" id="back_p" value="No">
         <div id="back_n" class="nested">
           <h4 style="margin-top:0;">Fluid SOCRATES</h4>
           <input type="text" id="back_where" placeholder="Where in the back?"><input type="text" id="soc_m_o" placeholder="Onset Time (When did it start?)">
@@ -662,20 +901,72 @@
           </div>
         </div>
       </div>
+
       <div class="question paeds-only" style="display:none;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Paediatric Pain Scale (FLACC)?
         <div class="segmented-control grid-3"><button type="button" class="segment-btn active" onclick="setSeg('flacc_m_val', '0', this)">0 (No Pain)</button><button type="button" class="segment-btn" style="background:#f59e0b; color:white;" onclick="setSeg('flacc_m_val', '1-3', this)">1-3 (Mild)</button><button type="button" class="segment-btn" style="background:#ea580c; color:white;" onclick="setSeg('flacc_m_val', '4-6', this)">4-6 (Mod)</button><button type="button" class="segment-btn btn-red" style="grid-column: span 3;" onclick="setSeg('flacc_m_val', '7-10', this)">7-10 (Severe)</button></div><input type="hidden" id="flacc_m_val" value="0">
       </div>
+
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Trouble Walking?
         <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('walk_p', 'No', this); toggleMenu('walk_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('walk_p', 'Yes', this); toggleMenu('walk_n', true)">Yes</button></div><input type="hidden" id="walk_p" value="No">
         <div id="walk_n" class="nested"><input type="text" id="walk_long" placeholder="How long for? Reason (e.g. pain, weakness)?"><div style="background:#fff1f2; color:#be123c; padding:10px; border-radius:8px; margin-top:8px; font-size:12px; font-weight:bold;">⚠️ Consider FAST test to rule out stroke!</div></div>
       </div>
+
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
         <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_msk_val', 'No', this); toggleMenu('det_msk_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_msk_val', 'Yes', this); toggleMenu('det_msk_n', true)">Yes</button></div><input type="hidden" id="det_msk_val" value="No">
         <div id="det_msk_n" class="nested"><textarea id="det_msk_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
       </div>
     </div>
 
-    <!-- 9. MATERNITY -->
+    <!-- 9. FRAILTY & PALLIATIVE (SPICT TOOL) -->
+    <button class="accordion adult-only" id="spict_acc" style="background: linear-gradient(135deg, #7c3aed, #4c1d95);">🕯️ Frailty & Palliative Care (SPICT™ Tool)</button>
+    <div class="panel adult-only" id="spict_pan">
+      <div class="question" style="background:#f3e8ff; border:1px solid #d8b4fe; padding:10px; border-radius:8px;">
+        <span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <b>SPICT™ General Indicators of Deteriorating Health</b>
+        <div style="font-size:11px; margin-top:6px; opacity:0.9;">Check any indicators present:</div>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px; font-size:12px;">
+          <label><input type="checkbox" id="spict_g1" onchange="calculateDDx()"> Urgent / emergency hospital admission(s) or visits</label>
+          <label><input type="checkbox" id="spict_g2" onchange="calculateDDx()"> Functional ability is poor or deteriorating (bed/chair > half day)</label>
+          <label><input type="checkbox" id="spict_g3" onchange="calculateDDx()"> Depends on others more for physical and/or mental health care</label>
+          <label><input type="checkbox" id="spict_g4" onchange="calculateDDx()"> Person's carer needs more help and support</label>
+          <label><input type="checkbox" id="spict_g5" onchange="calculateDDx()"> Progressive weight loss; underweight; low muscle mass</label>
+          <label><input type="checkbox" id="spict_g6" onchange="calculateDDx()"> Persistent symptoms despite optimal treatment</label>
+          <label><input type="checkbox" id="spict_g7" onchange="calculateDDx()"> Asks for palliative care / wishes to focus on quality of life</label>
+        </div>
+      </div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Clinical Indicators of Life-Shortening Conditions:
+        <select id="spict_clinical" onchange="calculateDDx()">
+          <option value="">-- None / Select Condition --</option>
+          <option value="Cancer (Functional decline / too frail for treatment)">Cancer (Functional decline / too frail for treatment)</option>
+          <option value="Dementia / Frailty (Incontinence, swallowing difficulty, falls)">Dementia / Frailty (Incontinence, eating less, falls)</option>
+          <option value="Neurological Disease (Progressive decline, speech/aspiration)">Neurological (Progressive decline, speech/swallowing/aspiration)</option>
+          <option value="Heart / Vascular (Advanced Heart Failure / Severe PVD)">Heart / Vascular (Advanced HF, symptoms at rest)</option>
+          <option value="Respiratory Disease (Severe lung disease, LTOT req)">Respiratory (Severe lung disease, persistent hypoxia/LTOT)</option>
+          <option value="Kidney Disease (Stage 4/5 CKD, deteriorating)">Kidney Disease (Stage 4/5 CKD, deteriorating)</option>
+          <option value="Liver Disease (Cirrhosis with complications)">Liver Disease (Cirrhosis with complications)</option>
+        </select>
+        <input type="text" id="spict_clin_notes" placeholder="Specific condition notes / details..." style="margin-top:8px;">
+      </div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> GP / Care Plan Action Required?
+          <div class="segmented-control">
+            <button type="button" class="segment-btn active" onclick="setSeg('spict_action_val', 'No', this); toggleMenu('spict_act_n', false)">No</button>
+            <button type="button" class="segment-btn btn-red" onclick="setSeg('spict_action_val', 'Yes', this); toggleMenu('spict_act_n', true)">Yes (Palliative/GP Review Req.)</button>
+          </div>
+          <input type="hidden" id="spict_action_val" value="No">
+          <div id="spict_act_n" class="nested">
+             <textarea id="spict_act_txt" rows="3" placeholder="Action details (e.g., GP review requested for anticipatory meds, ReSPECT/DNACPR review, carer support contact)"></textarea>
+          </div>
+      </div>
+
+      <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_spict_val', 'No', this); toggleMenu('det_spict_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_spict_val', 'Yes', this); toggleMenu('det_spict_n', true)">Yes</button></div>
+        <input type="hidden" id="det_spict_val" value="No">
+        <div id="det_spict_n" class="nested"><textarea id="det_spict_txt" rows="3" placeholder="Add further clinical/holistic details here..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- 10. MATERNITY -->
     <button class="accordion adult-only" id="maternity_acc" style="display:none;">🤰 Maternity / Obstetrics</button>
     <div class="panel adult-only" id="maternity_pan">
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Gravida/Para: <div style="display:flex; gap:10px;"><input type="number" id="mat_gravida" placeholder="Gravida (G)"><input type="number" id="mat_para" placeholder="Para (P)"></div></div>
@@ -702,7 +993,7 @@
       </div>
     </div>
 
-    <!-- 10. TRAUMA -->
+    <!-- 11. TRAUMA -->
     <button class="accordion" id="trauma_acc" style="display:none;">💥 Trauma / RTC Details</button>
     <div class="panel" id="trauma_pan">
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="trauma_mtc" onchange="toggleMenu('trauma_mtc_n', this.checked); calculateDDx();"> MTC Step 3 Trigger?
@@ -732,7 +1023,7 @@
       </div>
     </div>
 
-    <!-- 11. FALLS -->
+    <!-- 12. FALLS -->
     <button class="accordion" id="fall_acc" style="display:none;">📉 Falls Assessment</button>
     <div class="panel" id="fall_pan">
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> <input type="checkbox" id="fall_65" onchange="toggleMenu('fall_65_n', this.checked); calculateDDx();"> Patient 65+ Years Old?
@@ -763,7 +1054,7 @@
       </div>
     </div>
 
-    <!-- 12. MENTAL HEALTH -->
+    <!-- 13. MENTAL HEALTH -->
     <button class="accordion" id="mh_acc" style="display:none;">💭 Mental Health</button>
     <div class="panel" id="mh_pan">
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Known to MH services? <input type="text" id="mh_team" placeholder="Team/Borough" style="margin-top:5px;"></div>
@@ -780,7 +1071,7 @@
       </div>
     </div>
 
-    <!-- 13. MEDS & SOCIAL -->
+    <!-- 14. MEDS & SOCIAL -->
     <button class="accordion" id="meds_social_acc">💊 Meds & Social</button>
     <div class="panel" id="meds_social_pan">
       <div style="background:#e0f2fe; border:1px solid #bae6fd; padding:10px; border-radius:8px; margin-bottom:15px;">
@@ -820,7 +1111,7 @@
       </div>
     </div>
 
-    <!-- 14. PLAN -->
+    <!-- 15. PLAN -->
     <button class="accordion" id="plan_acc">🗺️ Plan & Handover</button>
     <div class="panel" id="plan_pan">
       <div class="question" style="background:#fff1f2; border:1px solid #fecdd3; padding:10px; border-radius:8px;"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> 🚩 Safeguarding / Vulnerability Concerns?
@@ -844,7 +1135,7 @@
       </div>
     </div>
 
-    <!-- 15. ADVICE -->
+    <!-- 16. ADVICE -->
     <button class="accordion" id="advice_acc">📄 Advice & Refusal</button>
     <div class="panel" id="advice_pan">
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Worsening Care Advice Given?
@@ -868,8 +1159,8 @@
          <div id="paeds_refusal_n" class="nested"><div style="font-weight:bold; color:#d32f2f; margin-bottom:8px; font-size:12px;">⚠️ Note: If refusal is contrary to child's best interests, consider Gillick Competence or Police/Safeguarding.</div><textarea id="paeds_refusal_reason" rows="3" placeholder="Reason for refusal, details of advice, and escalation steps taken..."></textarea></div>
       </div>
       <div class="question"><span class="omit-btn" onclick="toggleOmit(this)">🚫</span> Further Details?
-        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_adv_val', 'No', this); toggleMenu('det_adv_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_adv_val', 'Yes', this); toggleMenu('det_adv_n', true)">Yes</button></div><input type="hidden" id="det_adv_val" value="No">
-        <div id="det_adv_n" class="nested"><textarea id="det_adv_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
+        <div class="segmented-control"><button type="button" class="segment-btn active" onclick="setSeg('det_advice_val', 'No', this); toggleMenu('det_advice_n', false)">No</button><button type="button" class="segment-btn" onclick="setSeg('det_advice_val', 'Yes', this); toggleMenu('det_advice_n', true)">Yes</button></div><input type="hidden" id="det_advice_val" value="No">
+        <div id="det_advice_n" class="nested"><textarea id="det_advice_txt" rows="3" placeholder="Add further clinical details here..."></textarea></div>
       </div>
     </div>
 
@@ -887,9 +1178,8 @@
       <div class="ddx-text" id="ddx_text" style="font-size:11px; opacity:0.9;">DDx: Awaiting assessment...</div>
     </div>
   </div>
-
-  <!-- SCRIPT ENGINE -->
   <script>
+    // --- MED CONTRAINDICATIONS & SAFETY STOP ENGINE ---
     const medContraindications = {
         "Aspirin": "⚠️ Active GI bleeding or bleeding disorders.\n⚠️ Known bleeding ulcer.\n⚠️ Children under 16 years old.\n⚠️ Severe hepatic impairment.",
         "Paracetamol": "⚠️ Known allergy/hypersensitivity.\n⚠️ Extreme caution in severe hepatic impairment.",
@@ -1153,11 +1443,26 @@
         checkPulseAlert(); calculateDDx();
     }
 
+    function updateSections() {
+        var c = document.getElementById('complaint').value;
+        var tb = document.getElementById('trauma_bones_section');
+        if(tb) { tb.style.display = (c === 'fall' || c === 'trauma') ? 'block' : 'none'; }
+        var map = { 'maternity': 'maternity_acc', 'trauma': 'trauma_acc', 'fall': 'fall_acc', 'mental': 'mh_acc' };
+        ['maternity_acc', 'trauma_acc', 'fall_acc', 'mh_acc'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if(el) { el.style.display = 'none'; if(el.nextElementSibling) el.nextElementSibling.style.display = 'none'; }
+        });
+        if(map[c]) { var activeAcc = document.getElementById(map[c]); if(activeAcc) activeAcc.style.display = 'block'; }
+        calculateDDx();
+    }
+
     function calculateDDx() {
       var isPaeds = document.getElementById('main_form_container').classList.contains('paeds-mode-active');
       var ddx = []; 
       var cp = val('cp_val')==='Yes'; var sob = val('sob_val')==='Yes'; var fast = val('fast_val')==='Yes'; var f_w = val('f_w')!=='Normal'; var l_w = val('l_w')!=='Normal'; var s_w = val('s_w')!=='Normal'; var sepsis = val('sus_sepsis'); var allerg = val('sus_allerg'); var abdo = val('abdo_p')==='Yes'; var vomit = val('nausea_val')==='Vomiting'; var back = val('back_p')==='Yes'; var dizzy = val('dizzy'); var sync = val('sync'); var notAlert = val('alert_val') === 'No'; var sobAtRest = val('sob_when') === 'At Rest' || val('sob_when') === 'Both' || val('sob_when') === 'Feeding/Crying'; var speakNo = val('speak_full_val') === 'No'; var neuro_seiz = val('seizure'); var headInj = val('neuro_head'); var menin = val('neuro_meningism'); var pulseQ = val('pulse_qual'); var ortho = val('ortho_val'); var prBleed = val('pr_bleed');
       
+      var spictCount = 0; if(val('spict_g1')) spictCount++; if(val('spict_g2')) spictCount++; if(val('spict_g3')) spictCount++; if(val('spict_g4')) spictCount++; if(val('spict_g5')) spictCount++; if(val('spict_g6')) spictCount++; if(val('spict_g7')) spictCount++; var spictClin = val('spict_clinical') || '';
+
       var bm = 0, t = 0;
       if(isPaeds) { bm = parseFloat(document.getElementById('p_bm_val').value); t = parseFloat(document.getElementById('p_temp_val').value); } else { bm = parseFloat(document.getElementById('bm_val').value); t = parseFloat(document.getElementById('temp_val').value); }
 
@@ -1248,6 +1553,8 @@
       if(val('trauma_red')) redFlags.push("Trauma Red");
       if(val('trauma_amber')) amberFlags.push("Trauma Amber");
 
+      if (!isPaeds && (spictCount >= 2 || spictClin !== '')) amberFlags.push("SPICT Criteria Met - Consider Palliative / EOLC Review");
+
       var hud = document.getElementById('ddx_hud'), title = document.getElementById('ddx_title'), text = document.getElementById('ddx_text'), icon = document.getElementById('ddx_icon');
       if (hud && text && icon && title) {
         if (uniqueDdx.length > 0 || redFlags.length > 0 || amberFlags.length > 0 || val('arrival_notes')) {
@@ -1329,11 +1636,11 @@
         if(isPaeds && val('cp_val') === 'Yes' && !isOmitted('flacc_c_val')) card.push("• Paediatric Pain (FLACC): " + val('flacc_c_val'));
         if(!isOmitted('card_ippa_notes') && val('card_ippa_notes')) card.push("• Cardiac Exam Findings:\n  " + val('card_ippa_notes'));
         if(!isOmitted('pulse_qual')) { if(val('pulse_qual') === 'Regular & Strong') card.push("• Pulse is regular and strong."); else card.push("• Pulse quality: " + val('pulse_qual')); }
-        if(!isOmitted('palps')) card.push(document.getElementById('palps').checked ? "• Palpitations noted (" + val('palps_det') + ")" : "• No palpitations");
-        if(!isOmitted('sync')) card.push(document.getElementById('sync').checked ? "• Syncope noted (" + val('sync_det') + ")" : "• No syncope or presyncope");
-        if(!isOmitted('dizzy') && !isPaeds) card.push(document.getElementById('dizzy').checked ? "• Dizziness noted (" + val('dizzy_det') + ")" : "• No dizziness, lightheadedness, or orthostatic symptoms");
-        if(!isOmitted('oedema') && !isPaeds) card.push(document.getElementById('oedema').checked ? "• Peripheral Oedema noted (" + val('oedema_det') + ")" : "• No peripheral oedema");
-        if(!isOmitted('claudication') && !isPaeds) card.push(document.getElementById('claudication').checked ? "• Claudication noted (" + val('claudication_det') + ")" : "• No claudication");
+        if(!isOmitted('palps')) card.push(val('palps') ? "• Palpitations noted (" + val('palps_det') + ")" : "• No palpitations");
+        if(!isOmitted('sync')) card.push(val('sync') ? "• Syncope noted (" + val('sync_det') + ")" : "• No syncope or presyncope");
+        if(!isOmitted('dizzy') && !isPaeds) card.push(val('dizzy') ? "• Dizziness noted (" + val('dizzy_det') + ")" : "• No dizziness, lightheadedness, or orthostatic symptoms");
+        if(!isOmitted('oedema') && !isPaeds) card.push(val('oedema') ? "• Peripheral Oedema noted (" + val('oedema_det') + ")" : "• No peripheral oedema");
+        if(!isOmitted('claudication') && !isPaeds) card.push(val('claudication') ? "• Claudication noted (" + val('claudication_det') + ")" : "• No claudication");
         if(!isOmitted('skin_cond')) card.push("• Perfusion: Skin is " + val('skin_cond') + " | CRT: " + val('crt_val') + " (Normal < 2s). No cyanosis.");
         if(!isOmitted('ecg_perf')) {
             if(val('ecg_perf')==='Yes') {
@@ -1346,33 +1653,33 @@
         buildSec("Cardiovascular", card);
 
         var neuro = [];
-        if(!isOmitted('neuro_loc')) neuro.push(document.getElementById('neuro_loc').checked ? "• Loss of Consciousness prior to arrival: Yes (" + val('neuro_loc_det') + ")" : "• No LOC reported");
-        if(!isOmitted('neuro_head')) neuro.push(document.getElementById('neuro_head').checked ? "• Head Injury: Yes (" + val('neuro_head_det') + ")" : "• No obvious head injuries");
-        if(!isOmitted('neuro_meningism')) neuro.push(document.getElementById('neuro_meningism').checked ? "• Neck Stiffness / Photophobia: Yes (" + val('neuro_men_det') + ")" : "• No neck stiffness or photophobia");
-        if(!isOmitted('neuro_vis')) neuro.push(document.getElementById('neuro_vis').checked ? "• Visual Disturbances: Yes (" + val('neuro_vis_det') + ")" : "• No visual disturbances");
-        if(!isOmitted('neuro_numb')) neuro.push(document.getElementById('neuro_numb').checked ? "• Numbness / Weakness: Yes (" + val('neuro_numb_det') + ")" : "• No weakness or numbness/tingling");
-        if(!isOmitted('neuro_ataxia')) neuro.push(document.getElementById('neuro_ataxia').checked ? "• Ataxia: Yes (" + val('neuro_ataxia_det') + ")" : "• No ataxia");
+        if(!isOmitted('neuro_loc')) neuro.push(val('neuro_loc') ? "• Loss of Consciousness prior to arrival: Yes (" + val('neuro_loc_det') + ")" : "• No LOC reported");
+        if(!isOmitted('neuro_head')) neuro.push(val('neuro_head') ? "• Head Injury: Yes (" + val('neuro_head_det') + ")" : "• No obvious head injuries");
+        if(!isOmitted('neuro_meningism')) neuro.push(val('neuro_meningism') ? "• Neck Stiffness / Photophobia: Yes (" + val('neuro_men_det') + ")" : "• No neck stiffness or photophobia");
+        if(!isOmitted('neuro_vis')) neuro.push(val('neuro_vis') ? "• Visual Disturbances: Yes (" + val('neuro_vis_det') + ")" : "• No visual disturbances");
+        if(!isOmitted('neuro_numb')) neuro.push(val('neuro_numb') ? "• Numbness / Weakness: Yes (" + val('neuro_numb_det') + ")" : "• No weakness or numbness/tingling");
+        if(!isOmitted('neuro_ataxia')) neuro.push(val('neuro_ataxia') ? "• Ataxia: Yes (" + val('neuro_ataxia_det') + ")" : "• No ataxia");
         if(!isOmitted('fast_val')) {
             if(val('fast_val')==='Yes') { var fst = "• FAST Check:\n  Face: " + val('f_w') + "\n  Arm: " + val('l_w') + "\n  Speech: " + val('s_w'); if(val('f_w') !== 'Normal' || val('l_w') !== 'Normal' || val('s_w') !== 'Normal') fst += "\n  Onset: " + val('fast_time'); fst += "\n  Mimic Exclusion: " + (val('fast_mimics')||"-"); neuro.push(fst); }
             else neuro.push("• FAST Stroke Check not indicated. No facial droop, slurred speech, or aphasia.");
         }
         if(!isOmitted('pupils_checked')) {
-            if(document.getElementById('pupils_checked').checked) { var pupStr = "• Pupils: " + val('pupil_size'); if (val('pupil_size') === 'Unequal') pupStr += " (" + val('pupil_unequal_det') + ")"; pupStr += " | " + val('pupil_react'); if (val('pupil_react') !== 'Both React (PEARL)') pupStr += " (" + val('pupil_react_det') + ")"; neuro.push(pupStr); } 
+            if(val('pupils_checked')) { var pupStr = "• Pupils: " + val('pupil_size'); if (val('pupil_size') === 'Unequal') pupStr += " (" + val('pupil_unequal_det') + ")"; pupStr += " | " + val('pupil_react'); if (val('pupil_react') !== 'Both React (PEARL)') pupStr += " (" + val('pupil_react_det') + ")"; neuro.push(pupStr); } 
             else { neuro.push("• Pupils not formally checked. No gross abnormalities."); }
         }
         if(!isOmitted('nausea_val')) { if(val('nausea_val') !== 'No') neuro.push("• Nausea/Vomiting: " + val('nausea_val') + "\n  Start: " + val('vomit_start') + "\n  Times: " + val('vomit_times') + "\n  Blood: " + val('vomit_blood')); else neuro.push("• No nausea or vomiting"); }
-        if(!isOmitted('headache')) neuro.push(document.getElementById('headache').checked ? "• Headache noted (" + val('headache_det') + ")" : "• No headache");
-        if(!isOmitted('seizure')) neuro.push(document.getElementById('seizure').checked ? "• Seizure noted (" + val('seizure_det') + ")" : "• No seizures or post-ictal symptoms");
-        if(!isOmitted('confusion')) neuro.push(document.getElementById('confusion').checked ? "• Confusion noted (" + val('confusion_det') + ")" : "• No confusion or altered behaviour");
+        if(!isOmitted('headache')) neuro.push(val('headache') ? "• Headache noted (" + val('headache_det') + ")" : "• No headache");
+        if(!isOmitted('seizure')) neuro.push(val('seizure') ? "• Seizure noted (" + val('seizure_det') + ")" : "• No seizures or post-ictal symptoms");
+        if(!isOmitted('confusion')) neuro.push(val('confusion') ? "• Confusion noted (" + val('confusion_det') + ")" : "• No confusion or altered behaviour");
         if(val('det_neuro_val') === 'Yes') neuro.push("Further Details:\n" + (val('det_neuro_txt') || "None recorded."));
         buildSec("Neurological", neuro);
 
         var gigu = [];
-        if(!isOmitted('gigu_dysp')) gigu.push(document.getElementById('gigu_dysp').checked ? "• Dyspepsia noted (" + val('gigu_dysp_det') + ")" : "• No dyspepsia");
+        if(!isOmitted('gigu_dysp')) gigu.push(val('gigu_dysp') ? "• Dyspepsia noted (" + val('gigu_dysp_det') + ")" : "• No dyspepsia");
         if(!isOmitted('bowel_habit')) gigu.push(val('bowel_habit') === 'Normal' ? "• No diarrhoea or constipation" : "• Bowel Habit: " + val('bowel_habit') + " (" + val('bowel_habit_det') + ")");
         if(!isOmitted('pr_bleed')) gigu.push(val('pr_bleed') === 'No' ? "• No melena, haematochezia, or PR bleeding" : "• PR Bleeding: " + val('pr_bleed') + " (" + val('pr_bleed_det') + ")");
-        if(!isOmitted('gigu_dist')) gigu.push(document.getElementById('gigu_dist').checked ? "• Abdominal distension noted (" + val('gigu_dist_det') + ")" : "• No abdominal distension");
-        if(!isOmitted('gigu_flank')) gigu.push(document.getElementById('gigu_flank').checked ? "• Flank pain noted (" + val('gigu_flank_det') + ")" : "• No flank pain");
+        if(!isOmitted('gigu_dist')) gigu.push(val('gigu_dist') ? "• Abdominal distension noted (" + val('gigu_dist_det') + ")" : "• No abdominal distension");
+        if(!isOmitted('gigu_flank')) gigu.push(val('gigu_flank') ? "• Flank pain noted (" + val('gigu_flank_det') + ")" : "• No flank pain");
 
         if(!isOmitted('abdo_p')) {
             if(val('abdo_p')==='Yes') { var abdStr = "• Abdo Pain: Yes\n  SOCRATES:\n    S: " + (val('soc_a_s')||"-") + "\n    O: " + (val('soc_a_o')||"-") + "\n    C: " + (val('soc_a_c')||"-") + "\n    R: " + (val('soc_a_r')||"-") + "\n    A: " + (val('soc_a_a')||"-") + "\n    T: " + (val('soc_a_t')||"-") + "\n    E: " + (val('soc_a_e')||"-"); if(!isPaeds) abdStr += "\n    S: " + (val('soc_a_sev')||"-"); gigu.push(abdStr); }
@@ -1386,32 +1693,32 @@
         if(!isOmitted('ur_pain')) { if(val('ur_pain')==='Yes') urStr.push("Dysuria (Start: " + val('ur_pain_start') + ")"); else urStr.push("No dysuria"); }
         if(!isOmitted('ur_blood')) { if(val('ur_blood')==='Yes') urStr.push("Haematuria x" + val('ur_blood_times')); else urStr.push("No haematuria"); }
         if(!isOmitted('ur_ret')) { if(val('ur_ret')==='Yes') urStr.push("Retention (" + val('ur_ret_time') + ")"); else urStr.push("No retention"); }
-        if(document.getElementById('ur_freq') && document.getElementById('ur_freq').checked) urStr.push("Frequency/Urgency"); else urStr.push("No frequency/urgency");
-        if(document.getElementById('ur_olig') && document.getElementById('ur_olig').checked) urStr.push("Oliguria"); else urStr.push("No oliguria");
-        if(document.getElementById('ur_inc') && document.getElementById('ur_inc').checked) urStr.push("Incontinence"); else urStr.push("No incontinence");
-        if(document.getElementById('ur_froth') && document.getElementById('ur_froth').checked) urStr.push("Foamy/Frothy urine"); else urStr.push("No foamy/frothy urine");
+        if(val('ur_freq')) urStr.push("Frequency/Urgency"); else urStr.push("No frequency/urgency");
+        if(val('ur_olig')) urStr.push("Oliguria"); else urStr.push("No oliguria");
+        if(val('ur_inc')) urStr.push("Incontinence"); else urStr.push("No incontinence");
+        if(val('ur_froth')) urStr.push("Foamy/Frothy urine"); else urStr.push("No foamy/frothy urine");
         if(urStr.length > 0) gigu.push("• Urinary Findings:\n  " + urStr.join("\n  "));
 
         if(val('det_gigu_val') === 'Yes') gigu.push("Further Details:\n" + (val('det_gigu_txt') || "None recorded."));
         buildSec("Gastrointestinal & Urinary", gigu);
 
         var msk = [];
-        if(!isOmitted('msk_joint')) msk.push(document.getElementById('msk_joint').checked ? "• Joint pain/swelling: Yes (" + val('msk_joint_det') + ")" : "• No joint pain, swelling, or redness");
-        if(!isOmitted('msk_cramps')) msk.push(document.getElementById('msk_cramps').checked ? "• Muscle cramps: Yes (" + val('msk_cramps_det') + ")" : "• No muscle cramps or spasms");
-        if(!isOmitted('msk_rom')) msk.push(document.getElementById('msk_rom').checked ? "• Reduced ROM: Yes (" + val('msk_rom_det') + ")" : "• No reduced ROM");
+        if(!isOmitted('msk_joint')) msk.push(val('msk_joint') ? "• Joint pain/swelling: Yes (" + val('msk_joint_det') + ")" : "• No joint pain, swelling, or redness");
+        if(!isOmitted('msk_cramps')) msk.push(val('msk_cramps') ? "• Muscle cramps: Yes (" + val('msk_cramps_det') + ")" : "• No muscle cramps or spasms");
+        if(!isOmitted('msk_rom')) msk.push(val('msk_rom') ? "• Reduced ROM: Yes (" + val('msk_rom_det') + ")" : "• No reduced ROM");
 
         if(document.getElementById('complaint').value === 'fall' || document.getElementById('complaint').value === 'trauma') {
-            if(!isOmitted('limb_p')) msk.push(document.getElementById('limb_p').checked ? "• Limb Pain noted (" + val('limb_p_det') + ")" : "• No limb pain");
-            if(!isOmitted('cspine_p')) msk.push(document.getElementById('cspine_p').checked ? "• C-Spine tenderness noted (" + val('cspine_p_det') + ")" : "• No C-Spine tenderness");
-            if(!isOmitted('rib_p')) msk.push(document.getElementById('rib_p').checked ? "• Rib pain noted (" + val('rib_p_det') + ")" : "• No rib pain");
-            if(!isOmitted('deformity_p')) msk.push(document.getElementById('deformity_p').checked ? "• Obvious deformity noted (" + val('deformity_p_det') + ")" : "• No deformity");
+            if(!isOmitted('limb_p')) msk.push(val('limb_p') ? "• Limb Pain noted (" + val('limb_p_det') + ")" : "• No limb pain");
+            if(!isOmitted('cspine_p')) msk.push(val('cspine_p') ? "• C-Spine tenderness noted (" + val('cspine_p_det') + ")" : "• No C-Spine tenderness");
+            if(!isOmitted('rib_p')) msk.push(val('rib_p') ? "• Rib pain noted (" + val('rib_p_det') + ")" : "• No rib pain");
+            if(!isOmitted('deformity_p')) msk.push(val('deformity_p') ? "• Obvious deformity noted (" + val('deformity_p_det') + ")" : "• No deformity");
         } else { msk.push("• No limb pain. No deformity."); }
 
         if(!isOmitted('back_p')) {
             if(val('back_p')==='Yes') { var bkStr = "• Back Pain: Yes (" + val('back_where') + ")\n  SOCRATES:\n    S: " + (val('soc_m_s')||"-") + "\n    O: " + (val('soc_m_o')||"-") + "\n    C: " + (val('soc_m_c')||"-") + "\n    R: " + (val('soc_m_r')||"-") + "\n    A: " + (val('soc_m_a')||"-") + "\n    T: " + (val('soc_m_t')||"-") + "\n    E: " + (val('soc_m_e')||"-"); if(!isPaeds) bkStr += "\n    S: " + (val('soc_m_sev')||"-"); msk.push(bkStr); }
             else msk.push("• No back pain");
         }
-        if(isPaeds && (val('back_p')==='Yes' || document.getElementById('limb_p').checked) && !isOmitted('flacc_m_val')) { msk.push("• Paeds Pain (FLACC): " + val('flacc_m_val')); }
+        if(isPaeds && (val('back_p')==='Yes' || val('limb_p')) && !isOmitted('flacc_m_val')) { msk.push("• Paediatric Pain (FLACC): " + val('flacc_m_val')); }
         if(!isOmitted('walk_p')) { if(val('walk_p')==='Yes') msk.push("• Trouble walking for: " + val('walk_long')); else msk.push("• No gait disturbance. Normal walking."); }
         if(val('det_msk_val') === 'Yes') msk.push("Further Details:\n" + (val('det_msk_txt') || "None recorded."));
         buildSec("Musculoskeletal", msk);
@@ -1420,38 +1727,38 @@
             var mat = [];
             if(!isOmitted('mat_gravida')) mat.push("• Gravida: " + val('mat_gravida') + " | Para: " + val('mat_para'));
             if(!isOmitted('mat_gestation')) mat.push("• Gestation: " + val('mat_gestation'));
-            if(!isOmitted('mat_contractions')) mat.push(document.getElementById('mat_contractions').checked ? "• Contractions: Yes (" + val('mat_con_freq') + ")" : "• No contractions");
-            if(!isOmitted('mat_waters')) mat.push(document.getElementById('mat_waters').checked ? "• Waters: Broken (" + val('mat_wat_col') + ")" : "• Waters intact");
-            if(!isOmitted('mat_bleed')) mat.push(document.getElementById('mat_bleed').checked ? "• Bleeding/Show: Yes (" + val('mat_bleed_det') + ")" : "• No bleeding or show");
-            if(!isOmitted('mat_move')) mat.push(document.getElementById('mat_move').checked ? "• Fetal movements: Normal" : "• Fetal movements: Abnormal/Reduced (" + val('mat_move_det') + ")");
-            if(!isOmitted('mat_red_flags')) mat.push(document.getElementById('mat_red_flags').checked ? "• Red Flags: Yes (" + val('mat_rf_det') + ")" : "• No obstetric red flags");
+            if(!isOmitted('mat_contractions')) mat.push(val('mat_contractions') ? "• Contractions: Yes (" + val('mat_con_freq') + ")" : "• No contractions");
+            if(!isOmitted('mat_waters')) mat.push(val('mat_waters') ? "• Waters: Broken (" + val('mat_wat_col') + ")" : "• Waters intact");
+            if(!isOmitted('mat_bleed')) mat.push(val('mat_bleed') ? "• Bleeding/Show: Yes (" + val('mat_bleed_det') + ")" : "• No bleeding or show");
+            if(!isOmitted('mat_move')) mat.push(val('mat_move') ? "• Fetal movements: Normal" : "• Fetal movements: Abnormal/Reduced (" + val('mat_move_det') + ")");
+            if(!isOmitted('mat_red_flags')) mat.push(val('mat_red_flags') ? "• Red Flags: Yes (" + val('mat_rf_det') + ")" : "• No obstetric red flags");
             if(val('det_mat_val') === 'Yes') mat.push("Further Details:\n" + (val('det_mat_txt') || "None recorded."));
             buildSec("Maternity", mat);
         }
 
         if(document.getElementById('complaint').value === 'trauma') {
             var tra = [];
-            if(!isOmitted('trauma_mtc')) tra.push(document.getElementById('trauma_mtc').checked ? "• MTC Step 3 Trigger Met (" + val('trauma_mtc_det') + ")" : "• MTC Step 3 Trigger NOT Met");
-            if(!isOmitted('trauma_red')) tra.push(document.getElementById('trauma_red').checked ? "• RED Discriminator Met (" + val('trauma_red_det') + ")" : "• RED Discriminator NOT Met");
-            if(!isOmitted('trauma_amber')) tra.push(document.getElementById('trauma_amber').checked ? "• AMBER Discriminator Met (" + val('trauma_amber_det') + ")" : "• AMBER Discriminator NOT Met");
+            if(!isOmitted('trauma_mtc')) tra.push(val('trauma_mtc') ? "• MTC Step 3 Trigger Met (" + val('trauma_mtc_det') + ")" : "• MTC Step 3 Trigger NOT Met");
+            if(!isOmitted('trauma_red')) tra.push(val('trauma_red') ? "• RED Discriminator Met (" + val('trauma_red_det') + ")" : "• RED Discriminator NOT Met");
+            if(!isOmitted('trauma_amber')) tra.push(val('trauma_amber') ? "• AMBER Discriminator Met (" + val('trauma_amber_det') + ")" : "• AMBER Discriminator NOT Met");
             if(!isOmitted('rtc_veh_cond')) tra.push("• Vehicle Damage: " + val('rtc_veh_cond'));
             if(!isOmitted('rtc_speed')) tra.push("• Speed: " + val('rtc_speed') + " | Pos: " + val('rtc_pos'));
-            if(!isOmitted('rtc_seatbelt')) tra.push(document.getElementById('rtc_seatbelt').checked ? "• Seatbelt: Worn" : "• Seatbelt: Not worn / Unrestrained (" + val('rtc_seatbelt_det') + ")");
-            if(!isOmitted('rtc_bullseye')) tra.push(document.getElementById('rtc_bullseye').checked ? "• Bullseye to windscreen: Yes (" + val('rtc_bullseye_det') + ")" : "• No bullseye to windscreen");
-            if(!isOmitted('rtc_extricated')) tra.push(document.getElementById('rtc_extricated').checked ? "• Extricated: Yes (" + val('rtc_ext_how') + ")" : "• Not extricated from vehicle");
+            if(!isOmitted('rtc_seatbelt')) tra.push(val('rtc_seatbelt') ? "• Seatbelt: Worn" : "• Seatbelt: Not worn / Unrestrained (" + val('rtc_seatbelt_det') + ")");
+            if(!isOmitted('rtc_bullseye')) tra.push(val('rtc_bullseye') ? "• Bullseye to windscreen: Yes (" + val('rtc_bullseye_det') + ")" : "• No bullseye to windscreen");
+            if(!isOmitted('rtc_extricated')) tra.push(val('rtc_extricated') ? "• Extricated: Yes (" + val('rtc_ext_how') + ")" : "• Not extricated from vehicle");
             if(val('det_trauma_val') === 'Yes') tra.push("Further Details:\n" + (val('det_trauma_txt') || "None recorded."));
             buildSec("Trauma", tra);
         }
 
         if(document.getElementById('complaint').value === 'fall') {
             var fal = [];
-            if(!isOmitted('fall_65')) fal.push(document.getElementById('fall_65').checked ? "• Patient 65+: Yes (" + val('fall_65_det') + ")" : "• Patient under 65");
-            if(!isOmitted('fall_lie')) fal.push(document.getElementById('fall_lie').checked ? "• Long lie (>1hr): Yes (" + val('fall_lie_det') + ")" : "• No long lie (>1hr)");
-            if(!isOmitted('fall_cog')) fal.push(document.getElementById('fall_cog').checked ? "• New confusion: Yes (" + val('fall_cog_det') + ")" : "• No new confusion");
-            if(!isOmitted('fall_inj')) fal.push(document.getElementById('fall_inj').checked ? "• Minor injuries: Yes (" + val('fall_inj_det') + ")" : "• No minor injuries");
-            if(!isOmitted('fall_hypo')) fal.push(document.getElementById('fall_hypo').checked ? "• Postural hypotension: Yes (" + val('fall_hypo_det') + ")" : "• No postural hypotension");
-            if(!isOmitted('fall_hist')) fal.push(document.getElementById('fall_hist').checked ? "• 2+ falls in 7 days: Yes (" + val('fall_hist_det') + ")" : "• No history of 2+ falls in 7 days");
-            if(!isOmitted('fall_anticoag')) fal.push(document.getElementById('fall_anticoag').checked ? "• On anticoagulants: Yes (" + val('fall_anticoag_det') + ")" : "• Not on anticoagulants");
+            if(!isOmitted('fall_65')) fal.push(val('fall_65') ? "• Patient 65+: Yes (" + val('fall_65_det') + ")" : "• Patient under 65");
+            if(!isOmitted('fall_lie')) fal.push(val('fall_lie') ? "• Long lie (>1hr): Yes (" + val('fall_lie_det') + ")" : "• No long lie (>1hr)");
+            if(!isOmitted('fall_cog')) fal.push(val('fall_cog') ? "• New confusion: Yes (" + val('fall_cog_det') + ")" : "• No new confusion");
+            if(!isOmitted('fall_inj')) fal.push(val('fall_inj') ? "• Minor injuries: Yes (" + val('fall_inj_det') + ")" : "• No minor injuries");
+            if(!isOmitted('fall_hypo')) fal.push(val('fall_hypo') ? "• Postural hypotension: Yes (" + val('fall_hypo_det') + ")" : "• No postural hypotension");
+            if(!isOmitted('fall_hist')) fal.push(val('fall_hist') ? "• 2+ falls in 7 days: Yes (" + val('fall_hist_det') + ")" : "• No history of 2+ falls in 7 days");
+            if(!isOmitted('fall_anticoag')) fal.push(val('fall_anticoag') ? "• On anticoagulants: Yes (" + val('fall_anticoag_det') + ")" : "• Not on anticoagulants");
             if(val('det_fall_val') === 'Yes') fal.push("Further Details:\n" + (val('det_fall_txt') || "None recorded."));
             buildSec("Falls", fal);
         }
@@ -1475,6 +1782,27 @@
         if(!isPaeds && !isOmitted('soc_level')) soc.push("• Level of Care: " + val('soc_level'));
         if(val('det_medsoc_val') === 'Yes') soc.push("Further Details:\n" + (val('det_medsoc_txt') || "None recorded."));
         buildSec("Meds & Social", soc);
+
+        // SPICT EXPORT
+        if(!isPaeds && !isOmitted('spict_g1')) {
+            var spictArr = [];
+            var g = [];
+            if(val('spict_g1')) g.push("Unplanned admission(s)");
+            if(val('spict_g2')) g.push("Poor/deteriorating functional ability");
+            if(val('spict_g3')) g.push("Depends on others for care");
+            if(val('spict_g4')) g.push("Carer needs more help");
+            if(val('spict_g5')) g.push("Weight loss/low muscle mass");
+            if(val('spict_g6')) g.push("Persistent symptoms despite tx");
+            if(val('spict_g7')) g.push("Focus on QoL / requests palliative");
+            if(g.length > 0) spictArr.push("• General Indicators:\n  " + g.join("\n  "));
+            
+            var cInd = val('spict_clinical');
+            if(cInd && cInd !== '') { spictArr.push("• Clinical Indicator: " + cInd + "\n  Notes: " + (val('spict_clin_notes') || "None")); }
+            if(val('spict_action_val') === 'Yes') spictArr.push("• Future Decision Making / Action Plan:\n  " + (val('spict_act_txt') || "None recorded."));
+            if(val('det_spict_val') === 'Yes') spictArr.push("• Further Details:\n  " + (val('det_spict_txt') || "None recorded."));
+            
+            if(spictArr.length > 0) buildSec("Frailty / Palliative (SPICT)", spictArr);
+        }
 
         var vm = [];
         if(isPaeds) {
